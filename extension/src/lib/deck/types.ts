@@ -1,0 +1,65 @@
+export const ZONES = [
+  "comandante",
+  "comandanteParceiro",
+  "mainDeck",
+  "sideboard",
+  "maybeboard",
+] as const;
+
+export type Zone = (typeof ZONES)[number];
+
+export const FORMATS = ["commander500", "commander500Duel"] as const;
+export type Format = (typeof FORMATS)[number];
+
+export interface CapturedCard {
+  id: string;
+  name: string;
+  quantity: number;
+  zone: Zone;
+  /** Lowest price shown on the LigaMagic page, in BRL. Undefined when the page did not show one. */
+  pageLowestPrice: number | undefined;
+}
+
+export type CardLayout =
+  | "normal"
+  | "split"
+  | "flip"
+  | "transform"
+  | "modal_dfc"
+  | "meld"
+  | "adventure"
+  | "leveler"
+  | "saga"
+  | "class"
+  | "other";
+
+export interface CardEnrichment {
+  name: string;
+  typeLine: string;
+  colorIdentity: string[];
+  cmc: number;
+  layout: CardLayout;
+  legalInCommander: boolean;
+  /** Scryfall id of this specific printing; used only for the printings lookup. */
+  scryfallId: string;
+}
+
+export type EnrichmentResult =
+  | { status: "ok"; card: CardEnrichment }
+  | { status: "not-found" }
+  | { status: "unavailable" };
+
+export interface DeckCard extends CapturedCard {
+  enrichment: CardEnrichment | undefined;
+  enrichmentStatus: "pending" | "ok" | "not-found" | "unavailable";
+}
+
+export interface Deck {
+  format: Format;
+  cards: DeckCard[];
+}
+
+export function isBasicLand(name: string): boolean {
+  const basics = new Set(["Plains", "Island", "Swamp", "Mountain", "Forest", "Wastes"]);
+  return basics.has(name.trim());
+}

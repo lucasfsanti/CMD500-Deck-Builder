@@ -1,0 +1,363 @@
+/*
+  Design system for the Commander 500 panel.
+
+  Concept: a budget ledger for a Commander deck. The signature element is the
+  circular budget gauge (echoed in the extension icon). Zone headers use a
+  serif "register" face to read as a ledger, distinct from the sans-serif
+  house style of every other MTG deckbuilder (Moxfield, Archidekt, etc.);
+  card data uses a grotesk with a tabular monospace for prices, so R$ figures
+  line up like a real accounting column.
+*/
+
+:host,
+* {
+  box-sizing: border-box;
+}
+
+:host {
+  --c500-ink: #16241c;
+  --c500-ink-soft: #4b5d53;
+  --c500-paper: #edefe7;
+  --c500-paper-raised: #ffffff;
+  --c500-forest: #1f6b4a;
+  --c500-forest-soft: #dfeee6;
+  --c500-brass: #b8862e;
+  --c500-rust: #a63a2c;
+  --c500-rust-soft: #f6e3df;
+  --c500-line: #d7dacc;
+
+  --c500-font-display: ui-serif, Georgia, "Times New Roman", serif;
+  --c500-font-body: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --c500-font-mono: ui-monospace, "SF Mono", "Cascadia Code", Consolas, monospace;
+
+  color-scheme: light;
+}
+
+.c500-panel {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 2147483647;
+  font-family: var(--c500-font-body);
+  color: var(--c500-ink);
+  background: var(--c500-paper);
+  border: 1px solid var(--c500-line);
+  border-radius: 10px;
+  width: 320px;
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+  box-shadow: 0 8px 24px rgba(22, 36, 28, 0.18);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+/* ---------- Header ---------- */
+
+.c500-panel__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 14px 10px;
+  border-bottom: 1px solid var(--c500-line);
+}
+
+.c500-panel__mark {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--c500-forest);
+  border: 2px solid var(--c500-brass);
+  flex-shrink: 0;
+}
+
+.c500-panel__title {
+  font-family: var(--c500-font-display);
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0;
+  letter-spacing: 0.01em;
+}
+
+.c500-panel__format {
+  margin-left: auto;
+  font-family: var(--c500-font-body);
+  font-size: 11px;
+  border: 1px solid var(--c500-line);
+  border-radius: 6px;
+  background: var(--c500-paper-raised);
+  color: var(--c500-ink);
+  padding: 3px 6px;
+}
+
+.c500-panel__status {
+  padding: 10px 14px;
+  color: var(--c500-ink-soft);
+}
+
+/* ---------- Budget gauge (signature element) ---------- */
+
+.c500-gauge {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--c500-line);
+}
+
+.c500-gauge__dial {
+  flex-shrink: 0;
+}
+
+.c500-gauge__arc-track {
+  fill: none;
+  stroke: var(--c500-line);
+  stroke-width: 8;
+}
+
+.c500-gauge__arc-fill {
+  fill: none;
+  stroke: var(--c500-forest);
+  stroke-width: 8;
+  stroke-linecap: round;
+  transition: stroke-dasharray 0.25s ease, stroke 0.25s ease;
+}
+
+.c500-gauge--over .c500-gauge__arc-fill {
+  stroke: var(--c500-rust);
+}
+
+.c500-gauge__body {
+  min-width: 0;
+}
+
+.c500-gauge__amount {
+  font-family: var(--c500-font-mono);
+  font-size: 17px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.c500-gauge--over .c500-gauge__amount {
+  color: var(--c500-rust);
+}
+
+.c500-gauge__cap {
+  font-size: 11px;
+  color: var(--c500-ink-soft);
+}
+
+.c500-gauge__over-note {
+  margin-top: 2px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--c500-rust);
+}
+
+.c500-gauge__incomplete-note {
+  margin-top: 2px;
+  font-size: 11px;
+  color: var(--c500-ink-soft);
+  font-style: italic;
+}
+
+/* ---------- Legality summary ---------- */
+
+.c500-legality {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--c500-line);
+  font-size: 12px;
+}
+
+.c500-legality__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--c500-forest);
+  flex-shrink: 0;
+}
+
+.c500-legality--illegal .c500-legality__dot {
+  background: var(--c500-rust);
+}
+
+.c500-legality--unknown .c500-legality__dot {
+  background: var(--c500-brass);
+}
+
+.c500-legality__as-of {
+  margin-left: auto;
+  font-size: 10px;
+  color: var(--c500-ink-soft);
+  flex-shrink: 0;
+}
+
+/* ---------- Export ---------- */
+
+.c500-export {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--c500-line);
+}
+
+.c500-export__format {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--c500-font-body);
+  font-size: 11px;
+  border: 1px solid var(--c500-line);
+  border-radius: 6px;
+  background: var(--c500-paper-raised);
+  color: var(--c500-ink);
+  padding: 3px 6px;
+}
+
+.c500-export__button {
+  font-family: var(--c500-font-body);
+  font-size: 11px;
+  border: 1px solid var(--c500-line);
+  border-radius: 6px;
+  background: var(--c500-paper-raised);
+  color: var(--c500-ink);
+  padding: 4px 8px;
+  cursor: pointer;
+}
+
+.c500-export__button:hover {
+  border-color: var(--c500-forest);
+}
+
+.c500-export__feedback {
+  font-size: 11px;
+  color: var(--c500-forest);
+}
+
+/* ---------- Zones ---------- */
+
+.c500-zone {
+  border-bottom: 1px solid var(--c500-line);
+}
+
+.c500-zone__header {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 10px 14px 4px;
+  font-family: var(--c500-font-display);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.c500-zone__count {
+  font-family: var(--c500-font-mono);
+  font-size: 11px;
+  color: var(--c500-ink-soft);
+  font-weight: 400;
+}
+
+.c500-zone__dropzone {
+  min-height: 28px;
+  padding: 0 8px 8px;
+  border-radius: 6px;
+  transition: background 0.15s ease;
+}
+
+.c500-zone__dropzone--active {
+  background: var(--c500-forest-soft);
+}
+
+.c500-zone__error {
+  margin: 0 14px 8px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: var(--c500-rust-soft);
+  color: var(--c500-rust);
+  font-size: 11px;
+}
+
+.c500-group__label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--c500-ink-soft);
+  padding: 6px 6px 2px;
+}
+
+/* ---------- Card rows ---------- */
+
+.c500-card {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 6px;
+  border-radius: 6px;
+  background: var(--c500-paper-raised);
+  margin-bottom: 2px;
+  cursor: grab;
+  border: 1px solid transparent;
+  /* Without these, a pointer-down-and-move on the row starts the browser's
+     native text/drag selection instead of dnd-kit's drag gesture. */
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+}
+
+.c500-card:hover {
+  border-color: var(--c500-line);
+}
+
+.c500-card--dragging {
+  opacity: 0.5;
+}
+
+.c500-card__qty {
+  font-family: var(--c500-font-mono);
+  font-variant-numeric: tabular-nums;
+  width: 1.4em;
+  text-align: right;
+  color: var(--c500-ink-soft);
+  flex-shrink: 0;
+}
+
+.c500-card__name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.c500-card__price {
+  font-family: var(--c500-font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 11px;
+  color: var(--c500-brass);
+  flex-shrink: 0;
+}
+
+.c500-card__price--unknown {
+  color: var(--c500-rust);
+  font-style: italic;
+}
+
+.c500-card__price--over-budget {
+  color: var(--c500-rust);
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 2px;
+}
+
+.c500-card__badge {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.c500-card__badge--illegal {
+  background: var(--c500-rust);
+}
