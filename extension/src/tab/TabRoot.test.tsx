@@ -35,12 +35,12 @@ function card(id: string, name: string, zone: DeckCard["zone"]): DeckCard {
 }
 
 describe("TabRoot (task 3.1)", () => {
-  it("renders the full-width layout with all five zones, budget, legality, and export, against a captured-deck fixture", async () => {
+  it("renders the full-width layout with all four zones, budget, legality, and export, against a captured-deck fixture", async () => {
     mockUseTabDeck.mockReturnValue({
       cards: [
         card("a", "Xyris, the Writhing Storm", "comandante"),
         card("b", "Sol Ring", "mainDeck"),
-        card("c", "Chalice of the Void", "sideboard"),
+        card("c", "Chalice of the Void", "maybeboard"),
       ],
       pageStatus: "ok",
       format: "commander500",
@@ -54,16 +54,16 @@ describe("TabRoot (task 3.1)", () => {
     const { TabRoot } = await import("./TabRoot");
     render(<TabRoot />);
 
-    expect(screen.getByText("Commander 500 Deckbuilder")).toBeTruthy();
+    expect(screen.getByText("Montador de Decks Commander 500")).toBeTruthy();
     expect(screen.getByText("Xyris, the Writhing Storm")).toBeTruthy();
     expect(screen.getByText("Sol Ring")).toBeTruthy();
     expect(screen.getByText("Chalice of the Void")).toBeTruthy();
-    // All five zone headers present, per deck-organizer's five-zone requirement, now at full width.
-    for (const label of ["Comandante", "Comandante Parceiro", "Main Deck", "Sideboard", "Maybeboard"]) {
+    // All four zone headers present, per deck-organizer's four-zone requirement, now at full width.
+    for (const label of ["Comandante", "Comandante Parceiro", "Deck Principal", "Maybeboard"]) {
       expect(screen.getByText(label)).toBeTruthy();
     }
     // No unsynced indicator while the source tab is open.
-    expect(screen.queryByText(/Not synced/)).toBeNull();
+    expect(screen.queryByText(/Não sincronizado/)).toBeNull();
   });
 
   it("shows the unsynced indicator when the source tab has closed (task 3.2)", async () => {
@@ -84,7 +84,7 @@ describe("TabRoot (task 3.1)", () => {
     // The deck's last-known state is still shown...
     expect(screen.getByText("Sol Ring")).toBeTruthy();
     // ...alongside a visible indication that it's no longer synced.
-    expect(screen.getByText(/Not synced/)).toBeTruthy();
+    expect(screen.getByText(/Não sincronizado/)).toBeTruthy();
   });
 
   it("shows a reading state before the first capture resolves", async () => {
@@ -102,6 +102,6 @@ describe("TabRoot (task 3.1)", () => {
     const { TabRoot } = await import("./TabRoot");
     render(<TabRoot />);
 
-    expect(screen.getByText("Reading this deck…")).toBeTruthy();
+    expect(screen.getByText("Lendo este deck…")).toBeTruthy();
   });
 });

@@ -13,7 +13,11 @@ export interface LegalitySummaryProps {
  * showing its "as of" date alongside the legality results.
  */
 function DuelBanlistAsOf() {
-  return <span className="c500-legality__as-of">Duel banlist as of {commander500DuelBanlistAsOf}</span>;
+  return (
+    <span className="c500-legality__as-of">
+      Lista de banidos do Duel atualizada em {commander500DuelBanlistAsOf}
+    </span>
+  );
 }
 
 export function LegalitySummary({ legality, format }: LegalitySummaryProps) {
@@ -23,7 +27,7 @@ export function LegalitySummary({ legality, format }: LegalitySummaryProps) {
     return (
       <div className="c500-legality c500-legality--unknown">
         <span className="c500-legality__dot" aria-hidden="true" />
-        Unable to verify legality — Scryfall is unreachable
+        Não foi possível verificar a legalidade — o Scryfall está inacessível
       </div>
     );
   }
@@ -33,7 +37,7 @@ export function LegalitySummary({ legality, format }: LegalitySummaryProps) {
     return (
       <div className="c500-legality">
         <span className="c500-legality__dot" aria-hidden="true" />
-        No illegal cards
+        Nenhuma carta ilegal
         {showAsOf && <DuelBanlistAsOf />}
       </div>
     );
@@ -42,7 +46,7 @@ export function LegalitySummary({ legality, format }: LegalitySummaryProps) {
   return (
     <div className="c500-legality c500-legality--illegal">
       <span className="c500-legality__dot" aria-hidden="true" />
-      {count} illegal card{count === 1 ? "" : "s"}
+      {count} {count === 1 ? "carta ilegal" : "cartas ilegais"}
       {showAsOf && <DuelBanlistAsOf />}
     </div>
   );

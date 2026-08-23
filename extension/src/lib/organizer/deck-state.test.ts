@@ -42,7 +42,7 @@ describe("moveCard commander cardinality (task 4.4)", () => {
     const cards = [card("existing", "comandante"), card("challenger", "mainDeck")];
     const result = moveCard(cards, "challenger", "comandante");
 
-    expect(result.error).toMatch(/already has a commander/i);
+    expect(result.error).toMatch(/já tem um comandante/i);
     expect(result.cards.find((c) => c.id === "challenger")?.zone).toBe("mainDeck");
   });
 
@@ -85,8 +85,8 @@ describe("setCardQuantity (task 4.5)", () => {
   });
 
   it("does not change a card's zone when its quantity is edited", () => {
-    const cards = [card("a", "sideboard", 1)];
+    const cards = [card("a", "maybeboard", 1)];
     const updated = setCardQuantity(cards, "a", 5);
-    expect(updated.find((c) => c.id === "a")?.zone).toBe("sideboard");
+    expect(updated.find((c) => c.id === "a")?.zone).toBe("maybeboard");
   });
 });

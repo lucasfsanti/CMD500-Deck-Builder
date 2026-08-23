@@ -1,15 +1,19 @@
 import { useState } from "react";
-import { DndContext, type DragEndEvent } from "@dnd-kit/core";
-import { ZONES, type Format } from "../lib/deck/types";
+import { DndContext, DragOverlay, pointerWithin, type DragEndEvent, type DragStartEvent } from "@dnd-kit/core";
+import { ZONES, type DeckCard, type Format } from "../lib/deck/types";
 import { groupCardsByZone, type GroupingAxis } from "../lib/organizer/group-sort";
 import { resolveDropZone } from "../lib/organizer/resolve-drop";
 import { calculateBudget } from "../lib/budget/calculate-budget";
+import { calculateCardCount } from "../lib/organizer/calculate-card-count";
 import { checkLegality } from "../lib/legality/check-legality";
 import { ZoneSection, type ViewMode } from "../ui/components/ZoneSection";
 import { BudgetGauge } from "../ui/components/BudgetGauge";
+import { CardCountGauge } from "../ui/components/CardCountGauge";
 import { LegalitySummary } from "../ui/components/LegalitySummary";
 import { ExportMenu } from "../ui/components/ExportMenu";
 import { BarChart } from "../ui/components/charts/BarChart";
+import { CardRow } from "../ui/components/CardRow";
+import { CardVisualTile } from "../ui/components/CardVisualTile";
 import { manaCurveBuckets, colorBuckets, typeBuckets } from "../lib/analytics/bucket-counts";
 import { useTabDeck } from "./use-tab-deck";
 import { useSourceTabStatus } from "./use-source-tab-status";
@@ -21,9 +25,9 @@ const FORMAT_LABELS: Record<Format, string> = {
 };
 
 const GROUPING_AXIS_LABELS: Record<GroupingAxis, string> = {
-  type: "Type",
-  color: "Color",
-  cmc: "Mana Cost",
+  type: "Tipo",
+  color: "Cor",
+  cmc: "Custo de Mana",
 };
 
 export function TabRoot() {
@@ -38,12 +42,19 @@ export function TabRoot() {
   const sourceStatus = useSourceTabStatus(sourceTabId);
   const [viewMode, setViewMode] = useState<ViewMode>("list");
   const [groupingAxis, setGroupingAxis] = useState<GroupingAxis>("type");
+  const [draggedCard, setDraggedCard] = useState<DeckCard | undefined>();
 
   const byZone = groupCardsByZone(cards);
   const budget = calculateBudget(cards);
+  const cardCount = calculateCardCount(cards);
   const legality = checkLegality(cards, format);
 
+  function handleDragStart(event: DragStartEvent) {
+    setDraggedCard(event.active.data.current?.card as DeckCard | undefined);
+  }
+
   function handleDragEnd(event: DragEndEvent) {
+    setDraggedCard(undefined);
     const toZone = resolveDropZone(event);
     if (!toZone) return;
     moveCard(event.active.id as string, toZone);
@@ -53,7 +64,7 @@ export function TabRoot() {
     <div className="c500-tab">
       <header className="c500-tab__header">
         <span className="c500-panel__mark" aria-hidden="true" />
-        <h1 className="c500-tab__title">Commander 500 Deckbuilder</h1>
+        <h1 className="c500-tab__title">Montador de Decks Commander 500</h1>
         <select
           className="c500-panel__format"
           value={format}
@@ -67,15 +78,15 @@ export function TabRoot() {
         </select>
         {sourceStatus === "closed" && (
           <span className="c500-tab__unsynced">
-            Not synced — the source LigaMagic tab was closed
+            Não sincronizado — a aba de origem do LigaMagic foi fechada
           </span>
         )}
       </header>
 
-      {pageStatus === "reading" && <p className="c500-tab__status">Reading this deck…</p>}
+      {pageStatus === "reading" && <p className="c500-tab__status">Lendo este deck…</p>}
       {pageStatus === "unrecognized-page" && (
         <p className="c500-tab__status">
-          Could not read this page. LigaMagic may have changed its layout.
+          Não foi possível ler esta página. O LigaMagic pode ter mudado o layout.
         </p>
       )}
 
@@ -83,15 +94,16 @@ export function TabRoot() {
         <div className="c500-tab__body">
           <aside className="c500-tab__sidebar">
             <BudgetGauge budget={budget} />
+            <CardCountGauge cardCount={cardCount} />
             <LegalitySummary legality={legality} format={format} />
-            <div className="c500-tab__view-toggle" role="group" aria-label="View mode">
-              <span className="c500-tab__view-toggle-label">View</span>
+            <div className="c500-tab__view-toggle" role="group" aria-label="Modo de visualização">
+              <span className="c500-tab__view-toggle-label">Visualização</span>
               <button
                 type="button"
                 aria-pressed={viewMode === "list"}
                 onClick={() => setViewMode("list")}
               >
-                List
+                Lista
               </button>
               <button
                 type="button"
@@ -102,7 +114,7 @@ export function TabRoot() {
               </button>
             </div>
             <label className="c500-tab__grouping">
-              Group by
+              Agrupar por
               <select
                 value={groupingAxis}
                 onChange={(e) => setGroupingAxis(e.target.value as GroupingAxis)}
@@ -115,12 +127,17 @@ export function TabRoot() {
               </select>
             </label>
             <ExportMenu cards={cards} />
-            <BarChart title="Mana Curve" buckets={manaCurveBuckets(cards)} />
-            <BarChart title="Color" buckets={colorBuckets(cards)} />
-            <BarChart title="Type" buckets={typeBuckets(cards)} />
+            <BarChart title="Curva de Mana" buckets={manaCurveBuckets(cards)} />
+            <BarChart title="Cor" buckets={colorBuckets(cards)} />
+            <BarChart title="Tipo" buckets={typeBuckets(cards)} />
           </aside>
 
-          <DndContext onDragEnd={handleDragEnd}>
+          <DndContext
+            collisionDetection={pointerWithin}
+            onDragStart={handleDragStart}
+            onDragEnd={handleDragEnd}
+            onDragCancel={() => setDraggedCard(undefined)}
+          >
             <div className="c500-tab__zones">
               {/* Main Deck is always far larger than the other four zones (~90-100
                   cards vs. a handful); it gets its own column so the smaller zones
@@ -151,6 +168,14 @@ export function TabRoot() {
                 onQuantityChange={setQuantity}
               />
             </div>
+            <DragOverlay dropAnimation={null}>
+              {draggedCard &&
+                (viewMode === "visual" ? (
+                  <CardVisualTile card={draggedCard} dragOverlay className="c500-drag-overlay" />
+                ) : (
+                  <CardRow card={draggedCard} dragOverlay className="c500-drag-overlay" />
+                ))}
+            </DragOverlay>
           </DndContext>
         </div>
       )}

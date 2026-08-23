@@ -67,7 +67,7 @@ describe("ZoneSection view-mode switching (task 4.4)", () => {
 
   it("passes onQuantityChange through correctly in Visual mode", () => {
     const { onQuantityChange } = renderZone("visual");
-    const input = screen.getByLabelText("Sol Ring quantity");
+    const input = screen.getByLabelText("quantidade de Sol Ring");
     fireEvent.change(input, { target: { value: "3" } });
     expect(onQuantityChange).toHaveBeenCalledWith("a", 3);
   });
@@ -87,7 +87,7 @@ describe("ZoneSection grouping-axis switching (task 4.2)", () => {
         <ZoneSection zone="mainDeck" cards={cards} />
       </DndContext>,
     );
-    expect(screen.getByText("Artifact")).toBeTruthy();
+    expect(screen.getByText("Artefato")).toBeTruthy();
   });
 
   it("re-renders grouped by Color when the axis switches", () => {
@@ -96,9 +96,9 @@ describe("ZoneSection grouping-axis switching (task 4.2)", () => {
         <ZoneSection zone="mainDeck" cards={cards} groupingAxis="color" />
       </DndContext>,
     );
-    expect(screen.getByText("Red")).toBeTruthy();
-    expect(screen.getByText("Blue")).toBeTruthy();
-    expect(screen.queryByText("Artifact")).toBeNull();
+    expect(screen.getByText("Vermelho")).toBeTruthy();
+    expect(screen.getByText("Azul")).toBeTruthy();
+    expect(screen.queryByText("Artefato")).toBeNull();
   });
 
   it("re-renders grouped by Mana Cost when the axis switches", () => {
@@ -108,6 +108,6 @@ describe("ZoneSection grouping-axis switching (task 4.2)", () => {
       </DndContext>,
     );
     expect(screen.getByText("1")).toBeTruthy();
-    expect(screen.queryByText("Artifact")).toBeNull();
+    expect(screen.queryByText("Artefato")).toBeNull();
   });
 });

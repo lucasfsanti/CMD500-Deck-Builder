@@ -28,10 +28,10 @@ The full-tab view SHALL show a chart of the Main Deck's card count grouped by pr
 - **THEN** the type-distribution chart shows a separate count for each type present
 
 ### Requirement: Charts are scoped to Main Deck only
-All three charts SHALL reflect only cards in the Main Deck zone, excluding Comandante, Comandante Parceiro, Sideboard, and Maybeboard.
+All three charts SHALL reflect only cards in the Main Deck zone, excluding Comandante, Comandante Parceiro, and Maybeboard.
 
 #### Scenario: Deck has cards outside Main Deck
-- **WHEN** the deck has cards in Comandante, Sideboard, and/or Maybeboard in addition to Main Deck
+- **WHEN** the deck has cards in Comandante and/or Maybeboard in addition to Main Deck
 - **THEN** none of the three charts' counts include those cards
 
 ### Requirement: Charts update live as Main Deck changes

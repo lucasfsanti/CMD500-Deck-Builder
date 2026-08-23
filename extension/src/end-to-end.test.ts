@@ -107,14 +107,15 @@ describe("end-to-end: capture → organize → budget → legality → export (t
   const captured = parseDeckPage(doc);
   const cards = enrich(captured);
 
-  it("captures all five zones with real card data", () => {
+  it("captures all four zones with real card data", () => {
     expect(captured.status).toBe("ok");
     const byZone = groupCardsByZone(cards);
     expect(byZone.comandante).toHaveLength(1);
     expect(byZone.comandanteParceiro).toHaveLength(1);
     expect(byZone.mainDeck.length).toBeGreaterThan(0);
-    expect(byZone.sideboard).toHaveLength(1);
-    expect(byZone.maybeboard).toHaveLength(1);
+    // The fixture's Sideboard-headed card folds into Maybeboard alongside
+    // the card already under a Maybeboard header.
+    expect(byZone.maybeboard).toHaveLength(2);
   });
 
   it("organizes Main Deck cards by type/color/CMC", () => {
@@ -148,7 +149,6 @@ describe("end-to-end: capture → organize → budget → legality → export (t
     expect(ligaExport).toContain("Xyris, the Writhing Storm");
     expect(ligaExport).not.toContain("Comandante");
     expect(readableExport).toContain("Comandante\n1 Xyris, the Writhing Storm");
-    expect(readableExport).toContain("Sideboard");
     expect(readableExport).toContain("Maybeboard");
   });
 });

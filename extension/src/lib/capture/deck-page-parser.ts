@@ -75,13 +75,15 @@ export function parseDeckPage(root: ParentNode): CaptureResult {
         const zone = zoneForHeaderLabel(label);
         if (zone) {
           currentZone = zone;
-          // Sideboard/Maybeboard fully define their block's fallback zone,
-          // since everything under them (including their own type subheaders,
-          // e.g. "Branco (6)") belongs to that zone. Comandante / Comandante
+          // Maybeboard (including cards under a Sideboard header, which
+          // folds into Maybeboard — the extension keeps no separate
+          // Sideboard zone) fully defines its block's fallback zone, since
+          // everything under it (including its own type subheaders, e.g.
+          // "Branco (6)") belongs to that zone. Comandante / Comandante
           // Parceiro do not: they only claim the single header that names
           // them, and the block's next generic subheader (e.g. "Criaturas")
           // falls back to Main Deck, not back to the commander zone.
-          if (isFirstHeader && (zone === "sideboard" || zone === "maybeboard")) {
+          if (isFirstHeader && zone === "maybeboard") {
             fallbackZone = zone;
           }
         } else {

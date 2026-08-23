@@ -3,7 +3,7 @@ import { resolveDropZone } from "./resolve-drop";
 
 describe("resolveDropZone (verification finding #4a: drop outside any zone)", () => {
   it("resolves a recognized zone id", () => {
-    expect(resolveDropZone({ over: { id: "sideboard" } })).toBe("sideboard");
+    expect(resolveDropZone({ over: { id: "maybeboard" } })).toBe("maybeboard");
   });
 
   it("returns undefined when dropped outside any droppable (over is null)", () => {

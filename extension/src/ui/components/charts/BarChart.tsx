@@ -21,7 +21,7 @@ export function BarChart({ title, buckets }: BarChartProps) {
     <div className="c500-chart">
       <div className="c500-chart__title">{title}</div>
       {buckets.length === 0 ? (
-        <p className="c500-chart__empty">No Main Deck cards yet</p>
+        <p className="c500-chart__empty">Ainda sem cartas no Deck Principal</p>
       ) : (
         <div className="c500-chart__rows" role="table" aria-label={title}>
           {buckets.map((bucket) => (

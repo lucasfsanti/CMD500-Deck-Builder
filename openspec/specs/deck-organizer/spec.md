@@ -6,12 +6,12 @@ Presents the captured decklist as an editable, zone-based deck view — grouping
 
 ## Requirements
 
-### Requirement: Five deck zones
-The deck view SHALL organize cards into exactly five zones: Comandante, Comandante Parceiro, Main Deck, Sideboard, and Maybeboard, matching LigaMagic's own zone model.
+### Requirement: Four deck zones
+The deck view SHALL organize cards into exactly four zones: Comandante, Comandante Parceiro, Main Deck, and Maybeboard, matching LigaMagic's own zone model, with Sideboard folded into Maybeboard at capture time rather than kept as its own zone.
 
-#### Scenario: Captured deck has cards in all five zones
-- **WHEN** the captured decklist includes cards assigned to each of the five zones
-- **THEN** the deck view renders five distinct zone sections, each showing only the cards assigned to it
+#### Scenario: Captured deck has cards in all four zones
+- **WHEN** the captured decklist includes cards assigned to each of the four zones
+- **THEN** the deck view renders four distinct zone sections, each showing only the cards assigned to it
 
 ### Requirement: Grouping and sorting within a zone
 Within each zone, the deck view SHALL group cards by a user-selectable grouping axis — card type (the default), color identity, or converted mana cost — applying to all zones at once. Groups SHALL appear in the active axis's own natural order (card type order, WUBRG color order, or ascending mana cost). Within a group, cards SHALL be sorted by the two axes not used for grouping, in the same type-then-color-then-mana-cost priority the default (Type) grouping already uses minus whichever is the active axis, and then by name.
@@ -38,6 +38,24 @@ The user SHALL be able to move a card from one zone to another by dragging it, a
 #### Scenario: User drags a card onto an invalid target
 - **WHEN** the user drags a card and drops it outside any recognized zone
 - **THEN** the card remains in its original zone and no state change occurs
+
+### Requirement: Drag visual feedback follows the cursor
+While a card is being dragged, the deckbuilder SHALL show a semi-transparent ghost of that card positioned so the point the user grabbed it remains under the pointer; the ghost SHALL disappear when the drag ends.
+
+#### Scenario: User drags a card in List view
+- **WHEN** the user presses and drags a card row
+- **THEN** a semi-transparent ghost of that row follows the pointer for the duration of the drag
+
+#### Scenario: User grabs a Visual-mode tile away from its center
+- **WHEN** the user grabs a Visual-view artwork tile near its bottom edge and drags it
+- **THEN** the ghost's grabbed point stays under the pointer throughout the drag, not the tile's overall bounding-box center
+
+### Requirement: Drop-target resolution follows the pointer
+The zone a dragged card is dropped into SHALL be determined by the pointer's position when the drag ends, not by the dragged card's overall bounding-box overlap with candidate zones, so the zone that visually highlights as the drop target matches what is under the user's cursor regardless of where on the card they grabbed it.
+
+#### Scenario: Card grabbed away from its center is dropped near a zone boundary
+- **WHEN** the user grabs a card away from its center and releases it with the pointer over a specific zone
+- **THEN** the card moves into the zone the pointer was actually over, not a neighboring zone the card's bounding box happened to overlap
 
 ### Requirement: Commander zone cardinality
 The Comandante zone SHALL accept a single card unless a legal partner-commander pair is present, in which case the Comandante Parceiro zone holds the second card; the organizer SHALL prevent placing more cards in Comandante/Comandante Parceiro than the format allows.

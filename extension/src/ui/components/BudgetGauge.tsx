@@ -31,13 +31,14 @@ export function BudgetGauge({ budget }: BudgetGaugeProps) {
       </svg>
       <div className="c500-gauge__body">
         <div className="c500-gauge__amount">{formatBrl(budget.total)}</div>
-        <div className="c500-gauge__cap">of {formatBrl(BUDGET_CAP)} cap</div>
+        <div className="c500-gauge__cap">de {formatBrl(BUDGET_CAP)} de limite</div>
         {budget.isOverCap && (
-          <div className="c500-gauge__over-note">{formatBrl(budget.overAmount)} over</div>
+          <div className="c500-gauge__over-note">{formatBrl(budget.overAmount)} acima</div>
         )}
         {!budget.isComplete && (
           <div className="c500-gauge__incomplete-note">
-            {budget.cardsMissingPrice.length} card{budget.cardsMissingPrice.length === 1 ? "" : "s"} missing a price
+            {budget.cardsMissingPrice.length}{" "}
+            {budget.cardsMissingPrice.length === 1 ? "carta sem preço" : "cartas sem preço"}
           </div>
         )}
       </div>

@@ -22,6 +22,35 @@ const COLOR_NAMES: Record<(typeof COLOR_ORDER)[number], string> = {
 };
 
 /**
+ * Portuguese display labels for the English classification keys above
+ * (primaryType's TYPE_ORDER, colorGroupLabel's color-group names). Kept
+ * separate from the keys themselves, which must stay English to match
+ * Scryfall's own type-line/color-identity data — only presentation
+ * (zone group headers, chart bucket labels) goes through these maps.
+ */
+export const TYPE_DISPLAY_LABELS: Record<(typeof TYPE_ORDER)[number], string> = {
+  Creature: "Criatura",
+  Planeswalker: "Planeswalker",
+  Instant: "Mágica Instantânea",
+  Sorcery: "Feitiço",
+  Artifact: "Artefato",
+  Enchantment: "Encantamento",
+  Battle: "Batalha",
+  Land: "Terreno",
+  Other: "Outro",
+};
+
+export const COLOR_GROUP_DISPLAY_LABELS: Record<string, string> = {
+  Colorless: "Incolor",
+  White: "Branco",
+  Blue: "Azul",
+  Black: "Preto",
+  Red: "Vermelho",
+  Green: "Verde",
+  Multicolor: "Multicolor",
+};
+
+/**
  * The primary card type used for grouping, taken from the first recognized
  * word in the type line. Exported so deck-analytics's type-distribution
  * chart uses the exact same classification as the organizer's own grouping.
@@ -195,7 +224,6 @@ export function groupCardsByZone(cards: DeckCard[]): Record<Zone, DeckCard[]> {
     comandante: [],
     comandanteParceiro: [],
     mainDeck: [],
-    sideboard: [],
     maybeboard: [],
   };
   for (const card of cards) {

@@ -9,9 +9,9 @@ function formatLine(card: DeckCard): string {
  * LigaMagic-exact export, matching LigaMagic's own confirmed format: the
  * commander zones are merged into the unlabeled main block (LigaMagic's own
  * export does not distinguish the commander from the rest of the deck),
- * followed by a blank line and the Sideboard block (if non-empty), followed
- * by a blank line and the Maybeboard block (if non-empty) — no zone header
- * text anywhere, since LigaMagic's importer neither produces nor expects any.
+ * followed by a blank line and the Maybeboard block (if non-empty) — no zone
+ * header text anywhere, since LigaMagic's importer neither produces nor
+ * expects any.
  */
 export function generateLigaMagicExport(cards: DeckCard[]): string {
   const byZone = groupCardsByZone(cards);
@@ -20,28 +20,20 @@ export function generateLigaMagicExport(cards: DeckCard[]): string {
     ...byZone.comandanteParceiro,
     ...byZone.mainDeck,
   ].map(formatLine);
-  const sideboardBlock = byZone.sideboard.map(formatLine);
   const maybeboardBlock = byZone.maybeboard.map(formatLine);
 
-  const blocks = [mainBlock, sideboardBlock, maybeboardBlock].filter((b) => b.length > 0);
+  const blocks = [mainBlock, maybeboardBlock].filter((b) => b.length > 0);
   return blocks.map((block) => block.join("\n")).join("\n\n");
 }
 
 const ZONE_LABELS: Record<Zone, string> = {
   comandante: "Comandante",
   comandanteParceiro: "Comandante Parceiro",
-  mainDeck: "Main Deck",
-  sideboard: "Sideboard",
+  mainDeck: "Deck Principal",
   maybeboard: "Maybeboard",
 };
 
-const ZONE_ORDER: Zone[] = [
-  "comandante",
-  "comandanteParceiro",
-  "mainDeck",
-  "sideboard",
-  "maybeboard",
-];
+const ZONE_ORDER: Zone[] = ["comandante", "comandanteParceiro", "mainDeck", "maybeboard"];
 
 /** Human-readable export: each non-empty zone under its own text header. */
 export function generateReadableExport(cards: DeckCard[]): string {

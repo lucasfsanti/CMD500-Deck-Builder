@@ -67,8 +67,8 @@ describe("colorBuckets (task 5.1)", () => {
       card("Multi", { colorIdentity: ["W", "U"] }),
     ];
     expect(colorBuckets(cards)).toEqual([
-      { label: "Colorless", count: 1 },
-      { label: "White", count: 2 },
+      { label: "Incolor", count: 1 },
+      { label: "Branco", count: 2 },
       { label: "Multicolor", count: 1 },
     ]);
   });
@@ -82,18 +82,17 @@ describe("typeBuckets (task 5.1)", () => {
       card("C", { typeLine: "Creature" }),
     ];
     expect(typeBuckets(cards)).toEqual([
-      { label: "Creature", count: 2 },
-      { label: "Instant", count: 1 },
+      { label: "Criatura", count: 2 },
+      { label: "Mágica Instantânea", count: 1 },
     ]);
   });
 });
 
 describe("deck-analytics charts are scoped to Main Deck only (task 5.3)", () => {
-  it("excludes Comandante, Comandante Parceiro, Sideboard, and Maybeboard cards from all three charts", () => {
+  it("excludes Comandante, Comandante Parceiro, and Maybeboard cards from all three charts", () => {
     const cards = [
       card("Commander", { zone: "comandante", cmc: 9, typeLine: "Legendary Creature" }),
       card("Partner", { zone: "comandanteParceiro", cmc: 9 }),
-      card("Side", { zone: "sideboard", cmc: 9 }),
       card("Maybe", { zone: "maybeboard", cmc: 9 }),
       card("MainDeckCard", { zone: "mainDeck", cmc: 2 }),
     ];

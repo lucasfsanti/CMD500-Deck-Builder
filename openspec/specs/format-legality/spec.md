@@ -42,7 +42,7 @@ Illegal-card feedback SHALL be visually distinct from the over-budget indicator 
 The deck view SHALL display a summary count of illegal cards in the deck, visible without expanding individual zones.
 
 #### Scenario: Deck has two banned cards in different zones
-- **WHEN** the active banlist flags one card in Main Deck and one card in Sideboard
+- **WHEN** the active banlist flags one card in Main Deck and one card in Maybeboard
 - **THEN** the deck-level summary shows a count of 2 illegal cards
 
 ### Requirement: Legality check degrades safely when live banlist data is unavailable

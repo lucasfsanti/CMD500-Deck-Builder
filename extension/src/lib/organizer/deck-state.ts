@@ -19,7 +19,7 @@ const COMMANDER_ZONE_LABEL: Record<string, string> = {
  */
 export function moveCard(cards: DeckCard[], cardId: string, toZone: Zone): MoveResult {
   const card = cards.find((c) => c.id === cardId);
-  if (!card) return { cards, error: "Card not found." };
+  if (!card) return { cards, error: "Carta não encontrada." };
   if (card.zone === toZone) return { cards };
 
   if (COMMANDER_ZONES.has(toZone)) {
@@ -27,7 +27,7 @@ export function moveCard(cards: DeckCard[], cardId: string, toZone: Zone): MoveR
     if (occupant) {
       return {
         cards,
-        error: `${COMMANDER_ZONE_LABEL[toZone]} already has a commander. Only a partner commander may be added, and only in the Comandante Parceiro slot.`,
+        error: `${COMMANDER_ZONE_LABEL[toZone]} já tem um comandante. Apenas um comandante parceiro pode ser adicionado, e somente no slot Comandante Parceiro.`,
       };
     }
   }

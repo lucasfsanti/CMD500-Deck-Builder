@@ -91,9 +91,9 @@ describe("useTabDeck (task 2.5)", () => {
     const { result } = renderHook(() => useTabDeck(1, undefined));
     await waitFor(() => expect(result.current.cards).toHaveLength(1));
 
-    act(() => result.current.moveCard("a", "sideboard"));
+    act(() => result.current.moveCard("a", "maybeboard"));
 
-    expect(result.current.cards[0]?.zone).toBe("sideboard");
+    expect(result.current.cards[0]?.zone).toBe("maybeboard");
   });
 
   it("requests all pending cards' enrichment in one batched call and applies results back by id (task 2.3)", async () => {

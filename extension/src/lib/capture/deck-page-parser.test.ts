@@ -22,12 +22,10 @@ describe("parseDeckPage (tasks 3.1, 3.3)", () => {
     expect(result.status).toBe("ok");
   });
 
-  it("covers all five zones", () => {
+  it("covers all four zones", () => {
     if (result.status !== "ok") throw new Error("expected ok");
     const zones = new Set(result.cards.map((c) => c.zone));
-    expect(zones).toEqual(
-      new Set(["comandante", "comandanteParceiro", "mainDeck", "sideboard", "maybeboard"]),
-    );
+    expect(zones).toEqual(new Set(["comandante", "comandanteParceiro", "mainDeck", "maybeboard"]));
   });
 
   it("assigns the commander to the comandante zone with its English name and lowest price", () => {
@@ -61,10 +59,10 @@ describe("parseDeckPage (tasks 3.1, 3.3)", () => {
     expect(result.cards.some((c) => c.zone === "mainDeck")).toBe(true);
   });
 
-  it("assigns sideboard cards to the sideboard zone", () => {
+  it("folds cards under a Sideboard header into the maybeboard zone", () => {
     if (result.status !== "ok") throw new Error("expected ok");
     const card = byName(result.cards, "Chalice of the Void");
-    expect(card).toMatchObject({ zone: "sideboard", pageLowestPrice: 92.25 });
+    expect(card).toMatchObject({ zone: "maybeboard", pageLowestPrice: 92.25 });
   });
 
   it("assigns maybeboard cards to the maybeboard zone", () => {

@@ -5,11 +5,13 @@ import type { Zone } from "../deck/types";
  * Comandante Parceiro / Maybeboard, as named directly in the product brief —
  * LigaMagic keeps "Sideboard" and "Maybeboard" in English and mixes English
  * "Comandante" with Portuguese "Parceiro" for the partner-commander zone).
+ * The extension doesn't keep a separate Sideboard zone, so cards under a
+ * Sideboard header fold into Maybeboard instead.
  */
 const ZONE_LABELS: Record<string, Zone> = {
   Comandante: "comandante",
   "Comandante Parceiro": "comandanteParceiro",
-  Sideboard: "sideboard",
+  Sideboard: "maybeboard",
   Maybeboard: "maybeboard",
 };
 

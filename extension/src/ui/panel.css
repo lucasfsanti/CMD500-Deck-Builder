@@ -322,6 +322,19 @@
   opacity: 0.5;
 }
 
+/*
+  The DragOverlay clone (deck-organizer's drag visual feedback): a
+  semi-transparent card that follows the pointer, reading as "lifted" off
+  the list via a slight scale-up and shadow, distinct from the dimmed
+  in-place original (.c500-card--dragging) it floats above.
+*/
+.c500-drag-overlay {
+  opacity: 0.85;
+  cursor: grabbing;
+  box-shadow: 0 6px 16px rgba(22, 36, 28, 0.28);
+  transform: scale(1.03);
+}
+
 .c500-card__qty {
   font-family: var(--c500-font-mono);
   font-variant-numeric: tabular-nums;
@@ -368,6 +381,26 @@
 
 .c500-card__badge--illegal {
   background: var(--c500-rust);
+}
+
+/*
+  List-mode artwork hover preview (card-visual-view): a floating artwork
+  card near the pointer, offset right and vertically centered on it so it
+  never sits directly under the cursor. Reuses the tile art's own
+  img/placeholder classes for a consistent look with Visual view.
+*/
+.c500-hover-preview {
+  position: fixed;
+  width: 146px;
+  height: 204px;
+  transform: translate(16px, -50%);
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--c500-line);
+  background: var(--c500-paper);
+  box-shadow: 0 8px 20px rgba(22, 36, 28, 0.24);
+  pointer-events: none;
+  z-index: 2000;
 }
 
 /* ---------- Visual view (card-visual-view) ---------- */

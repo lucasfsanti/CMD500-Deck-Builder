@@ -49,22 +49,22 @@ describe("BarChart (task 5.2)", () => {
 
   it("renders the color-distribution chart against a fixture deck", () => {
     render(<BarChart title="Color" buckets={colorBuckets(fixtureDeck)} />);
-    expect(screen.getByText("Colorless")).toBeTruthy();
-    expect(screen.getByText("Red")).toBeTruthy();
-    expect(screen.getByText("Green")).toBeTruthy();
+    expect(screen.getByText("Incolor")).toBeTruthy();
+    expect(screen.getByText("Vermelho")).toBeTruthy();
+    expect(screen.getByText("Verde")).toBeTruthy();
     expect(screen.getByText("Multicolor")).toBeTruthy();
   });
 
   it("renders the type-distribution chart against a fixture deck", () => {
     render(<BarChart title="Type" buckets={typeBuckets(fixtureDeck)} />);
-    expect(screen.getByText("Creature")).toBeTruthy();
-    expect(screen.getByText("Instant")).toBeTruthy();
-    expect(screen.getByText("Artifact")).toBeTruthy();
+    expect(screen.getByText("Criatura")).toBeTruthy();
+    expect(screen.getByText("Mágica Instantânea")).toBeTruthy();
+    expect(screen.getByText("Artefato")).toBeTruthy();
   });
 
   it("shows an empty state when there are no Main Deck cards yet", () => {
     render(<BarChart title="Mana Curve" buckets={[]} />);
-    expect(screen.getByText("No Main Deck cards yet")).toBeTruthy();
+    expect(screen.getByText("Ainda sem cartas no Deck Principal")).toBeTruthy();
   });
 
   it("scales each bar's width relative to the largest bucket", () => {

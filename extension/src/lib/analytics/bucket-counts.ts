@@ -1,5 +1,11 @@
 import type { DeckCard } from "../deck/types";
-import { primaryType, colorGroupLabel, TYPE_ORDER } from "../organizer/group-sort";
+import {
+  primaryType,
+  colorGroupLabel,
+  TYPE_ORDER,
+  TYPE_DISPLAY_LABELS,
+  COLOR_GROUP_DISPLAY_LABELS,
+} from "../organizer/group-sort";
 
 export interface Bucket {
   label: string;
@@ -42,7 +48,7 @@ export function colorBuckets(cards: DeckCard[]): Bucket[] {
   const order = ["Colorless", "White", "Blue", "Black", "Red", "Green", "Multicolor"];
   return order
     .filter((label) => counts.has(label))
-    .map((label) => ({ label, count: counts.get(label)! }));
+    .map((label) => ({ label: COLOR_GROUP_DISPLAY_LABELS[label] ?? label, count: counts.get(label)! }));
 }
 
 /**
@@ -59,7 +65,7 @@ export function typeBuckets(cards: DeckCard[]): Bucket[] {
     counts.set(label, (counts.get(label) ?? 0) + card.quantity);
   }
   return TYPE_ORDER.filter((label) => counts.has(label)).map((label) => ({
-    label,
+    label: TYPE_DISPLAY_LABELS[label],
     count: counts.get(label)!,
   }));
 }

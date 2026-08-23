@@ -1,10 +1,4 @@
-export const ZONES = [
-  "comandante",
-  "comandanteParceiro",
-  "mainDeck",
-  "sideboard",
-  "maybeboard",
-] as const;
+export const ZONES = ["comandante", "comandanteParceiro", "mainDeck", "maybeboard"] as const;
 
 export type Zone = (typeof ZONES)[number];
 

@@ -41,7 +41,7 @@ describe("CardVisualTile (task 4.2)", () => {
     const img = screen.getByAltText("Sol Ring") as HTMLImageElement;
     expect(img.src).toBe("https://cards.scryfall.io/normal/sol-ring.jpg");
     expect(screen.getAllByText("Sol Ring").length).toBeGreaterThan(0);
-    expect(screen.getByLabelText("Sol Ring quantity")).toHaveProperty("value", "1");
+    expect(screen.getByLabelText("quantidade de Sol Ring")).toHaveProperty("value", "1");
     expect(screen.getByText("R$4,00")).toBeTruthy();
   });
 
@@ -59,7 +59,7 @@ describe("CardVisualTile (task 4.2)", () => {
   it("calls onQuantityChange when the quantity input changes", () => {
     let changedTo: number | undefined;
     renderTile({ onQuantityChange: (_id, qty) => (changedTo = qty) });
-    const input = screen.getByLabelText("Sol Ring quantity");
+    const input = screen.getByLabelText("quantidade de Sol Ring");
     fireEvent.change(input, { target: { value: "4" } });
     expect(changedTo).toBe(4);
   });

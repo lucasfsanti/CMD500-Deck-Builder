@@ -11,7 +11,9 @@ describe("LegalitySummary as-of date (verification finding #2)", () => {
         format="commander500Duel"
       />,
     );
-    expect(screen.getByText(`Duel banlist as of ${commander500DuelBanlistAsOf}`)).toBeTruthy();
+    expect(
+      screen.getByText(`Lista de banidos do Duel atualizada em ${commander500DuelBanlistAsOf}`),
+    ).toBeTruthy();
   });
 
   it("shows the as-of date alongside an illegal-card count too", () => {
@@ -21,8 +23,10 @@ describe("LegalitySummary as-of date (verification finding #2)", () => {
         format="commander500Duel"
       />,
     );
-    expect(screen.getByText(`Duel banlist as of ${commander500DuelBanlistAsOf}`)).toBeTruthy();
-    expect(screen.getByText("1 illegal card")).toBeTruthy();
+    expect(
+      screen.getByText(`Lista de banidos do Duel atualizada em ${commander500DuelBanlistAsOf}`),
+    ).toBeTruthy();
+    expect(screen.getByText("1 carta ilegal")).toBeTruthy();
   });
 
   it("does not show the Duel banlist date for Commander 500 (Scryfall-backed, no bundled dataset)", () => {

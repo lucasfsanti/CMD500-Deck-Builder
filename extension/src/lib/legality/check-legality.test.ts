@@ -77,7 +77,7 @@ describe("checkLegality — Commander 500 Duel (task 6.3)", () => {
   });
 
   it("flags the banned-as-companion card regardless of zone", () => {
-    const cards = [card("Lutri, the Spellchaser", "sideboard")];
+    const cards = [card("Lutri, the Spellchaser", "maybeboard")];
     const result = checkLegality(cards, "commander500Duel");
     expect(result.illegalCardIds.has("Lutri, the Spellchaser")).toBe(true);
   });
@@ -85,12 +85,12 @@ describe("checkLegality — Commander 500 Duel (task 6.3)", () => {
 
 describe("checkLegality deck-level illegal count (task 6.5)", () => {
   it("reflects flags across multiple zones in a single count", () => {
-    // Sol Ring (mainDeck) and Mana Crypt (sideboard) are both banned-in-deck
+    // Sol Ring (mainDeck) and Mana Crypt (maybeboard) are both banned-in-deck
     // under Commander 500 Duel — a fixture with two banned cards in
     // different zones, per the format-legality spec's scenario.
     const cards = [
       card("Sol Ring", "mainDeck"),
-      card("Mana Crypt", "sideboard"),
+      card("Mana Crypt", "maybeboard"),
       card("Lightning Bolt", "mainDeck"),
     ];
     const result = checkLegality(cards, "commander500Duel");

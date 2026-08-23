@@ -20,7 +20,7 @@ export function ExportMenu({ cards }: ExportMenuProps) {
 
   async function handleCopy() {
     await copyToClipboard(currentText());
-    setFeedback("Copied");
+    setFeedback("Copiado");
     setTimeout(() => setFeedback(undefined), 1500);
   }
 
@@ -35,16 +35,16 @@ export function ExportMenu({ cards }: ExportMenuProps) {
         className="c500-export__format"
         value={format}
         onChange={(e) => setFormat(e.target.value as ExportFormat)}
-        aria-label="Export format"
+        aria-label="Formato de exportação"
       >
-        <option value="ligamagic">For LigaMagic import</option>
-        <option value="readable">Readable list</option>
+        <option value="ligamagic">Para importar no LigaMagic</option>
+        <option value="readable">Lista legível</option>
       </select>
       <button type="button" className="c500-export__button" onClick={handleCopy}>
-        Copy
+        Copiar
       </button>
       <button type="button" className="c500-export__button" onClick={handleDownload}>
-        Download
+        Baixar
       </button>
       {feedback && <span className="c500-export__feedback">{feedback}</span>}
     </div>

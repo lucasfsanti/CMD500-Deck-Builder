@@ -48,7 +48,7 @@ describe("charts update within the same interaction as a move into Main Deck (ta
     mockCapture = {
       status: "ok",
       cards: [
-        { id: "a", name: "Sideboard Card", quantity: 1, zone: "sideboard", pageLowestPrice: 1, pageImageUrl: undefined },
+        { id: "a", name: "Maybeboard Card", quantity: 1, zone: "maybeboard", pageLowestPrice: 1, pageImageUrl: undefined },
       ],
     };
 
@@ -56,7 +56,7 @@ describe("charts update within the same interaction as a move into Main Deck (ta
     // Let the real enrichment pipeline resolve the card's CMC via backgroundClient.
     await waitFor(() => expect(result.current.cards[0]?.enrichmentStatus).toBe("ok"));
 
-    // Before the move: card is in Sideboard, so the Main-Deck-only mana curve is empty.
+    // Before the move: card is in Maybeboard, so the Main-Deck-only mana curve is empty.
     expect(manaCurveBuckets(result.current.cards)).toEqual([]);
 
     act(() => result.current.moveCard("a", "mainDeck"));

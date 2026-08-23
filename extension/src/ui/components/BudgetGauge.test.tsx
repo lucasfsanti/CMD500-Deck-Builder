@@ -29,12 +29,12 @@ describe("BudgetGauge (task 5.4)", () => {
     const { container } = render(<BudgetGauge budget={calculateBudget([card("A", 540)])} />);
     expect(screen.getByText("R$540,00")).toBeTruthy();
     expect(container.querySelector(".c500-gauge--over")).not.toBeNull();
-    expect(screen.getByText("R$40,00 over")).toBeTruthy();
+    expect(screen.getByText("R$40,00 acima")).toBeTruthy();
   });
 
   it("shows the incomplete-total note when a card's price is unresolved", () => {
     const cards = [card("A", 10), { ...card("B", 0), pageLowestPrice: undefined }];
     render(<BudgetGauge budget={calculateBudget(cards)} />);
-    expect(screen.getByText("1 card missing a price")).toBeTruthy();
+    expect(screen.getByText("1 carta sem preço")).toBeTruthy();
   });
 });

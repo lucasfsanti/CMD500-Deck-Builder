@@ -129,17 +129,16 @@ describe("groupAndSortZone grouping axis (task 4.1)", () => {
 });
 
 describe("groupCardsByZone", () => {
-  it("splits cards into their five zones", () => {
+  it("splits cards into their four zones", () => {
     const cards = [
       card("Cmd", "Legendary Creature", ["W"], 3, "comandante"),
       card("Main", "Creature", ["W"], 2, "mainDeck"),
-      card("SB", "Instant", ["U"], 1, "sideboard"),
+      card("Maybe", "Instant", ["U"], 1, "maybeboard"),
     ];
     const byZone = groupCardsByZone(cards);
     expect(byZone.comandante.map((c) => c.name)).toEqual(["Cmd"]);
     expect(byZone.mainDeck.map((c) => c.name)).toEqual(["Main"]);
-    expect(byZone.sideboard.map((c) => c.name)).toEqual(["SB"]);
+    expect(byZone.maybeboard.map((c) => c.name)).toEqual(["Maybe"]);
     expect(byZone.comandanteParceiro).toEqual([]);
-    expect(byZone.maybeboard).toEqual([]);
   });
 });

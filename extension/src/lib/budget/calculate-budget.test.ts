@@ -40,9 +40,9 @@ describe("calculateBudget (task 5.1)", () => {
     expect(result.total).toBeCloseTo(504);
   });
 
-  it("excludes sideboard and maybeboard cards from the total", () => {
+  it("excludes maybeboard cards from the total", () => {
     const cards = [
-      card("Chalice of the Void", "sideboard", 92.25),
+      card("Chalice of the Void", "maybeboard", 92.25),
       card("Mystery Card", "maybeboard", 40),
       card("Sol Ring", "mainDeck", 4),
     ];

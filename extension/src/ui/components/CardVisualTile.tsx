@@ -1,38 +1,24 @@
 import { useDraggable } from "@dnd-kit/core";
 import type { DeckCard } from "../../lib/deck/types";
+import { resolveCardArt } from "./card-art";
 
 function formatPrice(price: number | undefined): string {
   if (price === undefined) return "—";
   return `R$${price.toFixed(2).replace(".", ",")}`;
 }
 
-export interface CardVisualTileProps {
+interface CardVisualTileContentProps {
   card: DeckCard;
   illegal?: boolean;
   overBudget?: boolean;
   onQuantityChange?: (cardId: string, quantity: number) => void;
 }
 
-/** Visual-view counterpart to CardRow: an artwork tile instead of a name-only row. */
-export function CardVisualTile({ card, illegal, overBudget, onQuantityChange }: CardVisualTileProps) {
-  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
-    id: card.id,
-    data: { card },
-  });
-  // LigaMagic's own page always embeds artwork for a real card, independent
-  // of whether Scryfall enrichment succeeds; Scryfall's imageUrl is only a
-  // fallback for the rare case the page didn't have one.
-  const imageUrl = card.pageImageUrl ?? card.enrichment?.imageUrl;
-  const artUnresolved =
-    !imageUrl && (card.enrichmentStatus === "unavailable" || card.enrichmentStatus === "not-found");
+function CardVisualTileContent({ card, illegal, overBudget, onQuantityChange }: CardVisualTileContentProps) {
+  const { imageUrl, unresolved: artUnresolved } = resolveCardArt(card);
 
   return (
-    <div
-      ref={setNodeRef}
-      className={`c500-tile${isDragging ? " c500-tile--dragging" : ""}`}
-      {...listeners}
-      {...attributes}
-    >
+    <>
       <div className="c500-tile__art">
         {imageUrl ? (
           <img src={imageUrl} alt={card.name} className="c500-tile__img" />
@@ -44,7 +30,7 @@ export function CardVisualTile({ card, illegal, overBudget, onQuantityChange }: 
           </div>
         )}
         {illegal && (
-          <span className="c500-card__badge c500-card__badge--illegal" title="Illegal in this format" />
+          <span className="c500-card__badge c500-card__badge--illegal" title="Ilegal neste formato" />
         )}
         <input
           className="c500-tile__qty"
@@ -54,7 +40,7 @@ export function CardVisualTile({ card, illegal, overBudget, onQuantityChange }: 
           onClick={(e) => e.stopPropagation()}
           onPointerDown={(e) => e.stopPropagation()}
           onChange={(e) => onQuantityChange?.(card.id, Number.parseInt(e.target.value, 10) || 0)}
-          aria-label={`${card.name} quantity`}
+          aria-label={`quantidade de ${card.name}`}
         />
       </div>
       <div className="c500-tile__caption" title={card.name}>
@@ -65,6 +51,60 @@ export function CardVisualTile({ card, illegal, overBudget, onQuantityChange }: 
       >
         {formatPrice(card.pageLowestPrice)}
       </div>
+    </>
+  );
+}
+
+export interface CardVisualTileProps {
+  card: DeckCard;
+  illegal?: boolean;
+  overBudget?: boolean;
+  onQuantityChange?: (cardId: string, quantity: number) => void;
+  /** Extra class name(s), e.g. for the DragOverlay clone's "lifted" styling. */
+  className?: string;
+  /**
+   * True when this instance is the DragOverlay's rendered clone rather than
+   * the zone's own tile — skips useDraggable so the clone doesn't register a
+   * second draggable under the same card id as the original tile.
+   */
+  dragOverlay?: boolean;
+}
+
+/** Visual-view counterpart to CardRow: an artwork tile instead of a name-only row. */
+export function CardVisualTile({
+  card,
+  illegal,
+  overBudget,
+  onQuantityChange,
+  className,
+  dragOverlay,
+}: CardVisualTileProps) {
+  if (dragOverlay) {
+    return (
+      <div className={`c500-tile${className ? ` ${className}` : ""}`}>
+        <CardVisualTileContent card={card} illegal={illegal} overBudget={overBudget} />
+      </div>
+    );
+  }
+
+  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
+    id: card.id,
+    data: { card },
+  });
+
+  return (
+    <div
+      ref={setNodeRef}
+      className={`c500-tile${isDragging ? " c500-tile--dragging" : ""}${className ? ` ${className}` : ""}`}
+      {...listeners}
+      {...attributes}
+    >
+      <CardVisualTileContent
+        card={card}
+        illegal={illegal}
+        overBudget={overBudget}
+        onQuantityChange={onQuantityChange}
+      />
     </div>
   );
 }

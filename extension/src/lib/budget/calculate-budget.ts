@@ -15,8 +15,8 @@ const BUDGET_COUNTED_ZONES = new Set(["mainDeck", "comandanteParceiro"]);
 /**
  * Whether a card counts toward the Commander 500 budget total at all: only
  * Main Deck and the partner commander (Comandante Parceiro) count — the
- * primary Comandante stays free, and Sideboard/Maybeboard aren't part of the
- * submitted decklist at all. Basic lands never count, in either zone.
+ * primary Comandante stays free, and Maybeboard isn't part of the submitted
+ * decklist at all. Basic lands never count, in either zone.
  */
 export function isBudgetCounted(card: DeckCard): boolean {
   return BUDGET_COUNTED_ZONES.has(card.zone) && !isBasicLand(card.name);
