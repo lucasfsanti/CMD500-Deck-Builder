@@ -1,6 +1,7 @@
 import type { CapturedCard } from "../deck/types";
 import { parseBrlPrice } from "./price-parsing";
 import type { CaptureResult } from "./deck-page-parser";
+import { extractPageImageUrl } from "./page-image";
 
 /**
  * UNVERIFIED AGAINST REAL MARKUP: LigaMagic's collection page
@@ -57,6 +58,7 @@ export function parseCollectionPage(root: ParentNode): CaptureResult {
       quantity,
       zone: "maybeboard",
       pageLowestPrice,
+      pageImageUrl: link ? extractPageImageUrl(link) : undefined,
     });
   }
 

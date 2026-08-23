@@ -9,6 +9,7 @@ function card(id: string, zone: DeckCard["zone"], quantity = 1): DeckCard {
     quantity,
     zone,
     pageLowestPrice: 1,
+    pageImageUrl: undefined,
     enrichmentStatus: "pending",
     enrichment: undefined,
   };

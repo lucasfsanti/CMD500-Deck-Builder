@@ -11,6 +11,7 @@ function card(name: string, price: number): DeckCard {
     quantity: 1,
     zone: "mainDeck",
     pageLowestPrice: price,
+    pageImageUrl: undefined,
     enrichment: undefined,
     enrichmentStatus: "pending",
   };

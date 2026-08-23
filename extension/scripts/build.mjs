@@ -13,7 +13,8 @@ mkdirSync(outdir, { recursive: true });
 const buildOptions = {
   entryPoints: {
     background: path.join(root, "src/background/service-worker.ts"),
-    content: path.join(root, "src/content/content-script.tsx"),
+    content: path.join(root, "src/content/content-script.ts"),
+    tab: path.join(root, "src/tab/tab-entry.tsx"),
   },
   bundle: true,
   outdir,

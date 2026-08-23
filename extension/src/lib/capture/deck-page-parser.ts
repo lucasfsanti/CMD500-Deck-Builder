@@ -1,6 +1,7 @@
 import type { CapturedCard, Zone } from "../deck/types";
 import { parseBrlPrice } from "./price-parsing";
 import { zoneForHeaderLabel } from "./zone-labels";
+import { extractPageImageUrl } from "./page-image";
 
 export type CaptureResult =
   | { status: "ok"; cards: CapturedCard[] }
@@ -100,6 +101,7 @@ export function parseDeckPage(root: ParentNode): CaptureResult {
       const qtyEl = line.querySelector(":scope > .deck-box-left > .deck-qty");
       const quantity = extractQuantity(qtyEl);
       const pageLowestPrice = extractLowestPrice(line);
+      const pageImageUrl = extractPageImageUrl(cardEl);
 
       cards.push({
         id: `capture-${nextCardId++}`,
@@ -107,6 +109,7 @@ export function parseDeckPage(root: ParentNode): CaptureResult {
         quantity,
         zone: currentZone,
         pageLowestPrice,
+        pageImageUrl,
       });
     }
   }

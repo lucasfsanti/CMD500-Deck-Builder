@@ -86,6 +86,44 @@ describe("parseDeckPage (tasks 3.1, 3.3)", () => {
   });
 });
 
+describe("parseDeckPage artwork capture (task 3.1)", () => {
+  it("captures a card's pageImageUrl from its embedded sticky-tooltip image", () => {
+    const doc = new DOMParser().parseFromString(
+      `
+      <div id="dk-val-1-1">
+        <div class="pdeck-block">
+          <div class="deck-line"><div class="deck-type deck-type-first">Comandante <i>(1)</i></div></div>
+          <div class="deck-line">
+            <div class="deck-box-left">
+              <div class="deck-qty">1</div>
+              <div class="deck-card"><a data-lc-id="82777" href="/?view=cards/card&card=Sol+Ring">Anel Solar</a></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="sticky_82777_"><img lazy-src="//repositorio.sbrauble.com/arquivos/in/magic/example.jpg"></div>
+    `,
+      "text/html",
+    );
+
+    const result = parseDeckPage(doc);
+
+    expect(result.status).toBe("ok");
+    if (result.status !== "ok") return;
+    expect(result.cards[0]?.pageImageUrl).toBe(
+      "https://repositorio.sbrauble.com/arquivos/in/magic/example.jpg",
+    );
+  });
+
+  it("leaves pageImageUrl undefined when the page has no matching sticky-tooltip image", () => {
+    const doc = loadFixture("ligamagic-deck-full.html");
+    const result = parseDeckPage(doc);
+    if (result.status !== "ok") throw new Error("expected ok");
+    const card = byName(result.cards, "Xyris, the Writhing Storm");
+    expect(card?.pageImageUrl).toBeUndefined();
+  });
+});
+
 describe("parseDeckPage on unrecognized markup (task 3.5)", () => {
   it("reports unrecognized-page instead of an empty/partial deck", () => {
     const doc = loadFixture("ligamagic-unrecognized.html");

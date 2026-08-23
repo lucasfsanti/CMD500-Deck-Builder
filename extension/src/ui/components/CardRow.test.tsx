@@ -10,6 +10,7 @@ const baseCard: DeckCard = {
   quantity: 1,
   zone: "mainDeck",
   pageLowestPrice: 10,
+  pageImageUrl: undefined,
   enrichment: undefined,
   enrichmentStatus: "pending",
 };

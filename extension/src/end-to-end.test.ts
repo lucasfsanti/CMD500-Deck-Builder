@@ -25,6 +25,7 @@ const ENRICHMENT_TABLE: Record<string, CardEnrichment> = {
     layout: "normal",
     legalInCommander: true,
     scryfallId: "xyris",
+    imageUrl: undefined,
   },
   "Vial Smasher the Fierce": {
     name: "Vial Smasher the Fierce",
@@ -34,6 +35,7 @@ const ENRICHMENT_TABLE: Record<string, CardEnrichment> = {
     layout: "normal",
     legalInCommander: true,
     scryfallId: "vial-smasher",
+    imageUrl: undefined,
   },
   "Llanowar Elves": {
     name: "Llanowar Elves",
@@ -43,6 +45,7 @@ const ENRICHMENT_TABLE: Record<string, CardEnrichment> = {
     layout: "normal",
     legalInCommander: true,
     scryfallId: "llanowar-elves",
+    imageUrl: undefined,
   },
   "Sol Ring": {
     name: "Sol Ring",
@@ -52,6 +55,7 @@ const ENRICHMENT_TABLE: Record<string, CardEnrichment> = {
     layout: "normal",
     legalInCommander: true, // legal in Commander 500; banned-in-deck under Duel Commander
     scryfallId: "sol-ring",
+    imageUrl: undefined,
   },
   Forest: {
     name: "Forest",
@@ -61,6 +65,7 @@ const ENRICHMENT_TABLE: Record<string, CardEnrichment> = {
     layout: "normal",
     legalInCommander: true,
     scryfallId: "forest",
+    imageUrl: undefined,
   },
   "Chalice of the Void": {
     name: "Chalice of the Void",
@@ -70,6 +75,7 @@ const ENRICHMENT_TABLE: Record<string, CardEnrichment> = {
     layout: "normal",
     legalInCommander: true,
     scryfallId: "chalice",
+    imageUrl: undefined,
   },
   "Rhystic Study": {
     name: "Rhystic Study",
@@ -79,6 +85,7 @@ const ENRICHMENT_TABLE: Record<string, CardEnrichment> = {
     layout: "normal",
     legalInCommander: true,
     scryfallId: "rhystic-study",
+    imageUrl: undefined,
   },
 };
 
@@ -117,11 +124,12 @@ describe("end-to-end: capture → organize → budget → legality → export (t
     expect(groups.every((g) => g.cards.length > 0)).toBe(true);
   });
 
-  it("computes a budget that excludes the commander zones and flags the unresolved-price card", () => {
+  it("computes a budget that excludes the primary commander and flags the unresolved-price card", () => {
     const budget = calculateBudget(cards);
     expect(budget.isComplete).toBe(false);
     expect(budget.cardsMissingPrice.map((c) => c.name)).toContain("Some Unpriced Card");
-    // Commander (2.34) and partner commander (4.00) must not be in the total.
+    // The primary commander (2.34) must not be in the total; the partner
+    // commander (4.00, Comandante Parceiro) must be.
     expect(budget.total).toBeLessThan(1000); // sanity bound; exact value covered in calculate-budget.test.ts
   });
 

@@ -5,6 +5,10 @@ import type { CardEnrichment, CardLayout, EnrichmentResult } from "../deck/types
 const SCRYFALL_BASE = "https://api.scryfall.com";
 const ENRICHMENT_FRESHNESS_MS = 1000 * 60 * 60 * 24 * 7; // 7 days: card attributes rarely change
 
+interface ScryfallImageUris {
+  normal?: string;
+}
+
 interface ScryfallCardResponse {
   name: string;
   type_line: string;
@@ -14,6 +18,10 @@ interface ScryfallCardResponse {
   legalities: Record<string, string>;
   id: string;
   prints_search_uri: string;
+  /** Present for single-faced cards; absent for double-faced layouts (see card_faces). */
+  image_uris?: ScryfallImageUris;
+  /** Present for double-faced/split-style layouts; each face may carry its own image_uris. */
+  card_faces?: Array<{ image_uris?: ScryfallImageUris }>;
 }
 
 interface ScryfallListResponse<T> {
@@ -22,6 +30,13 @@ interface ScryfallListResponse<T> {
   has_more?: boolean;
   next_page?: string;
 }
+
+interface ScryfallCollectionResponse {
+  data: ScryfallCardResponse[];
+}
+
+/** Scryfall's /cards/collection endpoint accepts at most this many identifiers per request. */
+const COLLECTION_BATCH_SIZE = 75;
 
 interface ScryfallPrintResponse {
   set: string;
@@ -54,6 +69,15 @@ function toCardLayout(layout: string): CardLayout {
   return KNOWN_LAYOUTS.has(layout) ? (layout as CardLayout) : "other";
 }
 
+/**
+ * Resolves a card's artwork URL. Single-faced cards carry image_uris at the
+ * top level; double-faced/split-style layouts have no top-level image_uris
+ * at all — the image lives under the first face instead.
+ */
+function resolveImageUrl(card: ScryfallCardResponse): string | undefined {
+  return card.image_uris?.normal ?? card.card_faces?.[0]?.image_uris?.normal;
+}
+
 function toEnrichment(card: ScryfallCardResponse): CardEnrichment {
   return {
     name: card.name,
@@ -63,6 +87,7 @@ function toEnrichment(card: ScryfallCardResponse): CardEnrichment {
     layout: toCardLayout(card.layout),
     legalInCommander: card.legalities["commander"] === "legal",
     scryfallId: card.id,
+    imageUrl: resolveImageUrl(card),
   };
 }
 
@@ -99,28 +124,102 @@ export class ScryfallClient {
     const cached = await this.cache.get(normalized);
     if (cached) return cached;
 
-    let result: EnrichmentResult;
-    try {
-      const response = await this.fetchImpl(
-        `${SCRYFALL_BASE}/cards/named?fuzzy=${encodeURIComponent(normalized)}`,
-      );
-      if (response.status === 404) {
-        result = { status: "not-found" };
-      } else if (!response.ok) {
-        result = { status: "unavailable" };
-      } else {
-        const card = (await response.json()) as ScryfallCardResponse;
-        result = { status: "ok", card: toEnrichment(card) };
-      }
-    } catch {
-      result = { status: "unavailable" };
-    }
+    const result = await this.fetchByFuzzyName(normalized);
 
     // Only cache stable outcomes; a transient "unavailable" should be retried next time.
     if (result.status !== "unavailable") {
       await this.cache.set(normalized, result);
     }
     return result;
+  }
+
+  /**
+   * Resolves enrichment for many cards at once via Scryfall's collection
+   * endpoint (batched to its per-request identifier limit), which does exact
+   * name matching — falling back to the fuzzy per-card lookup only for names
+   * a batch didn't resolve. Cuts a full deck (~90 distinct cards) from ~90
+   * individual requests to a handful, per card-data-service's spec.
+   */
+  async lookupCards(rawNames: string[]): Promise<Map<string, EnrichmentResult>> {
+    const results = new Map<string, EnrichmentResult>();
+    const uncachedRawNames: string[] = [];
+
+    for (const rawName of rawNames) {
+      const normalized = normalizeCardName(rawName);
+      const cached = await this.cache.get(normalized);
+      if (cached) {
+        results.set(rawName, cached);
+      } else {
+        uncachedRawNames.push(rawName);
+      }
+    }
+
+    // Multiple raw names can normalize to the same card; fetch each
+    // distinct normalized name only once.
+    const uniqueNormalized = [...new Set(uncachedRawNames.map(normalizeCardName))];
+    const resolvedByNormalized = new Map<string, EnrichmentResult>();
+    const unresolvedNormalized: string[] = [];
+
+    for (let i = 0; i < uniqueNormalized.length; i += COLLECTION_BATCH_SIZE) {
+      const chunk = uniqueNormalized.slice(i, i + COLLECTION_BATCH_SIZE);
+      try {
+        const response = await this.fetchImpl(`${SCRYFALL_BASE}/cards/collection`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ identifiers: chunk.map((name) => ({ name })) }),
+        });
+        if (!response.ok) {
+          unresolvedNormalized.push(...chunk);
+          continue;
+        }
+        const body = (await response.json()) as ScryfallCollectionResponse;
+        const matched = new Set<string>();
+        for (const card of body.data) {
+          const identifier =
+            chunk.find((name) => name.toLowerCase() === card.name.toLowerCase()) ??
+            normalizeCardName(card.name);
+          resolvedByNormalized.set(identifier, { status: "ok", card: toEnrichment(card) });
+          matched.add(identifier);
+        }
+        for (const name of chunk) {
+          if (!matched.has(name)) unresolvedNormalized.push(name);
+        }
+      } catch {
+        unresolvedNormalized.push(...chunk);
+      }
+    }
+
+    // Fuzzy fallback, scoped to only what the batch couldn't resolve.
+    for (const normalized of unresolvedNormalized) {
+      resolvedByNormalized.set(normalized, await this.fetchByFuzzyName(normalized));
+    }
+
+    for (const [normalized, result] of resolvedByNormalized) {
+      if (result.status !== "unavailable") {
+        await this.cache.set(normalized, result);
+      }
+    }
+
+    for (const rawName of uncachedRawNames) {
+      const normalized = normalizeCardName(rawName);
+      results.set(rawName, resolvedByNormalized.get(normalized) ?? { status: "unavailable" });
+    }
+
+    return results;
+  }
+
+  private async fetchByFuzzyName(normalized: string): Promise<EnrichmentResult> {
+    try {
+      const response = await this.fetchImpl(
+        `${SCRYFALL_BASE}/cards/named?fuzzy=${encodeURIComponent(normalized)}`,
+      );
+      if (response.status === 404) return { status: "not-found" };
+      if (!response.ok) return { status: "unavailable" };
+      const card = (await response.json()) as ScryfallCardResponse;
+      return { status: "ok", card: toEnrichment(card) };
+    } catch {
+      return { status: "unavailable" };
+    }
   }
 
   /**

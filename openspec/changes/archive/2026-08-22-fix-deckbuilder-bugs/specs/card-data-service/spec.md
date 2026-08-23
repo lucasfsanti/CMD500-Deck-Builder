@@ -1,0 +1,16 @@
+## MODIFIED Requirements
+
+### Requirement: Card enrichment via direct Scryfall lookup
+Given card names captured from the LigaMagic page, the extension SHALL resolve each card's type line, color identity, converted mana cost, layout, and valid-printing set by querying Scryfall's public API directly, with no intermediary service operated by this project. For a full deck of captured cards, the extension SHALL resolve enrichment using a small, bounded number of Scryfall requests regardless of how many distinct cards the deck contains, falling back to an individual, fuzzy-matched lookup only for cards that could not be resolved directly.
+
+#### Scenario: Extension resolves enrichment for a captured card
+- **WHEN** the extension looks up a card name captured from the LigaMagic page
+- **THEN** it receives that card's type line, color identity, CMC, and layout from Scryfall
+
+#### Scenario: Extension resolves enrichment for a full deck
+- **WHEN** the extension resolves enrichment for a deck containing many distinct captured cards
+- **THEN** it issues a small, bounded number of Scryfall requests to do so, not one request per card
+
+#### Scenario: Card name does not match any known card
+- **WHEN** the extension looks up a card name that does not match any card in Scryfall's database, including after fuzzy matching
+- **THEN** the extension treats the card as unresolved rather than presenting a partially-filled or guessed record

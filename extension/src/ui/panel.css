@@ -10,11 +10,19 @@
 */
 
 :host,
+:root,
 * {
   box-sizing: border-box;
 }
 
-:host {
+/*
+  Tokens are defined on both :host (the shadow-DOM-injected panel context)
+  and :root (the deck-tab-view page, a plain top-level document — :host
+  matches nothing there, so without :root every custom property here would
+  silently resolve to nothing, e.g. backgrounds falling back to transparent).
+*/
+:host,
+:root {
   --c500-ink: #16241c;
   --c500-ink-soft: #4b5d53;
   --c500-paper: #edefe7;
@@ -360,4 +368,322 @@
 
 .c500-card__badge--illegal {
   background: var(--c500-rust);
+}
+
+/* ---------- Visual view (card-visual-view) ---------- */
+
+.c500-tile {
+  display: flex;
+  flex-direction: column;
+  width: 146px;
+  border-radius: 8px;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+}
+
+.c500-tile--dragging {
+  opacity: 0.5;
+}
+
+.c500-tile__art {
+  position: relative;
+  width: 146px;
+  height: 204px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--c500-line);
+  background: var(--c500-paper);
+}
+
+.c500-tile__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.c500-tile__placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 10px;
+  font-size: 12px;
+  color: var(--c500-ink-soft);
+}
+
+.c500-tile__placeholder--unresolved {
+  font-style: italic;
+  color: var(--c500-rust);
+}
+
+.c500-tile__qty {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  width: 2.2em;
+  font-family: var(--c500-font-mono);
+  text-align: center;
+  border: 1px solid var(--c500-line);
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.c500-tile__caption {
+  margin-top: 4px;
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.c500-tile__price {
+  font-family: var(--c500-font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 11px;
+  color: var(--c500-brass);
+}
+
+.c500-tile-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 4px 2px;
+}
+
+/* ---------- Charts (deck-analytics) ---------- */
+
+.c500-chart {
+  border: 1px solid var(--c500-line);
+  border-radius: 10px;
+  background: var(--c500-paper-raised);
+  padding: 12px 14px;
+}
+
+.c500-chart__title {
+  font-family: var(--c500-font-display);
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.c500-chart__empty {
+  font-size: 12px;
+  color: var(--c500-ink-soft);
+  font-style: italic;
+  margin: 0;
+}
+
+.c500-chart__rows {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.c500-chart__row {
+  display: grid;
+  grid-template-columns: 64px 1fr 24px;
+  align-items: center;
+  gap: 8px;
+}
+
+.c500-chart__label {
+  font-size: 11px;
+  color: var(--c500-ink-soft);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.c500-chart__track {
+  height: 10px;
+  border-radius: 5px;
+  background: var(--c500-paper);
+}
+
+.c500-chart__bar {
+  height: 100%;
+  min-width: 4px;
+  border-radius: 5px;
+  background: var(--c500-forest);
+  transition: width 0.2s ease;
+}
+
+.c500-chart__count {
+  font-family: var(--c500-font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 11px;
+  color: var(--c500-ink-soft);
+  text-align: right;
+}
+
+/* ==========================================================================
+   Full-tab view (deck-tab-view). Same token system and components as the
+   panel; only the container-level layout changes, from a narrow stacked
+   overlay to a two-column page with room for analytics and card art.
+   ========================================================================== */
+
+.c500-tab {
+  min-height: 100vh;
+  font-family: var(--c500-font-body);
+  color: var(--c500-ink);
+  background: var(--c500-paper);
+}
+
+.c500-tab__header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--c500-line);
+  background: var(--c500-paper-raised);
+}
+
+.c500-tab__title {
+  font-family: var(--c500-font-display);
+  font-size: 19px;
+  font-weight: 600;
+  margin: 0;
+  letter-spacing: 0.01em;
+}
+
+.c500-tab__unsynced {
+  margin-left: 12px;
+  font-size: 12px;
+  color: var(--c500-brass);
+  border: 1px solid var(--c500-brass);
+  border-radius: 6px;
+  padding: 2px 8px;
+}
+
+.c500-tab__status {
+  padding: 40px 24px;
+  color: var(--c500-ink-soft);
+  font-size: 15px;
+}
+
+.c500-tab__body {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  align-items: start;
+  gap: 20px;
+  padding: 20px 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+@media (max-width: 900px) {
+  .c500-tab__body {
+    grid-template-columns: 1fr;
+  }
+}
+
+.c500-tab__sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: sticky;
+  top: 20px;
+}
+
+.c500-tab__sidebar > .c500-gauge,
+.c500-tab__sidebar > .c500-legality,
+.c500-tab__sidebar > .c500-export {
+  border: 1px solid var(--c500-line);
+  border-radius: 10px;
+  background: var(--c500-paper-raised);
+}
+
+.c500-tab__view-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--c500-line);
+  border-radius: 10px;
+  background: var(--c500-paper-raised);
+  padding: 10px 14px;
+}
+
+.c500-tab__view-toggle-label {
+  font-size: 12px;
+  color: var(--c500-ink-soft);
+  margin-right: auto;
+}
+
+.c500-tab__view-toggle button {
+  font-family: var(--c500-font-body);
+  font-size: 11px;
+  border: 1px solid var(--c500-line);
+  border-radius: 6px;
+  background: var(--c500-paper);
+  color: var(--c500-ink);
+  padding: 4px 8px;
+  cursor: pointer;
+}
+
+.c500-tab__view-toggle button[aria-pressed="true"] {
+  background: var(--c500-forest);
+  border-color: var(--c500-forest);
+  color: var(--c500-paper-raised);
+}
+
+.c500-tab__grouping {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  border: 1px solid var(--c500-line);
+  border-radius: 10px;
+  background: var(--c500-paper-raised);
+  padding: 10px 14px;
+  font-size: 12px;
+  color: var(--c500-ink-soft);
+}
+
+.c500-tab__grouping select {
+  font-family: var(--c500-font-body);
+  font-size: 11px;
+  border: 1px solid var(--c500-line);
+  border-radius: 6px;
+  background: var(--c500-paper);
+  color: var(--c500-ink);
+  padding: 4px 8px;
+}
+
+/*
+  Main Deck (~90-100 cards) is always far taller than the other four zones.
+  A naive auto-fill grid puts uneven-height items in the same row track,
+  which pushes short zones (Sideboard, Maybeboard) down below Main Deck's
+  full height instead of near the top where they belong. Main Deck gets its
+  own dedicated column so the other four zones stack independently at their
+  own natural height.
+*/
+.c500-tab__zones {
+  display: grid;
+  grid-template-columns: minmax(260px, 340px) 1fr;
+  gap: 16px;
+  align-items: start;
+}
+
+.c500-tab__zones-side {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+@media (max-width: 700px) {
+  .c500-tab__zones {
+    grid-template-columns: 1fr;
+  }
+}
+
+.c500-tab__zones .c500-zone {
+  border: 1px solid var(--c500-line);
+  border-radius: 10px;
+  background: var(--c500-paper-raised);
+  border-bottom: 1px solid var(--c500-line);
 }

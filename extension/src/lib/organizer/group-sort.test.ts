@@ -15,6 +15,7 @@ function card(
     quantity: 1,
     zone,
     pageLowestPrice: 1,
+    pageImageUrl: undefined,
     enrichmentStatus: "ok",
     enrichment: {
       name,
@@ -24,6 +25,7 @@ function card(
       layout: "normal",
       legalInCommander: true,
       scryfallId: name,
+      imageUrl: undefined,
     },
   };
 }
@@ -72,6 +74,57 @@ describe("groupAndSortZone (task 4.2)", () => {
     ];
     const groups = groupAndSortZone(cards);
     expect(groups[0]!.cards.map((c) => c.name)).toEqual(["Colorless", "Mono", "Multi"]);
+  });
+});
+
+describe("groupAndSortZone grouping axis (task 4.1)", () => {
+  const cards = [
+    card("Bolt", "Instant", ["R"], 1),
+    card("Elf", "Creature — Elf", ["G"], 1),
+    card("Counterspell", "Instant", ["U"], 2),
+    card("Dragon", "Creature — Dragon", ["R"], 5),
+  ];
+
+  it("defaults to the Type axis, unchanged (explicit axis omitted)", () => {
+    const withDefault = groupAndSortZone(cards);
+    const withExplicitType = groupAndSortZone(cards, "type");
+    expect(withDefault).toEqual(withExplicitType);
+    expect(withDefault.map((g) => g.type)).toEqual(["Creature", "Instant"]);
+  });
+
+  it("groups by Color, ordered W/U/B/R/G/multicolor/colorless, sorted within a group by type then CMC then name", () => {
+    const groups = groupAndSortZone(cards, "color");
+    expect(groups.map((g) => g.type)).toEqual(["Blue", "Red", "Green"]);
+    // Both Bolt (Instant) and Dragon (Creature) are red; Instant sorts before
+    // Creature in TYPE_ORDER? No — TYPE_ORDER is Creature, ..., Instant, so
+    // Dragon (Creature) sorts before Bolt (Instant) within the Red group.
+    expect(groups.find((g) => g.type === "Red")?.cards.map((c) => c.name)).toEqual([
+      "Dragon",
+      "Bolt",
+    ]);
+  });
+
+  it("groups by Mana Cost, ordered ascending, sorted within a group by type then color then name", () => {
+    const groups = groupAndSortZone(cards, "cmc");
+    expect(groups.map((g) => g.type)).toEqual(["1", "2", "5"]);
+    // Both Bolt and Elf are CMC 1; Elf (Creature) sorts before Bolt (Instant).
+    expect(groups.find((g) => g.type === "1")?.cards.map((c) => c.name)).toEqual(["Elf", "Bolt"]);
+  });
+
+  it("groups cards with unresolved CMC into their own trailing group when grouping by Mana Cost", () => {
+    const unresolved: DeckCard = {
+      id: "x",
+      name: "Mystery",
+      quantity: 1,
+      zone: "mainDeck",
+      pageLowestPrice: 1,
+      pageImageUrl: undefined,
+      enrichment: undefined,
+      enrichmentStatus: "pending",
+    };
+    const groups = groupAndSortZone([card("Bolt", "Instant", ["R"], 1), unresolved], "cmc");
+    expect(groups.map((g) => g.type)).toEqual(["1", "?"]);
+    expect(groups[1]!.cards.map((c) => c.name)).toEqual(["Mystery"]);
   });
 });
 

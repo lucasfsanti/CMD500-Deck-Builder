@@ -12,6 +12,14 @@
     "service_worker": "background.js",
     "type": "module"
   },
+  "action": {
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    },
+    "default_title": "Open Commander 500 deckbuilder"
+  },
   "content_scripts": [
     {
       "matches": [
@@ -23,5 +31,9 @@
     }
   ],
   "permissions": ["storage"],
-  "host_permissions": ["https://api.scryfall.com/*"]
+  "host_permissions": [
+    "https://api.scryfall.com/*",
+    "https://www.ligamagic.com.br/*",
+    "https://ligamagic.com.br/*"
+  ]
 }

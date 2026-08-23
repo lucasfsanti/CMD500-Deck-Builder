@@ -17,6 +17,14 @@ export const backgroundClient = {
     return response.result;
   },
 
+  async lookupCards(names: string[]): Promise<Record<string, EnrichmentResult>> {
+    const response = await send<Extract<BackgroundResponse, { type: "lookupCards" }>>({
+      type: "lookupCards",
+      names,
+    });
+    return response.results;
+  },
+
   async lookupEligiblePrintings(scryfallId: string): Promise<EligiblePrinting[] | undefined> {
     const response = await send<
       Extract<BackgroundResponse, { type: "lookupEligiblePrintings" }>

@@ -18,6 +18,8 @@ export interface CapturedCard {
   zone: Zone;
   /** Lowest price shown on the LigaMagic page, in BRL. Undefined when the page did not show one. */
   pageLowestPrice: number | undefined;
+  /** Artwork URL embedded directly in LigaMagic's own page DOM. Always available for a real card; no Scryfall dependency. */
+  pageImageUrl: string | undefined;
 }
 
 export type CardLayout =
@@ -42,6 +44,8 @@ export interface CardEnrichment {
   legalInCommander: boolean;
   /** Scryfall id of this specific printing; used only for the printings lookup. */
   scryfallId: string;
+  /** Card artwork for card-visual-view. Undefined when Scryfall has no image for this card. */
+  imageUrl: string | undefined;
 }
 
 export type EnrichmentResult =

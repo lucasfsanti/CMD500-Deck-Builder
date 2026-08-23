@@ -7,22 +7,22 @@ Reads the currently open LigaMagic deck or collection page and turns its HTML in
 ## Requirements
 
 ### Requirement: Extension activates only on LigaMagic deck/collection pages
-The extension SHALL detect whether the active tab is a LigaMagic deck editor page or a LigaMagic collection page, and SHALL remain inactive (no UI injected, no scraping performed) on any other page.
+The extension SHALL detect whether the active tab is a LigaMagic deck editor page or a LigaMagic collection page, and SHALL remain inactive (no capture performed) on any other page. On a matching page, the extension SHALL capture data silently, without injecting any UI into the page — the deckbuilder UI lives only in the full-tab view (see `deck-tab-view`), opened separately via the extension's toolbar icon.
 
 #### Scenario: User opens a LigaMagic deck page
 - **WHEN** the user navigates to a LigaMagic URL that renders a deck editor
-- **THEN** the extension activates and injects its UI into the page
+- **THEN** the extension activates and begins capturing the page's data, without injecting any UI into the page
 
 #### Scenario: User opens a LigaMagic collection page
 - **WHEN** the user navigates to a LigaMagic URL that renders a collection view
-- **THEN** the extension activates and injects its UI into the page
+- **THEN** the extension activates and begins capturing the page's data, without injecting any UI into the page
 
 #### Scenario: User is on an unrelated page
 - **WHEN** the active tab is not a LigaMagic deck or collection page
-- **THEN** the extension performs no scraping and injects no UI
+- **THEN** the extension performs no scraping
 
 ### Requirement: Initial decklist capture from page HTML
-On activation, the extension SHALL parse the page DOM to extract, for every card currently listed: card name, quantity, assigned zone (Comandante, Comandante Parceiro, Main Deck, Sideboard, or Maybeboard), and the card's lowest LigaMagic price as shown on the page.
+On activation, the extension SHALL parse the page DOM to extract, for every card currently listed: card name, quantity, assigned zone (Comandante, Comandante Parceiro, Main Deck, Sideboard, or Maybeboard), the card's lowest LigaMagic price as shown on the page, and the card's artwork image, when the page itself embeds one for that card.
 
 #### Scenario: Deck with cards in multiple zones
 - **WHEN** the open LigaMagic deck contains cards in Comandante, Main Deck, and Sideboard
@@ -31,6 +31,10 @@ On activation, the extension SHALL parse the page DOM to extract, for every card
 #### Scenario: Card name appears in the page but price is not shown
 - **WHEN** a card entry in the page HTML has no visible lowest-price value
 - **THEN** the extension marks that card's price as unknown rather than assuming zero, and does not silently include it in budget totals as R$0
+
+#### Scenario: Page embeds artwork for a captured card
+- **WHEN** the page's markup includes an artwork image for a captured card
+- **THEN** the extension captures that image's URL alongside the card's other data, without an additional network request
 
 ### Requirement: Capture stays in sync with page state
 The extension SHALL detect subsequent changes to the deck/collection made through its own UI or reflected back onto the page, and SHALL re-derive its internal state so it never diverges from what the page shows for card, zone, and price data it captured.

@@ -10,18 +10,24 @@ export interface BudgetResult {
   cardsMissingPrice: DeckCard[];
 }
 
-const COMMANDER_ZONES = new Set(["comandante", "comandanteParceiro"]);
+const BUDGET_COUNTED_ZONES = new Set(["mainDeck", "comandanteParceiro"]);
 
-/** Whether a card counts toward the Commander 500 budget total at all. */
+/**
+ * Whether a card counts toward the Commander 500 budget total at all: only
+ * Main Deck and the partner commander (Comandante Parceiro) count — the
+ * primary Comandante stays free, and Sideboard/Maybeboard aren't part of the
+ * submitted decklist at all. Basic lands never count, in either zone.
+ */
 export function isBudgetCounted(card: DeckCard): boolean {
-  return !COMMANDER_ZONES.has(card.zone) && !isBasicLand(card.name);
+  return BUDGET_COUNTED_ZONES.has(card.zone) && !isBasicLand(card.name);
 }
 
 /**
  * Computes the deck's Commander 500 budget total, per budget-tracking's
- * spec: excludes commander zones and basic lands, sums the lowest LigaMagic
- * price across remaining cards, and flags the total as incomplete rather
- * than silently treating an unresolved price as R$0.
+ * spec: counts only Main Deck and Comandante Parceiro, excludes basic
+ * lands, sums the lowest LigaMagic price across remaining cards, and flags
+ * the total as incomplete rather than silently treating an unresolved price
+ * as R$0.
  */
 export function calculateBudget(cards: DeckCard[]): BudgetResult {
   let total = 0;

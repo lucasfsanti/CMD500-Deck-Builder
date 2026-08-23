@@ -13,6 +13,7 @@ function card(
     quantity: 1,
     zone,
     pageLowestPrice: 1,
+    pageImageUrl: undefined,
     enrichment: {
       name,
       typeLine: "Creature",
@@ -21,6 +22,7 @@ function card(
       layout: "normal",
       legalInCommander: true,
       scryfallId: name,
+      imageUrl: undefined,
     },
     enrichmentStatus: "ok",
     ...overrides,
@@ -39,6 +41,7 @@ describe("checkLegality — Commander 500 (task 6.2)", () => {
           layout: "normal",
           legalInCommander: false,
           scryfallId: "balance",
+          imageUrl: undefined,
         },
       }),
     ];

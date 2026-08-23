@@ -8,11 +8,20 @@ function card(
   pageLowestPrice: number | undefined,
   quantity = 1,
 ): DeckCard {
-  return { id: name, name, quantity, zone, pageLowestPrice, enrichment: undefined, enrichmentStatus: "pending" };
+  return {
+    id: name,
+    name,
+    quantity,
+    zone,
+    pageLowestPrice,
+    pageImageUrl: undefined,
+    enrichment: undefined,
+    enrichmentStatus: "pending",
+  };
 }
 
 describe("calculateBudget (task 5.1)", () => {
-  it("excludes the commander and basic lands from the total", () => {
+  it("excludes the primary commander and basic lands from the total", () => {
     const cards = [
       card("Xyris, the Writhing Storm", "comandante", 999),
       card("Forest", "mainDeck", 0.1, 20),
@@ -22,19 +31,23 @@ describe("calculateBudget (task 5.1)", () => {
     expect(result.total).toBeCloseTo(4);
   });
 
-  it("excludes a partner commander in Comandante Parceiro too", () => {
+  it("counts a partner commander in Comandante Parceiro", () => {
     const cards = [
       card("Vial Smasher the Fierce", "comandanteParceiro", 500),
       card("Sol Ring", "mainDeck", 4),
     ];
     const result = calculateBudget(cards);
-    expect(result.total).toBeCloseTo(4);
+    expect(result.total).toBeCloseTo(504);
   });
 
-  it("counts sideboard and maybeboard cards toward the total", () => {
-    const cards = [card("Chalice of the Void", "sideboard", 92.25)];
+  it("excludes sideboard and maybeboard cards from the total", () => {
+    const cards = [
+      card("Chalice of the Void", "sideboard", 92.25),
+      card("Mystery Card", "maybeboard", 40),
+      card("Sol Ring", "mainDeck", 4),
+    ];
     const result = calculateBudget(cards);
-    expect(result.total).toBeCloseTo(92.25);
+    expect(result.total).toBeCloseTo(4);
   });
 });
 

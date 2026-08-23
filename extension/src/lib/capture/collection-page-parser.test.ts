@@ -36,4 +36,26 @@ describe("parseCollectionPage (task 3.2, best-effort — see file header)", () =
     const doc = new DOMParser().parseFromString("<div>nothing here</div>", "text/html");
     expect(parseCollectionPage(doc)).toEqual({ status: "unrecognized-page" });
   });
+
+  it("captures a card's pageImageUrl from its embedded sticky-tooltip image (task 3.1)", () => {
+    const doc = new DOMParser().parseFromString(
+      `
+      <div class="deck-line">
+        <div class="deck-qty">1</div>
+        <div class="deck-card"><a data-lc-id="82777" href="/?view=cards/card&card=Sol+Ring">Anel Solar</a></div>
+        <div class="deck-price"></div>
+      </div>
+      <div id="sticky_82777_"><img lazy-src="//repositorio.sbrauble.com/arquivos/in/magic/example.jpg"></div>
+    `,
+      "text/html",
+    );
+
+    const result = parseCollectionPage(doc);
+
+    expect(result.status).toBe("ok");
+    if (result.status !== "ok") return;
+    expect(result.cards[0]?.pageImageUrl).toBe(
+      "https://repositorio.sbrauble.com/arquivos/in/magic/example.jpg",
+    );
+  });
 });

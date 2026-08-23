@@ -1,6 +1,7 @@
 export interface KeyValueStore {
   get(key: string): Promise<unknown>;
   set(key: string, value: unknown): Promise<void>;
+  remove(key: string): Promise<void>;
 }
 
 /** In-memory store, used by default outside a real extension context (tests, SSR-less dev). */
@@ -14,6 +15,10 @@ export class MemoryStore implements KeyValueStore {
   async set(key: string, value: unknown): Promise<void> {
     this.data.set(key, value);
   }
+
+  async remove(key: string): Promise<void> {
+    this.data.delete(key);
+  }
 }
 
 /** Adapts chrome.storage.local to the KeyValueStore interface used by the cache. */
@@ -25,6 +30,31 @@ export class ChromeLocalStore implements KeyValueStore {
 
   async set(key: string, value: unknown): Promise<void> {
     await chrome.storage.local.set({ [key]: value });
+  }
+
+  async remove(key: string): Promise<void> {
+    await chrome.storage.local.remove(key);
+  }
+}
+
+/**
+ * Adapts chrome.storage.session to the KeyValueStore interface. Used for the
+ * deck-tab-view relay: data that should survive a background service-worker
+ * suspend/restart cycle but not a full browser restart (unlike
+ * ChromeLocalStore, which is for data meant to persist indefinitely).
+ */
+export class ChromeSessionStore implements KeyValueStore {
+  async get(key: string): Promise<unknown> {
+    const result = await chrome.storage.session.get(key);
+    return result[key];
+  }
+
+  async set(key: string, value: unknown): Promise<void> {
+    await chrome.storage.session.set({ [key]: value });
+  }
+
+  async remove(key: string): Promise<void> {
+    await chrome.storage.session.remove(key);
   }
 }
 

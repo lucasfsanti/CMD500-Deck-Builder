@@ -4,7 +4,16 @@ import { moveCard } from "../organizer/deck-state";
 import type { DeckCard } from "../deck/types";
 
 function card(name: string, zone: DeckCard["zone"], quantity = 1): DeckCard {
-  return { id: name, name, quantity, zone, pageLowestPrice: 1, enrichment: undefined, enrichmentStatus: "pending" };
+  return {
+    id: name,
+    name,
+    quantity,
+    zone,
+    pageLowestPrice: 1,
+    pageImageUrl: undefined,
+    enrichment: undefined,
+    enrichmentStatus: "pending",
+  };
 }
 
 const fullDeck: DeckCard[] = [
