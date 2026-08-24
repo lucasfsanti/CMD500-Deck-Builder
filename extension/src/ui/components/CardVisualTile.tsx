@@ -1,5 +1,5 @@
 import { useDraggable } from "@dnd-kit/core";
-import type { DeckCard } from "../../lib/deck/types";
+import { isBasicLand, type DeckCard } from "../../lib/deck/types";
 import { resolveCardArt } from "./card-art";
 
 function formatPrice(price: number | undefined): string {
@@ -12,9 +12,10 @@ interface CardVisualTileContentProps {
   illegal?: boolean;
   overBudget?: boolean;
   onQuantityChange?: (cardId: string, quantity: number) => void;
+  onRemove?: (cardId: string) => void;
 }
 
-function CardVisualTileContent({ card, illegal, overBudget, onQuantityChange }: CardVisualTileContentProps) {
+function CardVisualTileContent({ card, illegal, overBudget, onQuantityChange, onRemove }: CardVisualTileContentProps) {
   const { imageUrl, unresolved: artUnresolved } = resolveCardArt(card);
 
   return (
@@ -32,16 +33,32 @@ function CardVisualTileContent({ card, illegal, overBudget, onQuantityChange }: 
         {illegal && (
           <span className="c500-card__badge c500-card__badge--illegal" title="Ilegal neste formato" />
         )}
-        <input
-          className="c500-tile__qty"
-          type="number"
-          min={0}
-          value={card.quantity}
-          onClick={(e) => e.stopPropagation()}
-          onPointerDown={(e) => e.stopPropagation()}
-          onChange={(e) => onQuantityChange?.(card.id, Number.parseInt(e.target.value, 10) || 0)}
-          aria-label={`quantidade de ${card.name}`}
-        />
+        {isBasicLand(card.name) && (
+          <input
+            className="c500-tile__qty"
+            type="number"
+            min={0}
+            value={card.quantity}
+            onClick={(e) => e.stopPropagation()}
+            onPointerDown={(e) => e.stopPropagation()}
+            onChange={(e) => onQuantityChange?.(card.id, Number.parseInt(e.target.value, 10) || 0)}
+            aria-label={`quantidade de ${card.name}`}
+          />
+        )}
+        {onRemove && (
+          <button
+            type="button"
+            className="c500-tile__remove"
+            onClick={(e) => {
+              e.stopPropagation();
+              onRemove(card.id);
+            }}
+            onPointerDown={(e) => e.stopPropagation()}
+            aria-label={`remover ${card.name} do deck`}
+          >
+            ×
+          </button>
+        )}
       </div>
       <div className="c500-tile__caption" title={card.name}>
         {card.name}
@@ -60,6 +77,7 @@ export interface CardVisualTileProps {
   illegal?: boolean;
   overBudget?: boolean;
   onQuantityChange?: (cardId: string, quantity: number) => void;
+  onRemove?: (cardId: string) => void;
   /** Extra class name(s), e.g. for the DragOverlay clone's "lifted" styling. */
   className?: string;
   /**
@@ -76,6 +94,7 @@ export function CardVisualTile({
   illegal,
   overBudget,
   onQuantityChange,
+  onRemove,
   className,
   dragOverlay,
 }: CardVisualTileProps) {
@@ -104,6 +123,7 @@ export function CardVisualTile({
         illegal={illegal}
         overBudget={overBudget}
         onQuantityChange={onQuantityChange}
+        onRemove={onRemove}
       />
     </div>
   );

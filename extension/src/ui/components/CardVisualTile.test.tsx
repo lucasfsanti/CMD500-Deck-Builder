@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { DndContext } from "@dnd-kit/core";
 import { CardVisualTile } from "./CardVisualTile";
@@ -36,12 +36,11 @@ function renderTile(props: Partial<Parameters<typeof CardVisualTile>[0]> = {}) {
 }
 
 describe("CardVisualTile (task 4.2)", () => {
-  it("renders artwork, name, quantity, and price", () => {
+  it("renders artwork, name, and price", () => {
     renderTile();
     const img = screen.getByAltText("Sol Ring") as HTMLImageElement;
     expect(img.src).toBe("https://cards.scryfall.io/normal/sol-ring.jpg");
     expect(screen.getAllByText("Sol Ring").length).toBeGreaterThan(0);
-    expect(screen.getByLabelText("quantidade de Sol Ring")).toHaveProperty("value", "1");
     expect(screen.getByText("R$4,00")).toBeTruthy();
   });
 
@@ -55,13 +54,59 @@ describe("CardVisualTile (task 4.2)", () => {
     expect(container.querySelector(".c500-card__badge--illegal")).not.toBeNull();
     expect(container.querySelector(".c500-card__price--over-budget")).not.toBeNull();
   });
+});
 
-  it("calls onQuantityChange when the quantity input changes", () => {
+describe("CardVisualTile quantity field scoped to basic lands", () => {
+  it("shows no quantity field for a non-basic card", () => {
+    renderTile();
+    expect(screen.queryByLabelText("quantidade de Sol Ring")).toBeNull();
+  });
+
+  it("shows an editable quantity field for a basic land", () => {
+    renderTile({ card: card({ name: "Island", quantity: 20 }) });
+    expect(screen.getByLabelText("quantidade de Island")).toHaveProperty("value", "20");
+  });
+
+  it("calls onQuantityChange when a basic land's quantity input changes", () => {
     let changedTo: number | undefined;
-    renderTile({ onQuantityChange: (_id, qty) => (changedTo = qty) });
-    const input = screen.getByLabelText("quantidade de Sol Ring");
+    renderTile({
+      card: card({ name: "Island" }),
+      onQuantityChange: (_id, qty) => (changedTo = qty),
+    });
+    const input = screen.getByLabelText("quantidade de Island");
     fireEvent.change(input, { target: { value: "4" } });
     expect(changedTo).toBe(4);
+  });
+});
+
+describe("CardVisualTile removal control", () => {
+  it("calls onRemove with the card's id when clicked", () => {
+    let removedId: string | undefined;
+    renderTile({ onRemove: (id) => (removedId = id) });
+    fireEvent.click(screen.getByLabelText("remover Sol Ring do deck"));
+    expect(removedId).toBe("a");
+  });
+
+  it("does not render a removal control when onRemove is not provided", () => {
+    renderTile();
+    expect(screen.queryByLabelText("remover Sol Ring do deck")).toBeNull();
+  });
+
+  it("stops the pointerdown from bubbling past it, so the tile's own drag-start listener never sees it", () => {
+    // Same reasoning as CardRow's equivalent test: dnd-kit's drag-activation
+    // listener is a React onPointerDown prop spread onto the tile, so an
+    // ancestor's React onPointerDown stands in for it here.
+    const ancestorPointerDown = vi.fn();
+    render(
+      <div onPointerDown={ancestorPointerDown}>
+        <DndContext>
+          <CardVisualTile card={card()} onRemove={() => {}} />
+        </DndContext>
+      </div>,
+    );
+
+    fireEvent.pointerDown(screen.getByLabelText("remover Sol Ring do deck"));
+    expect(ancestorPointerDown).not.toHaveBeenCalled();
   });
 });
 

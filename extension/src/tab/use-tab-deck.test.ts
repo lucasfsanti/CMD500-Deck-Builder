@@ -144,4 +144,52 @@ describe("useTabDeck (task 2.5)", () => {
 
     expect(result.current.cards[0]?.quantity).toBe(4);
   });
+
+  it("removes a card from the deck", async () => {
+    mockCapture = {
+      status: "ok",
+      cards: [{ id: "a", name: "Sol Ring", quantity: 1, zone: "mainDeck", pageLowestPrice: 4, pageImageUrl: undefined }],
+    };
+
+    const { result } = renderHook(() => useTabDeck(1, undefined));
+    await waitFor(() => expect(result.current.cards).toHaveLength(1));
+
+    act(() => result.current.removeCard("a"));
+
+    expect(result.current.cards).toHaveLength(0);
+  });
+
+  it("normalizes a non-basic card's captured quantity to 1, leaving a basic land's untouched", async () => {
+    mockCapture = {
+      status: "ok",
+      cards: [
+        { id: "a", name: "Sol Ring", quantity: 3, zone: "mainDeck", pageLowestPrice: 4, pageImageUrl: undefined },
+        { id: "b", name: "Island", quantity: 20, zone: "mainDeck", pageLowestPrice: 1, pageImageUrl: undefined },
+      ],
+    };
+
+    const { result } = renderHook(() => useTabDeck(1, undefined));
+
+    await waitFor(() => expect(result.current.cards).toHaveLength(2));
+    expect(result.current.cards.find((c) => c.id === "a")?.quantity).toBe(1);
+    expect(result.current.cards.find((c) => c.id === "b")?.quantity).toBe(20);
+  });
+
+  it("re-normalizes a non-basic card's quantity on a relayed re-sync", async () => {
+    mockCapture = {
+      status: "ok",
+      cards: [{ id: "a", name: "Sol Ring", quantity: 1, zone: "mainDeck", pageLowestPrice: 4, pageImageUrl: undefined }],
+    };
+
+    const { result, rerender } = renderHook(() => useTabDeck(1, undefined));
+    await waitFor(() => expect(result.current.cards).toHaveLength(1));
+
+    mockCapture = {
+      status: "ok",
+      cards: [{ id: "a", name: "Sol Ring", quantity: 2, zone: "mainDeck", pageLowestPrice: 4, pageImageUrl: undefined }],
+    };
+    rerender();
+
+    await waitFor(() => expect(result.current.cards[0]?.quantity).toBe(1));
+  });
 });

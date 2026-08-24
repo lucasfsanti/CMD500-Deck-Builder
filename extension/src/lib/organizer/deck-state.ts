@@ -42,3 +42,8 @@ export function setCardQuantity(cards: DeckCard[], cardId: string, quantity: num
   const safeQuantity = Math.max(0, Math.floor(quantity));
   return cards.map((c) => (c.id === cardId ? { ...c, quantity: safeQuantity } : c));
 }
+
+/** Removes a card from the deck entirely, per deck-organizer's explicit-card-removal requirement. */
+export function removeCard(cards: DeckCard[], cardId: string): DeckCard[] {
+  return cards.filter((c) => c.id !== cardId);
+}

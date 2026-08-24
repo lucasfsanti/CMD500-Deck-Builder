@@ -35,7 +35,7 @@ export function TabRoot() {
   const sourceTabId = getSourceTabIdFromUrl(url);
   const deckId = getDeckIdFromUrl(url);
 
-  const { cards, pageStatus, format, setFormat, zoneError, moveCard, setQuantity } = useTabDeck(
+  const { cards, pageStatus, format, setFormat, zoneError, moveCard, setQuantity, removeCard } = useTabDeck(
     sourceTabId,
     deckId,
   );
@@ -154,6 +154,7 @@ export function TabRoot() {
                     viewMode={viewMode}
                     groupingAxis={groupingAxis}
                     onQuantityChange={setQuantity}
+                    onRemoveCard={removeCard}
                   />
                 ))}
               </div>
@@ -166,6 +167,7 @@ export function TabRoot() {
                 viewMode={viewMode}
                 groupingAxis={groupingAxis}
                 onQuantityChange={setQuantity}
+                onRemoveCard={removeCard}
               />
             </div>
             <DragOverlay dropAnimation={null}>

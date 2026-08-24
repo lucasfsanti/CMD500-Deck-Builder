@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { moveCard, setCardQuantity } from "./deck-state";
+import { moveCard, setCardQuantity, removeCard } from "./deck-state";
 import type { DeckCard } from "../deck/types";
 
 function card(id: string, zone: DeckCard["zone"], quantity = 1): DeckCard {
@@ -88,5 +88,25 @@ describe("setCardQuantity (task 4.5)", () => {
     const cards = [card("a", "maybeboard", 1)];
     const updated = setCardQuantity(cards, "a", 5);
     expect(updated.find((c) => c.id === "a")?.zone).toBe("maybeboard");
+  });
+});
+
+describe("removeCard", () => {
+  it("removes the matching card", () => {
+    const cards = [card("a", "mainDeck"), card("b", "mainDeck")];
+    const updated = removeCard(cards, "a");
+    expect(updated.find((c) => c.id === "a")).toBeUndefined();
+  });
+
+  it("leaves other cards untouched", () => {
+    const cards = [card("a", "mainDeck"), card("b", "maybeboard")];
+    const updated = removeCard(cards, "a");
+    expect(updated).toEqual([card("b", "maybeboard")]);
+  });
+
+  it("is a no-op for an unknown id", () => {
+    const cards = [card("a", "mainDeck")];
+    const updated = removeCard(cards, "missing");
+    expect(updated).toEqual(cards);
   });
 });

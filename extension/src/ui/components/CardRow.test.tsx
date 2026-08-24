@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { render, fireEvent } from "@testing-library/react";
 import { DndContext } from "@dnd-kit/core";
 import { CardRow } from "./CardRow";
@@ -46,6 +46,51 @@ describe("CardRow illegal vs over-budget markers (task 6.4)", () => {
     const { container } = renderCard({ illegal: true, overBudget: true });
     expect(container.querySelector(".c500-card__badge--illegal")).not.toBeNull();
     expect(container.querySelector(".c500-card__price--over-budget")).not.toBeNull();
+  });
+});
+
+describe("CardRow quantity field scoped to basic lands", () => {
+  it("shows no quantity field for a non-basic card", () => {
+    const { queryByLabelText } = renderCard({});
+    expect(queryByLabelText("quantidade de Test Card")).toBeNull();
+  });
+
+  it("shows an editable quantity field for a basic land", () => {
+    const { getByLabelText } = renderCard({ card: { ...baseCard, name: "Island", quantity: 20 } });
+    expect(getByLabelText("quantidade de Island")).toHaveProperty("value", "20");
+  });
+});
+
+describe("CardRow removal control", () => {
+  it("calls onRemove with the card's id when clicked", () => {
+    let removedId: string | undefined;
+    const { getByLabelText } = renderCard({ onRemove: (id) => (removedId = id) });
+    fireEvent.click(getByLabelText("remover Test Card do deck"));
+    expect(removedId).toBe("a");
+  });
+
+  it("does not render a removal control when onRemove is not provided", () => {
+    const { queryByLabelText } = renderCard({});
+    expect(queryByLabelText("remover Test Card do deck")).toBeNull();
+  });
+
+  it("stops the pointerdown from bubbling past it, so the row's own drag-start listener never sees it", () => {
+    // dnd-kit's drag-activation listener is itself just a React onPointerDown
+    // prop spread onto the row (see CardRow's `{...listeners}`), so an
+    // ancestor's React onPointerDown handler stands in for it here: React's
+    // synthetic stopPropagation blocks every outer React handler the same
+    // way, regardless of which element registered it.
+    const ancestorPointerDown = vi.fn();
+    const { getByLabelText } = render(
+      <div onPointerDown={ancestorPointerDown}>
+        <DndContext>
+          <CardRow card={baseCard} onRemove={() => {}} />
+        </DndContext>
+      </div>,
+    );
+
+    fireEvent.pointerDown(getByLabelText("remover Test Card do deck"));
+    expect(ancestorPointerDown).not.toHaveBeenCalled();
   });
 });
 

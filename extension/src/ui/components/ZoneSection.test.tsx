@@ -42,6 +42,10 @@ function renderZone(viewMode?: "list" | "visual", onQuantityChange = vi.fn()) {
   };
 }
 
+function basicLandCard(): DeckCard {
+  return { ...card(), name: "Island", enrichment: { ...card().enrichment!, name: "Island" } };
+}
+
 function coloredCard(id: string, colorIdentity: string[]): DeckCard {
   return {
     ...card(),
@@ -66,8 +70,18 @@ describe("ZoneSection view-mode switching (task 4.4)", () => {
   });
 
   it("passes onQuantityChange through correctly in Visual mode", () => {
-    const { onQuantityChange } = renderZone("visual");
-    const input = screen.getByLabelText("quantidade de Sol Ring");
+    const onQuantityChange = vi.fn();
+    render(
+      <DndContext>
+        <ZoneSection
+          zone="mainDeck"
+          cards={[basicLandCard()]}
+          viewMode="visual"
+          onQuantityChange={onQuantityChange}
+        />
+      </DndContext>,
+    );
+    const input = screen.getByLabelText("quantidade de Island");
     fireEvent.change(input, { target: { value: "3" } });
     expect(onQuantityChange).toHaveBeenCalledWith("a", 3);
   });
@@ -75,6 +89,17 @@ describe("ZoneSection view-mode switching (task 4.4)", () => {
   it("still marks the drop target for drag-and-drop in Visual mode", () => {
     const { container } = renderZone("visual");
     expect(container.querySelector(".c500-zone__dropzone")).not.toBeNull();
+  });
+
+  it("passes onRemoveCard through to the rendered card", () => {
+    const onRemoveCard = vi.fn();
+    render(
+      <DndContext>
+        <ZoneSection zone="mainDeck" cards={[card()]} onRemoveCard={onRemoveCard} />
+      </DndContext>,
+    );
+    fireEvent.click(screen.getByLabelText("remover Sol Ring do deck"));
+    expect(onRemoveCard).toHaveBeenCalledWith("a");
   });
 });
 

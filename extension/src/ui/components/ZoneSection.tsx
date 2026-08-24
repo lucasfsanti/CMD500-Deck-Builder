@@ -42,6 +42,7 @@ export interface ZoneSectionProps {
   viewMode?: ViewMode;
   groupingAxis?: GroupingAxis;
   onQuantityChange?: (cardId: string, quantity: number) => void;
+  onRemoveCard?: (cardId: string) => void;
 }
 
 export function ZoneSection({
@@ -53,6 +54,7 @@ export function ZoneSection({
   viewMode = "list",
   groupingAxis = "type",
   onQuantityChange,
+  onRemoveCard,
 }: ZoneSectionProps) {
   const { setNodeRef, isOver } = useDroppable({ id: zone });
   const groups = groupAndSortZone(cards, groupingAxis);
@@ -81,6 +83,7 @@ export function ZoneSection({
                     illegal={illegalCardIds?.has(card.id)}
                     overBudget={Boolean(isDeckOverBudget) && isBudgetCounted(card)}
                     onQuantityChange={onQuantityChange}
+                    onRemove={onRemoveCard}
                   />
                 ) : (
                   <CardRow
@@ -89,6 +92,7 @@ export function ZoneSection({
                     illegal={illegalCardIds?.has(card.id)}
                     overBudget={Boolean(isDeckOverBudget) && isBudgetCounted(card)}
                     onQuantityChange={onQuantityChange}
+                    onRemove={onRemoveCard}
                   />
                 ),
               )}

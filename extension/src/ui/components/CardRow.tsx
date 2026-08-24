@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useDraggable } from "@dnd-kit/core";
-import type { DeckCard } from "../../lib/deck/types";
+import { isBasicLand, type DeckCard } from "../../lib/deck/types";
 import { resolveCardArt } from "./card-art";
 
 function formatPrice(price: number | undefined): string {
@@ -13,21 +13,24 @@ interface CardRowContentProps {
   illegal?: boolean;
   overBudget?: boolean;
   onQuantityChange?: (cardId: string, quantity: number) => void;
+  onRemove?: (cardId: string) => void;
 }
 
-function CardRowContent({ card, illegal, overBudget, onQuantityChange }: CardRowContentProps) {
+function CardRowContent({ card, illegal, overBudget, onQuantityChange, onRemove }: CardRowContentProps) {
   return (
     <>
-      <input
-        className="c500-card__qty"
-        type="number"
-        min={0}
-        value={card.quantity}
-        onClick={(e) => e.stopPropagation()}
-        onPointerDown={(e) => e.stopPropagation()}
-        onChange={(e) => onQuantityChange?.(card.id, Number.parseInt(e.target.value, 10) || 0)}
-        aria-label={`quantidade de ${card.name}`}
-      />
+      {isBasicLand(card.name) && (
+        <input
+          className="c500-card__qty"
+          type="number"
+          min={0}
+          value={card.quantity}
+          onClick={(e) => e.stopPropagation()}
+          onPointerDown={(e) => e.stopPropagation()}
+          onChange={(e) => onQuantityChange?.(card.id, Number.parseInt(e.target.value, 10) || 0)}
+          aria-label={`quantidade de ${card.name}`}
+        />
+      )}
       {illegal && <span className="c500-card__badge c500-card__badge--illegal" title="Ilegal neste formato" />}
       <span className="c500-card__name" title={card.name}>
         {card.name}
@@ -38,6 +41,20 @@ function CardRowContent({ card, illegal, overBudget, onQuantityChange }: CardRow
       >
         {formatPrice(card.pageLowestPrice)}
       </span>
+      {onRemove && (
+        <button
+          type="button"
+          className="c500-card__remove"
+          onClick={(e) => {
+            e.stopPropagation();
+            onRemove(card.id);
+          }}
+          onPointerDown={(e) => e.stopPropagation()}
+          aria-label={`remover ${card.name} do deck`}
+        >
+          ×
+        </button>
+      )}
     </>
   );
 }
@@ -70,6 +87,7 @@ export interface CardRowProps {
   /** True when this card counts toward budget and the deck is currently over the R$500 cap. */
   overBudget?: boolean;
   onQuantityChange?: (cardId: string, quantity: number) => void;
+  onRemove?: (cardId: string) => void;
   /** Extra class name(s), e.g. for the DragOverlay clone's "lifted" styling. */
   className?: string;
   /**
@@ -80,7 +98,7 @@ export interface CardRowProps {
   dragOverlay?: boolean;
 }
 
-export function CardRow({ card, illegal, overBudget, onQuantityChange, className, dragOverlay }: CardRowProps) {
+export function CardRow({ card, illegal, overBudget, onQuantityChange, onRemove, className, dragOverlay }: CardRowProps) {
   const [hoverPos, setHoverPos] = useState<{ x: number; y: number } | null>(null);
 
   if (dragOverlay) {
@@ -106,7 +124,13 @@ export function CardRow({ card, illegal, overBudget, onQuantityChange, className
       onPointerMove={(e) => setHoverPos({ x: e.clientX, y: e.clientY })}
       onPointerLeave={() => setHoverPos(null)}
     >
-      <CardRowContent card={card} illegal={illegal} overBudget={overBudget} onQuantityChange={onQuantityChange} />
+      <CardRowContent
+        card={card}
+        illegal={illegal}
+        overBudget={overBudget}
+        onQuantityChange={onQuantityChange}
+        onRemove={onRemove}
+      />
       {hoverPos && !isDragging && <CardHoverPreview card={card} x={hoverPos.x} y={hoverPos.y} />}
     </div>
   );
