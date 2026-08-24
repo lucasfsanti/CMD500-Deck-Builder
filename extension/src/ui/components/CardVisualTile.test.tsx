@@ -36,12 +36,16 @@ function renderTile(props: Partial<Parameters<typeof CardVisualTile>[0]> = {}) {
 }
 
 describe("CardVisualTile (task 4.2)", () => {
-  it("renders artwork, name, and price", () => {
+  it("renders artwork and price, with the name available as the artwork's alt text", () => {
     renderTile();
     const img = screen.getByAltText("Sol Ring") as HTMLImageElement;
     expect(img.src).toBe("https://cards.scryfall.io/normal/sol-ring.jpg");
-    expect(screen.getAllByText("Sol Ring").length).toBeGreaterThan(0);
     expect(screen.getByText("R$4,00")).toBeTruthy();
+  });
+
+  it("shows no visible name caption at default (grid) size (task 8.2)", () => {
+    const { container } = renderTile();
+    expect(container.querySelector(".c500-tile__caption")).toBeNull();
   });
 
   it("shows the illegal marker on the artwork tile", () => {
@@ -107,6 +111,38 @@ describe("CardVisualTile removal control", () => {
 
     fireEvent.pointerDown(screen.getByLabelText("remover Sol Ring do deck"));
     expect(ancestorPointerDown).not.toHaveBeenCalled();
+  });
+});
+
+describe("CardVisualTile color-identity rail (task 3.2)", () => {
+  it("colors the art tile's rail for a multicolor card's identity", () => {
+    const { container } = renderTile({ card: card({ enrichment: { ...card().enrichment!, colorIdentity: ["R", "G"] } }) });
+    const art = container.querySelector(".c500-tile__art") as HTMLElement;
+    expect(art.style.borderLeftColor).toBe("var(--c500-mana-gold)");
+  });
+
+  it("uses the neutral pending color while enrichment hasn't resolved", () => {
+    const { container } = renderTile({ card: card({ enrichment: undefined, enrichmentStatus: "pending" }) });
+    const art = container.querySelector(".c500-tile__art") as HTMLElement;
+    expect(art.style.borderLeftColor).toBe("var(--c500-line)");
+  });
+});
+
+describe("CardVisualTile hero size variant (task 5.1)", () => {
+  it("applies the hero modifier class", () => {
+    const { container } = renderTile({ size: "hero" });
+    expect(container.querySelector(".c500-tile--hero")).not.toBeNull();
+  });
+
+  it("still shows the placeholder when artwork is unresolved, at hero size", () => {
+    renderTile({ size: "hero", card: card({ enrichment: undefined, enrichmentStatus: "unavailable" }) });
+    expect(screen.queryByRole("img")).toBeNull();
+    expect(screen.getAllByText("Sol Ring").length).toBeGreaterThan(0);
+  });
+
+  it("shows a visible name caption at hero size (task 8.2)", () => {
+    const { container } = renderTile({ size: "hero" });
+    expect(container.querySelector(".c500-tile__caption")?.textContent).toBe("Sol Ring");
   });
 });
 

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { DndContext, DragOverlay, pointerWithin, type DragEndEvent, type DragStartEvent } from "@dnd-kit/core";
-import { ZONES, type DeckCard, type Format } from "../lib/deck/types";
-import { groupCardsByZone, type GroupingAxis } from "../lib/organizer/group-sort";
+import type { DeckCard, Format } from "../lib/deck/types";
+import { groupCardsByZone, type GroupingAxis, type SortAxis } from "../lib/organizer/group-sort";
 import { resolveDropZone } from "../lib/organizer/resolve-drop";
 import { calculateBudget } from "../lib/budget/calculate-budget";
 import { calculateCardCount } from "../lib/organizer/calculate-card-count";
@@ -30,6 +30,40 @@ const GROUPING_AXIS_LABELS: Record<GroupingAxis, string> = {
   cmc: "Custo de Mana",
 };
 
+const SORT_AXIS_LABELS: Record<SortAxis, string> = {
+  cmc: "Custo de Mana",
+  name: "Nome",
+  color: "Cor",
+  price: "Valor (R$)",
+};
+
+/**
+ * View-toggle icons (task 7.2): the buttons lost their visible "Lista"/
+ * "Visual" text, so each button now carries its accessible name via
+ * aria-label instead. fill="currentColor" lets the existing
+ * button[aria-pressed="true"] color rule recolor the icon for free.
+ */
+function ListIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">
+      <rect x="1" y="2" width="12" height="2" rx="1" fill="currentColor" />
+      <rect x="1" y="6" width="12" height="2" rx="1" fill="currentColor" />
+      <rect x="1" y="10" width="12" height="2" rx="1" fill="currentColor" />
+    </svg>
+  );
+}
+
+function GridIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">
+      <rect x="1" y="1" width="5" height="5" rx="1" fill="currentColor" />
+      <rect x="8" y="1" width="5" height="5" rx="1" fill="currentColor" />
+      <rect x="1" y="8" width="5" height="5" rx="1" fill="currentColor" />
+      <rect x="8" y="8" width="5" height="5" rx="1" fill="currentColor" />
+    </svg>
+  );
+}
+
 export function TabRoot() {
   const url = new URL(window.location.href);
   const sourceTabId = getSourceTabIdFromUrl(url);
@@ -42,6 +76,7 @@ export function TabRoot() {
   const sourceStatus = useSourceTabStatus(sourceTabId);
   const [viewMode, setViewMode] = useState<ViewMode>("list");
   const [groupingAxis, setGroupingAxis] = useState<GroupingAxis>("type");
+  const [sortAxis, setSortAxis] = useState<SortAxis>("cmc");
   const [draggedCard, setDraggedCard] = useState<DeckCard | undefined>();
 
   const byZone = groupCardsByZone(cards);
@@ -63,10 +98,10 @@ export function TabRoot() {
   return (
     <div className="c500-tab">
       <header className="c500-tab__header">
-        <span className="c500-panel__mark" aria-hidden="true" />
+        <span className="c500-tab__mark" aria-hidden="true" />
         <h1 className="c500-tab__title">Montador de Decks Commander 500</h1>
         <select
-          className="c500-panel__format"
+          className="c500-tab__format-select"
           value={format}
           onChange={(e) => setFormat(e.target.value as Format)}
         >
@@ -92,7 +127,10 @@ export function TabRoot() {
 
       {pageStatus === "ok" && (
         <div className="c500-tab__body">
-          <aside className="c500-tab__sidebar">
+          {/* Ledger tape (signature element, part 1): budget, card count,
+              legality, view/grouping controls, and export fused into one
+              full-width strip — see proposal.md and design.md. */}
+          <div className="c500-tab__ledger-tape">
             <BudgetGauge budget={budget} />
             <CardCountGauge cardCount={cardCount} />
             <LegalitySummary legality={legality} format={format} />
@@ -101,16 +139,20 @@ export function TabRoot() {
               <button
                 type="button"
                 aria-pressed={viewMode === "list"}
+                aria-label="Ver em lista"
+                title="Ver em lista"
                 onClick={() => setViewMode("list")}
               >
-                Lista
+                <ListIcon />
               </button>
               <button
                 type="button"
                 aria-pressed={viewMode === "visual"}
+                aria-label="Ver em modo visual"
+                title="Ver em modo visual"
                 onClick={() => setViewMode("visual")}
               >
-                Visual
+                <GridIcon />
               </button>
             </div>
             <label className="c500-tab__grouping">
@@ -126,11 +168,18 @@ export function TabRoot() {
                 ))}
               </select>
             </label>
+            <label className="c500-tab__grouping">
+              Ordenar por
+              <select value={sortAxis} onChange={(e) => setSortAxis(e.target.value as SortAxis)}>
+                {Object.entries(SORT_AXIS_LABELS).map(([value, label]) => (
+                  <option key={value} value={value}>
+                    {label}
+                  </option>
+                ))}
+              </select>
+            </label>
             <ExportMenu cards={cards} />
-            <BarChart title="Curva de Mana" buckets={manaCurveBuckets(cards)} />
-            <BarChart title="Cor" buckets={colorBuckets(cards)} />
-            <BarChart title="Tipo" buckets={typeBuckets(cards)} />
-          </aside>
+          </div>
 
           <DndContext
             collisionDetection={pointerWithin}
@@ -138,25 +187,50 @@ export function TabRoot() {
             onDragEnd={handleDragEnd}
             onDragCancel={() => setDraggedCard(undefined)}
           >
-            <div className="c500-tab__zones">
-              {/* Main Deck is always far larger than the other four zones (~90-100
-                  cards vs. a handful); it gets its own column so the smaller zones
-                  stack at their own height instead of being pushed below it. */}
-              <div className="c500-tab__zones-side">
-                {ZONES.filter((zone) => zone !== "mainDeck").map((zone) => (
+            {/* Main content row: Commander hero, with Companheiro stacked
+                beneath it and Maybeboard beneath that, beside Deck Principal
+                (visible without scrolling) and the analytics column. */}
+            <div className="c500-tab__main-row">
+              <div className="c500-tab__hero-column">
+                <div className="c500-tab__hero">
                   <ZoneSection
-                    key={zone}
-                    zone={zone}
-                    cards={byZone[zone]}
-                    error={zoneError?.zone === zone ? zoneError.message : undefined}
+                    zone="comandante"
+                    cards={byZone.comandante}
+                    error={zoneError?.zone === "comandante" ? zoneError.message : undefined}
                     illegalCardIds={legality.illegalCardIds}
                     isDeckOverBudget={budget.isOverCap}
-                    viewMode={viewMode}
-                    groupingAxis={groupingAxis}
+                    hero
+                    sortAxis={sortAxis}
+                    onQuantityChange={setQuantity}
+                    // The commander isn't removable via this control — see
+                    // deck-organizer's "Explicit card removal" delta. A
+                    // replacement is set by dragging the current card out to
+                    // another zone, then dragging the intended commander in.
+                  />
+                  <ZoneSection
+                    zone="comandanteParceiro"
+                    cards={byZone.comandanteParceiro}
+                    error={zoneError?.zone === "comandanteParceiro" ? zoneError.message : undefined}
+                    illegalCardIds={legality.illegalCardIds}
+                    isDeckOverBudget={budget.isOverCap}
+                    hero
+                    sortAxis={sortAxis}
                     onQuantityChange={setQuantity}
                     onRemoveCard={removeCard}
                   />
-                ))}
+                </div>
+                <ZoneSection
+                  zone="maybeboard"
+                  cards={byZone.maybeboard}
+                  error={zoneError?.zone === "maybeboard" ? zoneError.message : undefined}
+                  illegalCardIds={legality.illegalCardIds}
+                  isDeckOverBudget={budget.isOverCap}
+                  viewMode={viewMode}
+                  groupingAxis={groupingAxis}
+                  sortAxis={sortAxis}
+                  onQuantityChange={setQuantity}
+                  onRemoveCard={removeCard}
+                />
               </div>
               <ZoneSection
                 zone="mainDeck"
@@ -166,9 +240,16 @@ export function TabRoot() {
                 isDeckOverBudget={budget.isOverCap}
                 viewMode={viewMode}
                 groupingAxis={groupingAxis}
+                sortAxis={sortAxis}
+                multiColumn
                 onQuantityChange={setQuantity}
                 onRemoveCard={removeCard}
               />
+              <div className="c500-tab__analytics">
+                <BarChart title="Curva de Mana" buckets={manaCurveBuckets(cards)} />
+                <BarChart title="Cor" buckets={colorBuckets(cards)} />
+                <BarChart title="Tipo" buckets={typeBuckets(cards)} />
+              </div>
             </div>
             <DragOverlay dropAnimation={null}>
               {draggedCard &&

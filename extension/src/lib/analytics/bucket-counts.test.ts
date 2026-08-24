@@ -56,6 +56,15 @@ describe("manaCurveBuckets (task 5.1)", () => {
     const buckets = manaCurveBuckets(cards);
     expect(buckets).toEqual([{ label: "3", count: 1 }]);
   });
+
+  it("excludes land cards entirely, even at CMC 0 (task 12.6)", () => {
+    const cards = [
+      card("Forest", { typeLine: "Basic Land — Forest", cmc: 0, quantity: 20 }),
+      card("Spell", { typeLine: "Instant", cmc: 0 }),
+    ];
+    const buckets = manaCurveBuckets(cards);
+    expect(buckets).toEqual([{ label: "0", count: 1 }]);
+  });
 });
 
 describe("colorBuckets (task 5.1)", () => {
@@ -67,9 +76,41 @@ describe("colorBuckets (task 5.1)", () => {
       card("Multi", { colorIdentity: ["W", "U"] }),
     ];
     expect(colorBuckets(cards)).toEqual([
-      { label: "Incolor", count: 1 },
-      { label: "Branco", count: 2 },
-      { label: "Multicolor", count: 1 },
+      { label: "Incolor", count: 1, color: "var(--c500-mana-c)" },
+      { label: "Branco", count: 2, color: "var(--c500-mana-w)" },
+      { label: "Multicolor", count: 1, color: "var(--c500-mana-gold)" },
+    ]);
+  });
+
+  it("gives each bucket the same mana-color token the color-identity rail uses (task 4.1)", () => {
+    const cards = [
+      card("W", { colorIdentity: ["W"] }),
+      card("U", { colorIdentity: ["U"] }),
+      card("B", { colorIdentity: ["B"] }),
+      card("R", { colorIdentity: ["R"] }),
+      card("G", { colorIdentity: ["G"] }),
+    ];
+    expect(colorBuckets(cards).map((b) => b.color)).toEqual([
+      "var(--c500-mana-w)",
+      "var(--c500-mana-u)",
+      "var(--c500-mana-b)",
+      "var(--c500-mana-r)",
+      "var(--c500-mana-g)",
+    ]);
+  });
+
+  it("routes land cards into a dedicated Terrenos bucket instead of a color-identity bucket (task 12.6)", () => {
+    const cards = [
+      card("Forest", { typeLine: "Basic Land — Forest", colorIdentity: [] }),
+      // A dual land's own color identity is real (both W and U here), but it
+      // still goes to Terrenos, not the Multicolor bucket.
+      card("Dual Land", { typeLine: "Land", colorIdentity: ["W", "U"] }),
+      card("Spell", { typeLine: "Instant", colorIdentity: ["G"] }),
+    ];
+    const buckets = colorBuckets(cards);
+    expect(buckets).toEqual([
+      { label: "Verde", count: 1, color: "var(--c500-mana-g)" },
+      { label: "Terrenos", count: 2, color: "var(--c500-mana-land)" },
     ]);
   });
 });

@@ -31,7 +31,7 @@ function card(
 }
 
 describe("groupAndSortZone (task 4.2)", () => {
-  it("separates creatures and instants into distinct type groups, ordered by color then ascending CMC", () => {
+  it("separates creatures and instants into distinct type groups, sorted within each by the default (Mana Value) sort axis", () => {
     const cards = [
       card("Bolt", "Instant", ["R"], 1),
       card("Elf", "Creature — Elf", ["G"], 1),
@@ -42,13 +42,13 @@ describe("groupAndSortZone (task 4.2)", () => {
     const groups = groupAndSortZone(cards);
 
     expect(groups.map((g) => g.type)).toEqual(["Creature", "Instant"]);
-    // WUBRG order: Dragon is red (R, index 3) and sorts before Elf, green (G, index 4).
-    expect(groups[0]!.cards.map((c) => c.name)).toEqual(["Dragon", "Elf"]);
-    // Bolt is red (R, index 3), Counterspell is blue (U, index 1).
-    expect(groups[1]!.cards.map((c) => c.name)).toEqual(["Counterspell", "Bolt"]);
+    // Ascending mana value: Elf (1) before Dragon (5).
+    expect(groups[0]!.cards.map((c) => c.name)).toEqual(["Elf", "Dragon"]);
+    // Ascending mana value: Bolt (1) before Counterspell (2).
+    expect(groups[1]!.cards.map((c) => c.name)).toEqual(["Bolt", "Counterspell"]);
   });
 
-  it("sorts within a color/type group by ascending CMC", () => {
+  it("sorts within a group by ascending CMC (the default sort axis)", () => {
     const cards = [
       card("Big Red", "Creature", ["R"], 6),
       card("Small Red", "Creature", ["R"], 1),
@@ -57,23 +57,13 @@ describe("groupAndSortZone (task 4.2)", () => {
     expect(groups[0]!.cards.map((c) => c.name)).toEqual(["Small Red", "Big Red"]);
   });
 
-  it("sorts by name within the same type/color/CMC group", () => {
+  it("sorts by name as the tiebreak when the sort axis does not distinguish two cards", () => {
     const cards = [
       card("Zebra Beast", "Creature", ["G"], 2),
       card("Aardvark", "Creature", ["G"], 2),
     ];
     const groups = groupAndSortZone(cards);
     expect(groups[0]!.cards.map((c) => c.name)).toEqual(["Aardvark", "Zebra Beast"]);
-  });
-
-  it("places colorless before mono-color before multicolor", () => {
-    const cards = [
-      card("Multi", "Artifact", ["R", "G"], 3),
-      card("Colorless", "Artifact", [], 3),
-      card("Mono", "Artifact", ["G"], 3),
-    ];
-    const groups = groupAndSortZone(cards);
-    expect(groups[0]!.cards.map((c) => c.name)).toEqual(["Colorless", "Mono", "Multi"]);
   });
 });
 
@@ -92,23 +82,23 @@ describe("groupAndSortZone grouping axis (task 4.1)", () => {
     expect(withDefault.map((g) => g.type)).toEqual(["Creature", "Instant"]);
   });
 
-  it("groups by Color, ordered W/U/B/R/G/multicolor/colorless, sorted within a group by type then CMC then name", () => {
+  it("groups by Color, ordered W/U/B/R/G/multicolor/colorless, sorted within a group by the active sort axis", () => {
     const groups = groupAndSortZone(cards, "color");
     expect(groups.map((g) => g.type)).toEqual(["Blue", "Red", "Green"]);
-    // Both Bolt (Instant) and Dragon (Creature) are red; Instant sorts before
-    // Creature in TYPE_ORDER? No — TYPE_ORDER is Creature, ..., Instant, so
-    // Dragon (Creature) sorts before Bolt (Instant) within the Red group.
+    // Both Bolt and Dragon are red; default sort axis is ascending mana
+    // value, so Bolt (1) sorts before Dragon (5).
     expect(groups.find((g) => g.type === "Red")?.cards.map((c) => c.name)).toEqual([
-      "Dragon",
       "Bolt",
+      "Dragon",
     ]);
   });
 
-  it("groups by Mana Cost, ordered ascending, sorted within a group by type then color then name", () => {
+  it("groups by Mana Cost, ordered ascending, sorted within a group by the active sort axis then name", () => {
     const groups = groupAndSortZone(cards, "cmc");
     expect(groups.map((g) => g.type)).toEqual(["1", "2", "5"]);
-    // Both Bolt and Elf are CMC 1; Elf (Creature) sorts before Bolt (Instant).
-    expect(groups.find((g) => g.type === "1")?.cards.map((c) => c.name)).toEqual(["Elf", "Bolt"]);
+    // Both Bolt and Elf are CMC 1; the default sort axis (mana value) can't
+    // distinguish them within their own group, so name breaks the tie.
+    expect(groups.find((g) => g.type === "1")?.cards.map((c) => c.name)).toEqual(["Bolt", "Elf"]);
   });
 
   it("groups cards with unresolved CMC into their own trailing group when grouping by Mana Cost", () => {
@@ -125,6 +115,49 @@ describe("groupAndSortZone grouping axis (task 4.1)", () => {
     const groups = groupAndSortZone([card("Bolt", "Instant", ["R"], 1), unresolved], "cmc");
     expect(groups.map((g) => g.type)).toEqual(["1", "?"]);
     expect(groups[1]!.cards.map((c) => c.name)).toEqual(["Mystery"]);
+  });
+});
+
+describe("groupAndSortZone sort axis (task 12.2)", () => {
+  it("sorts by Mana Value (ascending) — the default", () => {
+    const cards = [
+      card("High", "Creature", ["G"], 5),
+      card("Low", "Creature", ["G"], 1),
+      card("Mid", "Creature", ["G"], 3),
+    ];
+    const groups = groupAndSortZone(cards, "type", "cmc");
+    expect(groups[0]!.cards.map((c) => c.name)).toEqual(["Low", "Mid", "High"]);
+  });
+
+  it("sorts by Name (alphabetical)", () => {
+    const cards = [
+      card("Zeta", "Creature", ["G"], 3),
+      card("Alpha", "Creature", ["R"], 1),
+      card("Mid", "Creature", ["U"], 2),
+    ];
+    const groups = groupAndSortZone(cards, "type", "name");
+    expect(groups[0]!.cards.map((c) => c.name)).toEqual(["Alpha", "Mid", "Zeta"]);
+  });
+
+  it("sorts by Color (colorless, then W/U/B/R/G, then multicolor)", () => {
+    const cards = [
+      card("Multi", "Creature", ["R", "G"], 4),
+      card("Colorless", "Creature", [], 1),
+      card("Mono", "Creature", ["G"], 2),
+    ];
+    const groups = groupAndSortZone(cards, "type", "color");
+    expect(groups[0]!.cards.map((c) => c.name)).toEqual(["Colorless", "Mono", "Multi"]);
+  });
+
+  it("sorts by Price (descending — highest R$ first), with unresolved prices last", () => {
+    const cards = [
+      { ...card("Cheap", "Creature", ["G"], 1), pageLowestPrice: 1 },
+      { ...card("Expensive", "Creature", ["G"], 1), pageLowestPrice: 100 },
+      { ...card("Mid", "Creature", ["G"], 1), pageLowestPrice: 10 },
+      { ...card("Unpriced", "Creature", ["G"], 1), pageLowestPrice: undefined },
+    ];
+    const groups = groupAndSortZone(cards, "type", "price");
+    expect(groups[0]!.cards.map((c) => c.name)).toEqual(["Expensive", "Mid", "Cheap", "Unpriced"]);
   });
 });
 

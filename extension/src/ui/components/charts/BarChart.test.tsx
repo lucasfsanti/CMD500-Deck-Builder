@@ -64,7 +64,7 @@ describe("BarChart (task 5.2)", () => {
 
   it("shows an empty state when there are no Main Deck cards yet", () => {
     render(<BarChart title="Mana Curve" buckets={[]} />);
-    expect(screen.getByText("Ainda sem cartas no Deck Principal")).toBeTruthy();
+    expect(screen.getByText("Ainda sem cartas no Main Deck")).toBeTruthy();
   });
 
   it("scales each bar's width relative to the largest bucket", () => {
@@ -74,5 +74,23 @@ describe("BarChart (task 5.2)", () => {
     const bars = container.querySelectorAll(".c500-chart__bar");
     // CMC 1 has count 5 (4 Elf + 1 Bolt), the largest bucket, so its bar is full width.
     expect((bars[0] as HTMLElement).style.width).toBe("100%");
+  });
+
+  it("colors each Cor bucket's bar with its own mana-identity token (task 4.2)", () => {
+    const { container } = render(<BarChart title="Color" buckets={colorBuckets(fixtureDeck)} />);
+    const bars = container.querySelectorAll(".c500-chart__bar");
+    // fixtureDeck's colorBuckets order: Colorless, Red, Green, Multicolor.
+    expect((bars[0] as HTMLElement).style.backgroundColor).toBe("var(--c500-mana-c)");
+    expect((bars[1] as HTMLElement).style.backgroundColor).toBe("var(--c500-mana-r)");
+    expect((bars[2] as HTMLElement).style.backgroundColor).toBe("var(--c500-mana-g)");
+    expect((bars[3] as HTMLElement).style.backgroundColor).toBe("var(--c500-mana-gold)");
+  });
+
+  it("leaves Curva bars uncolored, falling back to the chart's neutral hue (task 4.2)", () => {
+    const { container } = render(
+      <BarChart title="Mana Curve" buckets={manaCurveBuckets(fixtureDeck)} />,
+    );
+    const bar = container.querySelector(".c500-chart__bar") as HTMLElement;
+    expect(bar.style.backgroundColor).toBe("");
   });
 });

@@ -18,16 +18,18 @@ function card(name: string, price: number): DeckCard {
 }
 
 describe("BudgetGauge (task 5.4)", () => {
-  it("renders the in-budget visual state, with no over-cap note, when under R$500", () => {
+  it("renders the in-budget visual state, showing both used and remaining, when under R$500", () => {
     const { container } = render(<BudgetGauge budget={calculateBudget([card("A", 480)])} />);
-    expect(screen.getByText("R$480,00")).toBeTruthy();
+    expect(screen.getByText("R$480,00 usados")).toBeTruthy();
+    expect(screen.getByText("R$20,00 restantes")).toBeTruthy();
     expect(container.querySelector(".c500-gauge--over")).toBeNull();
     expect(screen.queryByText(/over$/)).toBeNull();
   });
 
-  it("renders the over-budget visual state with the exact over amount when over R$500", () => {
+  it("renders the over-budget visual state with the exact over amount, remaining floored at R$0,00, when over R$500", () => {
     const { container } = render(<BudgetGauge budget={calculateBudget([card("A", 540)])} />);
-    expect(screen.getByText("R$540,00")).toBeTruthy();
+    expect(screen.getByText("R$540,00 usados")).toBeTruthy();
+    expect(screen.getByText("R$0,00 restantes")).toBeTruthy();
     expect(container.querySelector(".c500-gauge--over")).not.toBeNull();
     expect(screen.getByText("R$40,00 acima")).toBeTruthy();
   });

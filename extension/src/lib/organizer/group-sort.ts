@@ -90,16 +90,18 @@ export interface CardGroup {
 /** The axis the deck organizer groups a zone's cards by; "type" is the default. */
 export type GroupingAxis = "type" | "color" | "cmc";
 
+/**
+ * The axis a zone's cards are sorted by *within* a group — user-selectable,
+ * independent of the grouping axis. Replaces the previous fixed "sort by
+ * the two non-grouping axes, then name" rule (see deck-organizer's
+ * "Grouping and sorting within a zone" delta in this change).
+ */
+export type SortAxis = "cmc" | "name" | "color" | "price";
+
 function typeOf(card: DeckCard): (typeof TYPE_ORDER)[number] {
   return primaryType(card.enrichment?.typeLine);
 }
 
-/**
- * CMC tiebreak used when type or color is the grouping axis: unresolved CMC
- * sorts as 0 (first), matching this function's original, pre-generalization
- * behavior exactly, so the default (Type) axis's output stays byte-for-byte
- * unchanged by this generalization.
- */
 function cmcTiebreak(card: DeckCard): number {
   return card.enrichment?.cmc ?? 0;
 }
@@ -110,15 +112,38 @@ function compareByColor(a: DeckCard, b: DeckCard): number {
   );
 }
 
-function compareByType(a: DeckCard, b: DeckCard): number {
-  return TYPE_ORDER.indexOf(typeOf(a)) - TYPE_ORDER.indexOf(typeOf(b));
-}
-
 function compareByName(a: DeckCard, b: DeckCard): number {
   return a.name.localeCompare(b.name);
 }
 
-function groupByType(cards: DeckCard[]): CardGroup[] {
+/** Descending (highest first); a card with no resolved price sorts after every priced card. */
+function compareByPrice(a: DeckCard, b: DeckCard): number {
+  if (a.pageLowestPrice === undefined && b.pageLowestPrice === undefined) return 0;
+  if (a.pageLowestPrice === undefined) return 1;
+  if (b.pageLowestPrice === undefined) return -1;
+  return b.pageLowestPrice - a.pageLowestPrice;
+}
+
+function compareBySortAxis(sortAxis: SortAxis): (a: DeckCard, b: DeckCard) => number {
+  switch (sortAxis) {
+    case "name":
+      return compareByName;
+    case "color":
+      return compareByColor;
+    case "price":
+      return compareByPrice;
+    case "cmc":
+      return (a, b) => cmcTiebreak(a) - cmcTiebreak(b);
+  }
+}
+
+/** Sorts a single group's cards by the active sort axis, with name as the tiebreak. */
+function sortWithinGroup(cards: DeckCard[], sortAxis: SortAxis): DeckCard[] {
+  const primaryCompare = compareBySortAxis(sortAxis);
+  return [...cards].sort((a, b) => primaryCompare(a, b) || compareByName(a, b));
+}
+
+function groupByType(cards: DeckCard[], sortAxis: SortAxis): CardGroup[] {
   const byType = new Map<string, DeckCard[]>();
   for (const card of cards) {
     const type = typeOf(card);
@@ -131,21 +156,14 @@ function groupByType(cards: DeckCard[]): CardGroup[] {
   for (const type of TYPE_ORDER) {
     const bucket = byType.get(type);
     if (!bucket || bucket.length === 0) continue;
-    const sorted = [...bucket].sort((a, b) => {
-      const colorCompare = compareByColor(a, b);
-      if (colorCompare !== 0) return colorCompare;
-      const cmcCompare = cmcTiebreak(a) - cmcTiebreak(b);
-      if (cmcCompare !== 0) return cmcCompare;
-      return compareByName(a, b);
-    });
-    groups.push({ type, cards: sorted });
+    groups.push({ type, cards: sortWithinGroup(bucket, sortAxis) });
   }
   return groups;
 }
 
 const COLOR_GROUP_ORDER = ["Colorless", "White", "Blue", "Black", "Red", "Green", "Multicolor"];
 
-function groupByColor(cards: DeckCard[]): CardGroup[] {
+function groupByColor(cards: DeckCard[], sortAxis: SortAxis): CardGroup[] {
   const byColor = new Map<string, DeckCard[]>();
   for (const card of cards) {
     const label = colorGroupLabel(card.enrichment?.colorIdentity);
@@ -158,21 +176,14 @@ function groupByColor(cards: DeckCard[]): CardGroup[] {
   for (const label of COLOR_GROUP_ORDER) {
     const bucket = byColor.get(label);
     if (!bucket || bucket.length === 0) continue;
-    const sorted = [...bucket].sort((a, b) => {
-      const typeCompare = compareByType(a, b);
-      if (typeCompare !== 0) return typeCompare;
-      const cmcCompare = cmcTiebreak(a) - cmcTiebreak(b);
-      if (cmcCompare !== 0) return cmcCompare;
-      return compareByName(a, b);
-    });
-    groups.push({ type: label, cards: sorted });
+    groups.push({ type: label, cards: sortWithinGroup(bucket, sortAxis) });
   }
   return groups;
 }
 
 const UNKNOWN_CMC = "unknown";
 
-function groupByCmc(cards: DeckCard[]): CardGroup[] {
+function groupByCmc(cards: DeckCard[], sortAxis: SortAxis): CardGroup[] {
   const byCmc = new Map<number | typeof UNKNOWN_CMC, DeckCard[]>();
   for (const card of cards) {
     const key = card.enrichment?.cmc ?? UNKNOWN_CMC;
@@ -195,28 +206,26 @@ function groupByCmc(cards: DeckCard[]): CardGroup[] {
   for (const key of orderedKeys) {
     const bucket = byCmc.get(key);
     if (!bucket || bucket.length === 0) continue;
-    const sorted = [...bucket].sort((a, b) => {
-      const typeCompare = compareByType(a, b);
-      if (typeCompare !== 0) return typeCompare;
-      const colorCompare = compareByColor(a, b);
-      if (colorCompare !== 0) return colorCompare;
-      return compareByName(a, b);
-    });
-    groups.push({ type: key === UNKNOWN_CMC ? "?" : String(key), cards: sorted });
+    groups.push({ type: key === UNKNOWN_CMC ? "?" : String(key), cards: sortWithinGroup(bucket, sortAxis) });
   }
   return groups;
 }
 
 /**
- * Groups and sorts a zone's cards by the given axis (type, color, or mana
- * cost — type is the default), with groups ordered by that axis's own
- * natural order and cards within a group sorted by the remaining two axes
- * and then by name, per the deck-organizer spec's grouping requirement.
+ * Groups and sorts a zone's cards by the given grouping axis (type, color,
+ * or mana cost — type is the default), with groups ordered by that axis's
+ * own natural order. Cards within a group are ordered by the given sort
+ * axis (mana value by default), then by name, per the deck-organizer
+ * spec's grouping requirement.
  */
-export function groupAndSortZone(cards: DeckCard[], axis: GroupingAxis = "type"): CardGroup[] {
-  if (axis === "color") return groupByColor(cards);
-  if (axis === "cmc") return groupByCmc(cards);
-  return groupByType(cards);
+export function groupAndSortZone(
+  cards: DeckCard[],
+  groupingAxis: GroupingAxis = "type",
+  sortAxis: SortAxis = "cmc",
+): CardGroup[] {
+  if (groupingAxis === "color") return groupByColor(cards, sortAxis);
+  if (groupingAxis === "cmc") return groupByCmc(cards, sortAxis);
+  return groupByType(cards, sortAxis);
 }
 
 export function groupCardsByZone(cards: DeckCard[]): Record<Zone, DeckCard[]> {

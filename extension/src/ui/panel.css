@@ -1,12 +1,27 @@
 /*
-  Design system for the Commander 500 panel.
+  Design system for the Commander 500 deckbuilder's full-tab view.
 
-  Concept: a budget ledger for a Commander deck. The signature element is the
-  circular budget gauge (echoed in the extension icon). Zone headers use a
-  serif "register" face to read as a ledger, distinct from the sans-serif
-  house style of every other MTG deckbuilder (Moxfield, Archidekt, etc.);
-  card data uses a grotesk with a tabular monospace for prices, so R$ figures
-  line up like a real accounting column.
+  Concept: "Night Ledger" — a budget ledger whose own accent palette
+  doubles as Magic's five-color mana pie, rather than two competing color
+  systems. Muted forest green is both the "good" status color (under
+  budget, legal) AND green mana; muted rust is both "bad" status (over
+  budget, illegal) AND red mana ("in the red," literally); muted brass is
+  both the price/foil accent AND multicolor (a real Magic card's gold
+  frame). Only white, blue, and black are net-new tokens. The signature is
+  two-part: the ledger tape (a full-width strip fusing budget/count/
+  legality/export into one quiet toolbar) carries the numbers, and a
+  colored left-edge rail on every card — echoing a real card's frame
+  border — carries color identity.
+
+  Near-black, cool-neutral canvas with desaturated accents — a deliberate
+  pivot from an earlier warm-parchment direction that, however considered,
+  still read as a generic AI-design default. Minimalism here means
+  removing decoration (no serif, no ledger-tape divider lines, lower
+  saturation) so the functional color — the rail, the gauges, price — is
+  the only thing that reads as an accent. One grotesk carries every text
+  role; a tabular monospace stack is kept only for numerals, so R$ figures
+  line up like a real accounting column. Both are system-font stacks — no
+  bundled or CDN-loaded typeface.
 */
 
 :host,
@@ -15,298 +30,81 @@
   box-sizing: border-box;
 }
 
-/*
-  Tokens are defined on both :host (the shadow-DOM-injected panel context)
-  and :root (the deck-tab-view page, a plain top-level document — :host
-  matches nothing there, so without :root every custom property here would
-  silently resolve to nothing, e.g. backgrounds falling back to transparent).
-*/
 :host,
 :root {
-  --c500-ink: #16241c;
-  --c500-ink-soft: #4b5d53;
-  --c500-paper: #edefe7;
-  --c500-paper-raised: #ffffff;
-  --c500-forest: #1f6b4a;
-  --c500-forest-soft: #dfeee6;
-  --c500-brass: #b8862e;
-  --c500-rust: #a63a2c;
-  --c500-rust-soft: #f6e3df;
-  --c500-line: #d7dacc;
+  --c500-text: #e8e6e3;
+  --c500-text-soft: #8f8d89;
+  --c500-bg: #17171b;
+  --c500-bg-raised: #1f1f24;
+  --c500-line: #2c2c32;
 
-  --c500-font-display: ui-serif, Georgia, "Times New Roman", serif;
+  /*
+    Mana-identity colors, muted/desaturated for a quieter, more minimal
+    read than a saturated palette. Green/Red/Gold are the ledger's own
+    accents wearing a second meaning (see file header); White/Blue/Black
+    are the only genuinely new hues. All seven tuned for >=4.5:1 text
+    contrast against both --c500-bg and --c500-bg-raised.
+  */
+  --c500-mana-w: #cfc6b8;
+  --c500-mana-u: #7897b3;
+  /* Lightened past a literal near-black a Swamp card would suggest (an
+     initial #6b5b73 measured only ~2.9:1 against --c500-bg — the same
+     problem --c500-mana-w had against the old light background, mirrored).
+     The rail element's keyline (CardRow/CardVisualTile) is what actually
+     guarantees legibility at a glance (task 10.2). */
+  --c500-mana-b: #9b87a8;
+  --c500-mana-r: #c17662;
+  --c500-mana-g: #6b9080;
+  --c500-mana-gold: #c9a463;
+  --c500-mana-c: #9a958a;
+  /* Terrenos (deck-analytics's dedicated land bucket): distinct from
+     --c500-mana-c since colorless spells/artifacts and lands are different
+     categories now sitting as separate bars in the same chart — sharing a
+     color would make the two indistinguishable at a glance (task 12.7). */
+  --c500-mana-land: #a68a6b;
+
+  /* Dedicated price color, kept decoupled from --c500-mana-gold even
+     though gold itself now clears text contrast comfortably — price and
+     "this card is multicolor" are different concerns that happen to share
+     a color family, and decoupling means a future tune to either can't
+     drag the other along. */
+  --c500-price: #d1a866;
+
+  /* Soft tints for status backgrounds: low-alpha overlays of the good/bad
+     mana hues above, not solid pastels — a pastel reads as washed-out
+     rather than quiet on a near-black base. */
+  --c500-status-good-soft: rgba(107, 144, 128, 0.16);
+  --c500-status-bad-soft: rgba(193, 118, 98, 0.16);
+
   --c500-font-body: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --c500-font-mono: ui-monospace, "SF Mono", "Cascadia Code", Consolas, monospace;
 
-  color-scheme: light;
+  /* Approximate single-row rendered height of .c500-tab__ledger-tape, used
+     to offset the sticky analytics column so it clears the sticky tape
+     without a gap or overlap (task 11.2) — both reference this one value
+     rather than guessing the same number twice. */
+  --c500-tape-height: 64px;
+
+  color-scheme: dark;
 }
 
-.c500-panel {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 2147483647;
-  font-family: var(--c500-font-body);
-  color: var(--c500-ink);
-  background: var(--c500-paper);
-  border: 1px solid var(--c500-line);
-  border-radius: 10px;
-  width: 320px;
-  max-height: calc(100vh - 40px);
-  overflow-y: auto;
-  box-shadow: 0 8px 24px rgba(22, 36, 28, 0.18);
-  font-size: 13px;
-  line-height: 1.4;
-}
-
-/* ---------- Header ---------- */
-
-.c500-panel__header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 14px 10px;
-  border-bottom: 1px solid var(--c500-line);
-}
-
-.c500-panel__mark {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: var(--c500-forest);
-  border: 2px solid var(--c500-brass);
-  flex-shrink: 0;
-}
-
-.c500-panel__title {
-  font-family: var(--c500-font-display);
-  font-size: 15px;
-  font-weight: 600;
-  margin: 0;
-  letter-spacing: 0.01em;
-}
-
-.c500-panel__format {
-  margin-left: auto;
-  font-family: var(--c500-font-body);
-  font-size: 11px;
-  border: 1px solid var(--c500-line);
-  border-radius: 6px;
-  background: var(--c500-paper-raised);
-  color: var(--c500-ink);
-  padding: 3px 6px;
-}
-
-.c500-panel__status {
-  padding: 10px 14px;
-  color: var(--c500-ink-soft);
-}
-
-/* ---------- Budget gauge (signature element) ---------- */
-
-.c500-gauge {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 14px;
-  border-bottom: 1px solid var(--c500-line);
-}
-
-.c500-gauge__dial {
-  flex-shrink: 0;
-}
-
-.c500-gauge__arc-track {
-  fill: none;
-  stroke: var(--c500-line);
-  stroke-width: 8;
-}
-
-.c500-gauge__arc-fill {
-  fill: none;
-  stroke: var(--c500-forest);
-  stroke-width: 8;
-  stroke-linecap: round;
-  transition: stroke-dasharray 0.25s ease, stroke 0.25s ease;
-}
-
-.c500-gauge--over .c500-gauge__arc-fill {
-  stroke: var(--c500-rust);
-}
-
-.c500-gauge__body {
-  min-width: 0;
-}
-
-.c500-gauge__amount {
-  font-family: var(--c500-font-mono);
-  font-size: 17px;
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-}
-
-.c500-gauge--over .c500-gauge__amount {
-  color: var(--c500-rust);
-}
-
-.c500-gauge__cap {
-  font-size: 11px;
-  color: var(--c500-ink-soft);
-}
-
-.c500-gauge__over-note {
-  margin-top: 2px;
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--c500-rust);
-}
-
-.c500-gauge__incomplete-note {
-  margin-top: 2px;
-  font-size: 11px;
-  color: var(--c500-ink-soft);
-  font-style: italic;
-}
-
-/* ---------- Legality summary ---------- */
-
-.c500-legality {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 14px;
-  border-bottom: 1px solid var(--c500-line);
-  font-size: 12px;
-}
-
-.c500-legality__dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--c500-forest);
-  flex-shrink: 0;
-}
-
-.c500-legality--illegal .c500-legality__dot {
-  background: var(--c500-rust);
-}
-
-.c500-legality--unknown .c500-legality__dot {
-  background: var(--c500-brass);
-}
-
-.c500-legality__as-of {
-  margin-left: auto;
-  font-size: 10px;
-  color: var(--c500-ink-soft);
-  flex-shrink: 0;
-}
-
-/* ---------- Export ---------- */
-
-.c500-export {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 10px 14px;
-  border-bottom: 1px solid var(--c500-line);
-}
-
-.c500-export__format {
-  flex: 1;
-  min-width: 0;
-  font-family: var(--c500-font-body);
-  font-size: 11px;
-  border: 1px solid var(--c500-line);
-  border-radius: 6px;
-  background: var(--c500-paper-raised);
-  color: var(--c500-ink);
-  padding: 3px 6px;
-}
-
-.c500-export__button {
-  font-family: var(--c500-font-body);
-  font-size: 11px;
-  border: 1px solid var(--c500-line);
-  border-radius: 6px;
-  background: var(--c500-paper-raised);
-  color: var(--c500-ink);
-  padding: 4px 8px;
-  cursor: pointer;
-}
-
-.c500-export__button:hover {
-  border-color: var(--c500-forest);
-}
-
-.c500-export__feedback {
-  font-size: 11px;
-  color: var(--c500-forest);
-}
-
-/* ---------- Zones ---------- */
-
-.c500-zone {
-  border-bottom: 1px solid var(--c500-line);
-}
-
-.c500-zone__header {
-  display: flex;
-  align-items: baseline;
-  gap: 6px;
-  padding: 10px 14px 4px;
-  font-family: var(--c500-font-display);
-  font-size: 13px;
-  font-weight: 600;
-}
-
-.c500-zone__count {
-  font-family: var(--c500-font-mono);
-  font-size: 11px;
-  color: var(--c500-ink-soft);
-  font-weight: 400;
-}
-
-.c500-zone__dropzone {
-  min-height: 28px;
-  padding: 0 8px 8px;
-  border-radius: 6px;
-  transition: background 0.15s ease;
-}
-
-.c500-zone__dropzone--active {
-  background: var(--c500-forest-soft);
-}
-
-.c500-zone__error {
-  margin: 0 14px 8px;
-  padding: 6px 8px;
-  border-radius: 6px;
-  background: var(--c500-rust-soft);
-  color: var(--c500-rust);
-  font-size: 11px;
-}
-
-.c500-group__label {
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--c500-ink-soft);
-  padding: 6px 6px 2px;
-}
-
-/* ---------- Card rows ---------- */
+/* ---------- Card rows (deck-organizer / card-visual-view, List mode) ---------- */
 
 .c500-card {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px 6px;
+  gap: 8px;
+  padding: 7px 8px;
   border-radius: 6px;
-  background: var(--c500-paper-raised);
+  background: var(--c500-bg-raised);
   margin-bottom: 2px;
   cursor: grab;
   border: 1px solid transparent;
+  /* The color-identity rail: 3px regardless of hover state. Its color comes
+     from an inline style (border-left-color), which — being a longhand
+     inline declaration — always wins over this class's border-color
+     shorthand below, on hover or otherwise. */
+  border-left-width: 3px;
   /* Without these, a pointer-down-and-move on the row starts the browser's
      native text/drag selection instead of dnd-kit's drag gesture. */
   user-select: none;
@@ -331,16 +129,21 @@
 .c500-drag-overlay {
   opacity: 0.85;
   cursor: grabbing;
-  box-shadow: 0 6px 16px rgba(22, 36, 28, 0.28);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.55);
   transform: scale(1.03);
 }
 
 .c500-card__qty {
   font-family: var(--c500-font-mono);
   font-variant-numeric: tabular-nums;
-  width: 1.4em;
-  text-align: right;
-  color: var(--c500-ink-soft);
+  font-size: 13px;
+  width: 2.6em;
+  padding: 3px 4px;
+  text-align: center;
+  color: var(--c500-text);
+  background: var(--c500-bg);
+  border: 1px solid var(--c500-line);
+  border-radius: 4px;
   flex-shrink: 0;
 }
 
@@ -350,23 +153,24 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  font-size: 15px;
 }
 
 .c500-card__price {
   font-family: var(--c500-font-mono);
   font-variant-numeric: tabular-nums;
-  font-size: 11px;
-  color: var(--c500-brass);
+  font-size: 13px;
+  color: var(--c500-price);
   flex-shrink: 0;
 }
 
 .c500-card__price--unknown {
-  color: var(--c500-rust);
+  color: var(--c500-mana-r);
   font-style: italic;
 }
 
 .c500-card__price--over-budget {
-  color: var(--c500-rust);
+  color: var(--c500-mana-r);
   text-decoration: underline;
   text-decoration-style: dotted;
   text-underline-offset: 2px;
@@ -380,7 +184,7 @@
 }
 
 .c500-card__badge--illegal {
-  background: var(--c500-rust);
+  background: var(--c500-mana-r);
 }
 
 /*
@@ -399,8 +203,8 @@
   border: none;
   border-radius: 50%;
   background: transparent;
-  color: var(--c500-ink-soft);
-  font-size: 14px;
+  color: var(--c500-text-soft);
+  font-size: 15px;
   line-height: 1;
   cursor: pointer;
   opacity: 0;
@@ -415,8 +219,8 @@
 }
 
 .c500-card__remove:hover {
-  background: var(--c500-rust);
-  color: var(--c500-paper);
+  background: var(--c500-mana-r);
+  color: var(--c500-bg);
 }
 
 /*
@@ -427,14 +231,14 @@
 */
 .c500-hover-preview {
   position: fixed;
-  width: 146px;
-  height: 204px;
+  width: 210px;
+  height: 294px;
   transform: translate(16px, -50%);
   border-radius: 8px;
   overflow: hidden;
   border: 1px solid var(--c500-line);
-  background: var(--c500-paper);
-  box-shadow: 0 8px 20px rgba(22, 36, 28, 0.24);
+  background: var(--c500-bg);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
   pointer-events: none;
   z-index: 2000;
 }
@@ -444,7 +248,7 @@
 .c500-tile {
   display: flex;
   flex-direction: column;
-  width: 146px;
+  width: 210px;
   border-radius: 8px;
   cursor: grab;
   user-select: none;
@@ -458,12 +262,27 @@
 
 .c500-tile__art {
   position: relative;
-  width: 146px;
-  height: 204px;
+  width: 210px;
+  height: 294px;
   border-radius: 8px;
   overflow: hidden;
   border: 1px solid var(--c500-line);
-  background: var(--c500-paper);
+  background: var(--c500-bg);
+  /* Color-identity rail (see .c500-card's border-left-width comment — same
+     inline-style-wins mechanism applies here). */
+  border-left-width: 3px;
+}
+
+/* Commander hero variant (TabRoot's hero block): a much larger tile that
+   fills its flex container's width instead of the fixed small-tile size. */
+.c500-tile--hero {
+  width: 100%;
+}
+
+.c500-tile--hero .c500-tile__art {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 5 / 7;
 }
 
 .c500-tile__img {
@@ -481,25 +300,28 @@
   justify-content: center;
   text-align: center;
   padding: 10px;
-  font-size: 12px;
-  color: var(--c500-ink-soft);
+  font-size: 14px;
+  color: var(--c500-text-soft);
 }
 
 .c500-tile__placeholder--unresolved {
   font-style: italic;
-  color: var(--c500-rust);
+  color: var(--c500-mana-r);
 }
 
 .c500-tile__qty {
   position: absolute;
   top: 6px;
   left: 6px;
-  width: 2.2em;
+  width: 2.8em;
   font-family: var(--c500-font-mono);
+  font-size: 13px;
+  padding: 3px 4px;
   text-align: center;
+  color: var(--c500-text);
   border: 1px solid var(--c500-line);
   border-radius: 5px;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(23, 23, 27, 0.85);
 }
 
 .c500-tile__remove {
@@ -513,9 +335,9 @@
   justify-content: center;
   border: none;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.9);
-  color: var(--c500-ink-soft);
-  font-size: 14px;
+  background: rgba(23, 23, 27, 0.85);
+  color: var(--c500-text-soft);
+  font-size: 15px;
   line-height: 1;
   cursor: pointer;
   opacity: 0;
@@ -530,13 +352,13 @@
 }
 
 .c500-tile__remove:hover {
-  background: var(--c500-rust);
-  color: var(--c500-paper);
+  background: var(--c500-mana-r);
+  color: var(--c500-bg);
 }
 
 .c500-tile__caption {
   margin-top: 4px;
-  font-size: 12px;
+  font-size: 14px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -545,8 +367,8 @@
 .c500-tile__price {
   font-family: var(--c500-font-mono);
   font-variant-numeric: tabular-nums;
-  font-size: 11px;
-  color: var(--c500-brass);
+  font-size: 13px;
+  color: var(--c500-price);
 }
 
 .c500-tile-grid {
@@ -556,25 +378,168 @@
   padding: 4px 2px;
 }
 
+/* ---------- Zones (deck-organizer) ---------- */
+
+.c500-zone {
+  border-bottom: 1px solid var(--c500-line);
+}
+
+.c500-zone__header {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 10px 14px 4px;
+  font-family: var(--c500-font-body);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.c500-zone__count {
+  font-family: var(--c500-font-mono);
+  font-size: 12px;
+  color: var(--c500-text-soft);
+  font-weight: 400;
+}
+
+.c500-zone__dropzone {
+  min-height: 28px;
+  padding: 0 8px 8px;
+  border-radius: 6px;
+  transition: background 0.15s ease;
+}
+
+.c500-zone__dropzone--active {
+  background: var(--c500-status-good-soft);
+}
+
+/*
+  Deck Principal's List view (Moxfield-style): each group flows into its own
+  column instead of the whole zone stacking as one long vertical list.
+  break-inside: avoid-column on each group's own wrapper (the dropzone's
+  direct children) keeps a group from splitting across columns, so a column
+  boundary only ever falls between groups, never inside one.
+*/
+.c500-zone__dropzone--columns {
+  column-width: 230px;
+  column-gap: 20px;
+}
+
+.c500-zone__dropzone--columns > div {
+  break-inside: avoid-column;
+  margin-bottom: 10px;
+}
+
+.c500-zone__error {
+  margin: 0 14px 8px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: var(--c500-status-bad-soft);
+  color: var(--c500-mana-r);
+  font-size: 11px;
+}
+
+.c500-group__label {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--c500-text);
+  padding: 8px 6px 3px;
+}
+
+.c500-group__count {
+  font-family: var(--c500-font-mono);
+  font-size: 11px;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: normal;
+  color: var(--c500-text-soft);
+}
+
+/*
+  Commander hero variant (TabRoot's hero block): Comandante and Comandante
+  Parceiro render here instead of a narrow side column, since the commander
+  defines a Commander deck's whole identity. Reuses ZoneSection unchanged
+  (drag-and-drop, grouping, error display all still work) — only the
+  container styling and tile size differ, via the `hero` prop.
+*/
+.c500-zone--hero {
+  border: 1px solid var(--c500-line);
+  border-radius: 10px;
+  background: var(--c500-bg-raised);
+  padding: 10px;
+}
+
+.c500-zone--hero.c500-zone {
+  border-bottom: 1px solid var(--c500-line);
+}
+
+.c500-zone--hero .c500-zone__header {
+  font-size: 17px;
+  padding: 0 0 8px;
+}
+
+.c500-zone--hero .c500-zone__dropzone {
+  min-height: 200px;
+  padding: 0;
+  /* An empty hero slot (no partner commander yet) should still read as an
+     intentional drop target, not dead space. */
+  border: 1px dashed transparent;
+  transition: min-height 0.15s ease;
+}
+
+.c500-zone--hero .c500-zone__dropzone:empty {
+  border-color: var(--c500-line);
+}
+
+.c500-zone--hero .c500-tile-grid {
+  padding: 0;
+}
+
+/*
+  Companheiro (comandanteParceiro) with no card yet: collapses to a slim
+  "drop a partner here" hint instead of reserving full hero-art height.
+  Driven by ZoneSection's `cards.length === 0` check, not CSS :empty, since
+  the dropzone still contains a (childless) group-cards wrapper div even
+  with zero cards.
+*/
+.c500-zone--hero-empty {
+  padding: 8px 10px;
+}
+
+.c500-zone--hero-empty .c500-zone__header {
+  font-size: 13px;
+  padding: 0 0 4px;
+}
+
+.c500-zone--hero-empty .c500-zone__dropzone {
+  min-height: 28px;
+}
+
 /* ---------- Charts (deck-analytics) ---------- */
 
 .c500-chart {
   border: 1px solid var(--c500-line);
   border-radius: 10px;
-  background: var(--c500-paper-raised);
+  background: var(--c500-bg-raised);
   padding: 12px 14px;
 }
 
 .c500-chart__title {
-  font-family: var(--c500-font-display);
-  font-size: 13px;
-  font-weight: 600;
+  font-family: var(--c500-font-body);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
   margin-bottom: 8px;
 }
 
 .c500-chart__empty {
-  font-size: 12px;
-  color: var(--c500-ink-soft);
+  font-size: 13px;
+  color: var(--c500-text-soft);
   font-style: italic;
   margin: 0;
 }
@@ -593,8 +558,8 @@
 }
 
 .c500-chart__label {
-  font-size: 11px;
-  color: var(--c500-ink-soft);
+  font-size: 12px;
+  color: var(--c500-text-soft);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -603,36 +568,39 @@
 .c500-chart__track {
   height: 10px;
   border-radius: 5px;
-  background: var(--c500-paper);
+  background: var(--c500-bg);
 }
 
 .c500-chart__bar {
   height: 100%;
   min-width: 4px;
   border-radius: 5px;
-  background: var(--c500-forest);
-  transition: width 0.2s ease;
+  /* Curva/Tipo buckets carry no color-identity meaning, so they fall back to
+     this neutral hue; Cor buckets set their own color inline (see BarChart). */
+  background: var(--c500-text-soft);
+  transition: width 0.2s ease, background 0.2s ease;
 }
 
 .c500-chart__count {
   font-family: var(--c500-font-mono);
   font-variant-numeric: tabular-nums;
-  font-size: 11px;
-  color: var(--c500-ink-soft);
+  font-size: 12px;
+  color: var(--c500-text-soft);
   text-align: right;
 }
 
 /* ==========================================================================
-   Full-tab view (deck-tab-view). Same token system and components as the
-   panel; only the container-level layout changes, from a narrow stacked
-   overlay to a two-column page with room for analytics and card art.
+   Full-tab view (deck-tab-view). The only surface this design system still
+   serves — the floating in-page overlay it originally also styled was
+   removed by a prior change (content-script.ts mounts no UI); there is no
+   compact/overlay variant to maintain here anymore.
    ========================================================================== */
 
 .c500-tab {
   min-height: 100vh;
   font-family: var(--c500-font-body);
-  color: var(--c500-ink);
-  background: var(--c500-paper);
+  color: var(--c500-text);
+  background: var(--c500-bg);
 }
 
 .c500-tab__header {
@@ -641,150 +609,358 @@
   gap: 10px;
   padding: 16px 24px;
   border-bottom: 1px solid var(--c500-line);
-  background: var(--c500-paper-raised);
+  background: var(--c500-bg-raised);
+}
+
+.c500-tab__mark {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--c500-mana-g);
+  border: 2px solid var(--c500-mana-gold);
+  flex-shrink: 0;
 }
 
 .c500-tab__title {
-  font-family: var(--c500-font-display);
-  font-size: 19px;
-  font-weight: 600;
+  font-family: var(--c500-font-body);
+  font-size: 21px;
+  font-weight: 700;
   margin: 0;
-  letter-spacing: 0.01em;
+  letter-spacing: -0.01em;
+}
+
+.c500-tab__format-select {
+  margin-left: auto;
+  font-family: var(--c500-font-body);
+  font-size: 12px;
+  border: 1px solid var(--c500-line);
+  border-radius: 6px;
+  background: var(--c500-bg);
+  color: var(--c500-text);
+  padding: 3px 6px;
 }
 
 .c500-tab__unsynced {
   margin-left: 12px;
-  font-size: 12px;
-  color: var(--c500-brass);
-  border: 1px solid var(--c500-brass);
+  font-size: 13px;
+  color: var(--c500-mana-gold);
+  border: 1px solid var(--c500-mana-gold);
   border-radius: 6px;
   padding: 2px 8px;
 }
 
 .c500-tab__status {
   padding: 40px 24px;
-  color: var(--c500-ink-soft);
-  font-size: 15px;
+  color: var(--c500-text-soft);
+  font-size: 16px;
 }
 
 .c500-tab__body {
-  display: grid;
-  grid-template-columns: 300px 1fr;
-  align-items: start;
+  display: flex;
+  flex-direction: column;
   gap: 20px;
-  padding: 20px 24px;
-  max-width: 1400px;
+  /* Narrower side padding and a wider max-width than a two-column layout
+     needed, to comfortably fit the third (analytics) column. */
+  padding: 16px 12px;
+  max-width: 1680px;
   margin: 0 auto;
 }
 
-@media (max-width: 900px) {
-  .c500-tab__body {
-    grid-template-columns: 1fr;
-  }
-}
+/* ---------- Ledger tape (signature element, part 1) ---------- */
 
-.c500-tab__sidebar {
+/*
+  Fuses budget, card count, legality, view/grouping controls, and export
+  into one full-width strip — a quiet toolbar, not a segmented receipt:
+  spacing alone separates each item, no divider lines. Each child is an
+  unchanged, independently-tested component (BudgetGauge, CardCountGauge,
+  LegalitySummary, ExportMenu); only the container and each component's own
+  compact-inline styling changed.
+*/
+.c500-tab__ledger-tape {
   display: flex;
-  flex-direction: column;
-  gap: 16px;
-  position: sticky;
-  top: 20px;
-}
-
-.c500-tab__sidebar > .c500-gauge,
-.c500-tab__sidebar > .c500-legality,
-.c500-tab__sidebar > .c500-export {
+  flex-wrap: wrap;
+  align-items: center;
   border: 1px solid var(--c500-line);
   border-radius: 10px;
-  background: var(--c500-paper-raised);
+  background: var(--c500-bg-raised);
+  /* Stays visible while Deck Principal (routinely ~90-100 rows) scrolls
+     past it. The background above is already opaque, so scrolling content
+     doesn't show through once it passes underneath. */
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.c500-tab__ledger-tape > * {
+  padding: 10px 20px;
+  flex-shrink: 0;
+}
+
+.c500-tab__ledger-tape .c500-export {
+  margin-left: auto;
+}
+
+.c500-gauge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.c500-gauge__dial {
+  flex-shrink: 0;
+}
+
+.c500-gauge__arc-track {
+  fill: none;
+  stroke: var(--c500-line);
+  stroke-width: 6;
+}
+
+.c500-gauge__arc-fill {
+  fill: none;
+  stroke: var(--c500-mana-g);
+  stroke-width: 6;
+  stroke-linecap: round;
+  transition: stroke-dasharray 0.25s ease, stroke 0.25s ease;
+}
+
+.c500-gauge--over .c500-gauge__arc-fill {
+  stroke: var(--c500-mana-r);
+}
+
+.c500-gauge__body {
+  min-width: 0;
+}
+
+.c500-gauge__amount {
+  font-family: var(--c500-font-mono);
+  font-size: 16px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.c500-gauge--over .c500-gauge__amount {
+  color: var(--c500-mana-r);
+}
+
+.c500-gauge__cap {
+  font-size: 12px;
+  color: var(--c500-text-soft);
+}
+
+.c500-gauge__over-note {
+  margin-top: 2px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--c500-mana-r);
+}
+
+.c500-gauge__incomplete-note {
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--c500-text-soft);
+  font-style: italic;
+}
+
+.c500-legality {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.c500-legality__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--c500-mana-g);
+  flex-shrink: 0;
+}
+
+.c500-legality--illegal .c500-legality__dot {
+  background: var(--c500-mana-r);
+}
+
+.c500-legality--unknown .c500-legality__dot {
+  background: var(--c500-mana-gold);
+}
+
+.c500-legality__as-of {
+  font-size: 11px;
+  color: var(--c500-text-soft);
+  flex-shrink: 0;
 }
 
 .c500-tab__view-toggle {
   display: flex;
   align-items: center;
   gap: 6px;
-  border: 1px solid var(--c500-line);
-  border-radius: 10px;
-  background: var(--c500-paper-raised);
-  padding: 10px 14px;
 }
 
 .c500-tab__view-toggle-label {
-  font-size: 12px;
-  color: var(--c500-ink-soft);
-  margin-right: auto;
+  font-size: 13px;
+  color: var(--c500-text-soft);
 }
 
 .c500-tab__view-toggle button {
-  font-family: var(--c500-font-body);
-  font-size: 11px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border: 1px solid var(--c500-line);
   border-radius: 6px;
-  background: var(--c500-paper);
-  color: var(--c500-ink);
-  padding: 4px 8px;
+  background: var(--c500-bg);
+  color: var(--c500-text);
+  padding: 5px 7px;
   cursor: pointer;
 }
 
 .c500-tab__view-toggle button[aria-pressed="true"] {
-  background: var(--c500-forest);
-  border-color: var(--c500-forest);
-  color: var(--c500-paper-raised);
+  background: var(--c500-mana-g);
+  border-color: var(--c500-mana-g);
+  color: var(--c500-bg-raised);
 }
 
 .c500-tab__grouping {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 6px;
-  border: 1px solid var(--c500-line);
-  border-radius: 10px;
-  background: var(--c500-paper-raised);
-  padding: 10px 14px;
-  font-size: 12px;
-  color: var(--c500-ink-soft);
+  font-size: 13px;
+  color: var(--c500-text-soft);
 }
 
 .c500-tab__grouping select {
   font-family: var(--c500-font-body);
-  font-size: 11px;
+  font-size: 12px;
   border: 1px solid var(--c500-line);
   border-radius: 6px;
-  background: var(--c500-paper);
-  color: var(--c500-ink);
+  background: var(--c500-bg);
+  color: var(--c500-text);
   padding: 4px 8px;
 }
 
+.c500-export {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.c500-export__format {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--c500-font-body);
+  font-size: 12px;
+  border: 1px solid var(--c500-line);
+  border-radius: 6px;
+  background: var(--c500-bg);
+  color: var(--c500-text);
+  padding: 3px 6px;
+}
+
+.c500-export__button {
+  font-family: var(--c500-font-body);
+  font-size: 12px;
+  border: 1px solid var(--c500-line);
+  border-radius: 6px;
+  background: var(--c500-bg);
+  color: var(--c500-text);
+  padding: 4px 8px;
+  cursor: pointer;
+}
+
+.c500-export__button:hover {
+  border-color: var(--c500-mana-g);
+}
+
+.c500-export__feedback {
+  font-size: 12px;
+  color: var(--c500-mana-g);
+}
+
+/* ---------- Main content row: Commander/Maybeboard column + Deck Principal ---------- */
+
 /*
-  Main Deck (~90-100 cards) is always far taller than the other four zones.
-  A naive auto-fill grid puts uneven-height items in the same row track,
-  which pushes short zones (Sideboard, Maybeboard) down below Main Deck's
-  full height instead of near the top where they belong. Main Deck gets its
-  own dedicated column so the other four zones stack independently at their
-  own natural height.
+  Deck Principal (~90-100 cards) needs to be visible without scrolling, so
+  it sits beside the hero column from the very top of the main content
+  area — not below a full-width hero+analytics row, which pushed it below
+  the fold (see design.md's live-review follow-up decisions). A third
+  column holds the analytics band, so it stays reachable without leaving
+  this row too. Each column gets its own natural height (align-items:
+  start), since the hero column (Commander + Companheiro + Maybeboard) and
+  the analytics column are both far shorter than Deck Principal.
 */
-.c500-tab__zones {
+.c500-tab__main-row {
   display: grid;
-  grid-template-columns: minmax(260px, 340px) 1fr;
+  grid-template-columns: minmax(280px, 400px) 1fr minmax(240px, 300px);
   gap: 16px;
   align-items: start;
 }
 
-.c500-tab__zones-side {
+@media (max-width: 1200px) {
+  .c500-tab__main-row {
+    grid-template-columns: minmax(280px, 400px) 1fr;
+  }
+
+  /* Not enough width left for a third column — analytics drops to a
+     full-width row of its own instead of squeezing in beside Deck Principal. */
+  .c500-tab__main-row > .c500-tab__analytics {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 900px) {
+  .c500-tab__main-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.c500-tab__hero-column {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-@media (max-width: 700px) {
-  .c500-tab__zones {
-    grid-template-columns: 1fr;
-  }
+/* Comandante, then Companheiro beneath it — stacked, not side by side. */
+.c500-tab__hero {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
-.c500-tab__zones .c500-zone {
+.c500-tab__main-row .c500-zone:not(.c500-zone--hero) {
   border: 1px solid var(--c500-line);
   border-radius: 10px;
-  background: var(--c500-paper-raised);
+  background: var(--c500-bg-raised);
   border-bottom: 1px solid var(--c500-line);
+}
+
+/* ---------- Analytics column: Curva/Cor/Tipo ---------- */
+
+/*
+  A third grid column beside Deck Principal — supporting information, still
+  reachable without leaving the main content row, but no longer competing
+  for the horizontal room a full-width band would need. The three charts
+  stack vertically (column direction's default cross-axis stretch already
+  fills each to the column's width, no extra sizing needed).
+*/
+.c500-tab__analytics {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/*
+  Sticky only above the 1200px breakpoint, where analytics is a real third
+  column beside Deck Principal (the existing max-width: 1200px rule above
+  already drops it to a full-width block otherwise, with nothing tall
+  beside it to scroll past). --c500-tape-height + the 20px gap between
+  .c500-tab__body's children clears the sticky ledger tape without a gap
+  or overlap; align-self: start matches .c500-tab__main-row's own
+  align-items: start so this rule doesn't depend on that not changing.
+*/
+@media (min-width: 1201px) {
+  .c500-tab__analytics {
+    position: sticky;
+    top: calc(var(--c500-tape-height) + 20px);
+    align-self: start;
+  }
 }

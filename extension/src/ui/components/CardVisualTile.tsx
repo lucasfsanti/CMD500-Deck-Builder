@@ -1,6 +1,7 @@
 import { useDraggable } from "@dnd-kit/core";
 import { isBasicLand, type DeckCard } from "../../lib/deck/types";
 import { resolveCardArt } from "./card-art";
+import { manaRailForColorIdentity } from "../../lib/organizer/mana-colors";
 
 function formatPrice(price: number | undefined): string {
   if (price === undefined) return "—";
@@ -13,14 +14,28 @@ interface CardVisualTileContentProps {
   overBudget?: boolean;
   onQuantityChange?: (cardId: string, quantity: number) => void;
   onRemove?: (cardId: string) => void;
+  /** Only the hero tile shows a name caption — grid tiles rely on artwork alone (card-visual-view spec). */
+  showCaption?: boolean;
 }
 
-function CardVisualTileContent({ card, illegal, overBudget, onQuantityChange, onRemove }: CardVisualTileContentProps) {
+function CardVisualTileContent({
+  card,
+  illegal,
+  overBudget,
+  onQuantityChange,
+  onRemove,
+  showCaption,
+}: CardVisualTileContentProps) {
   const { imageUrl, unresolved: artUnresolved } = resolveCardArt(card);
+  const rail = manaRailForColorIdentity(card.enrichment?.colorIdentity);
+  const railStyle = {
+    borderLeftColor: rail.colorVar,
+    boxShadow: rail.keyline ? "inset 2px 0 0 var(--c500-text)" : undefined,
+  };
 
   return (
     <>
-      <div className="c500-tile__art">
+      <div className="c500-tile__art" style={railStyle}>
         {imageUrl ? (
           <img src={imageUrl} alt={card.name} className="c500-tile__img" />
         ) : (
@@ -60,9 +75,11 @@ function CardVisualTileContent({ card, illegal, overBudget, onQuantityChange, on
           </button>
         )}
       </div>
-      <div className="c500-tile__caption" title={card.name}>
-        {card.name}
-      </div>
+      {showCaption && (
+        <div className="c500-tile__caption" title={card.name}>
+          {card.name}
+        </div>
+      )}
       <div
         className={`c500-tile__price${card.pageLowestPrice === undefined ? " c500-card__price--unknown" : ""}${overBudget ? " c500-card__price--over-budget" : ""}`}
       >
@@ -86,6 +103,8 @@ export interface CardVisualTileProps {
    * second draggable under the same card id as the original tile.
    */
   dragOverlay?: boolean;
+  /** "hero" renders a much larger tile, used for the Commander hero block. */
+  size?: "default" | "hero";
 }
 
 /** Visual-view counterpart to CardRow: an artwork tile instead of a name-only row. */
@@ -97,11 +116,16 @@ export function CardVisualTile({
   onRemove,
   className,
   dragOverlay,
+  size = "default",
 }: CardVisualTileProps) {
+  const sizeClassName = size === "hero" ? " c500-tile--hero" : "";
+
+  const showCaption = size === "hero";
+
   if (dragOverlay) {
     return (
-      <div className={`c500-tile${className ? ` ${className}` : ""}`}>
-        <CardVisualTileContent card={card} illegal={illegal} overBudget={overBudget} />
+      <div className={`c500-tile${sizeClassName}${className ? ` ${className}` : ""}`}>
+        <CardVisualTileContent card={card} illegal={illegal} overBudget={overBudget} showCaption={showCaption} />
       </div>
     );
   }
@@ -114,7 +138,7 @@ export function CardVisualTile({
   return (
     <div
       ref={setNodeRef}
-      className={`c500-tile${isDragging ? " c500-tile--dragging" : ""}${className ? ` ${className}` : ""}`}
+      className={`c500-tile${sizeClassName}${isDragging ? " c500-tile--dragging" : ""}${className ? ` ${className}` : ""}`}
       {...listeners}
       {...attributes}
     >
@@ -124,6 +148,7 @@ export function CardVisualTile({
         overBudget={overBudget}
         onQuantityChange={onQuantityChange}
         onRemove={onRemove}
+        showCaption={showCaption}
       />
     </div>
   );

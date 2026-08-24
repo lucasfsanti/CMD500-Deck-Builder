@@ -94,6 +94,35 @@ describe("CardRow removal control", () => {
   });
 });
 
+describe("CardRow color-identity rail (task 3.2)", () => {
+  it("colors the rail for a mono-color card's identity", () => {
+    const { container } = renderCard({
+      card: {
+        ...baseCard,
+        enrichmentStatus: "ok",
+        enrichment: {
+          name: baseCard.name,
+          typeLine: "Instant",
+          colorIdentity: ["U"],
+          cmc: 1,
+          layout: "normal",
+          legalInCommander: true,
+          scryfallId: "a",
+          imageUrl: undefined,
+        },
+      },
+    });
+    const row = container.querySelector(".c500-card") as HTMLElement;
+    expect(row.style.borderLeftColor).toBe("var(--c500-mana-u)");
+  });
+
+  it("uses the neutral pending color while enrichment hasn't resolved", () => {
+    const { container } = renderCard({});
+    const row = container.querySelector(".c500-card") as HTMLElement;
+    expect(row.style.borderLeftColor).toBe("var(--c500-line)");
+  });
+});
+
 describe("CardRow artwork hover preview (task 5.4)", () => {
   it("shows the artwork preview on hover", () => {
     const { container } = renderCard({});

@@ -103,6 +103,83 @@ describe("ZoneSection view-mode switching (task 4.4)", () => {
   });
 });
 
+describe("ZoneSection hero mode (task 5.2)", () => {
+  it("forces Visual-mode hero tiles regardless of the passed viewMode", () => {
+    const { container } = render(
+      <DndContext>
+        <ZoneSection zone="comandante" cards={[card()]} viewMode="list" hero />
+      </DndContext>,
+    );
+    expect(container.querySelector(".c500-tile--hero")).not.toBeNull();
+    expect(container.querySelector(".c500-card")).toBeNull();
+  });
+
+  it("omits the group label in hero mode", () => {
+    const { container } = render(
+      <DndContext>
+        <ZoneSection zone="comandante" cards={[card()]} hero />
+      </DndContext>,
+    );
+    expect(container.querySelector(".c500-group__label")).toBeNull();
+  });
+
+  it("still marks the drop target in hero mode", () => {
+    const { container } = render(
+      <DndContext>
+        <ZoneSection zone="comandante" cards={[]} hero />
+      </DndContext>,
+    );
+    expect(container.querySelector(".c500-zone__dropzone")).not.toBeNull();
+  });
+
+  it("shrinks (task 8.6) when a hero zone holds no card", () => {
+    const { container } = render(
+      <DndContext>
+        <ZoneSection zone="comandanteParceiro" cards={[]} hero />
+      </DndContext>,
+    );
+    expect(container.querySelector(".c500-zone--hero-empty")).not.toBeNull();
+  });
+
+  it("does not shrink (task 8.6) once a hero zone holds a card", () => {
+    const { container } = render(
+      <DndContext>
+        <ZoneSection zone="comandanteParceiro" cards={[card()]} hero />
+      </DndContext>,
+    );
+    expect(container.querySelector(".c500-zone--hero-empty")).toBeNull();
+  });
+});
+
+describe("ZoneSection multi-column list layout (task 8.7)", () => {
+  it("adds the multi-column class in List view when multiColumn is set", () => {
+    const { container } = render(
+      <DndContext>
+        <ZoneSection zone="mainDeck" cards={[card()]} viewMode="list" multiColumn />
+      </DndContext>,
+    );
+    expect(container.querySelector(".c500-zone__dropzone--columns")).not.toBeNull();
+  });
+
+  it("does not add the multi-column class when multiColumn is not set", () => {
+    const { container } = render(
+      <DndContext>
+        <ZoneSection zone="maybeboard" cards={[card()]} viewMode="list" />
+      </DndContext>,
+    );
+    expect(container.querySelector(".c500-zone__dropzone--columns")).toBeNull();
+  });
+
+  it("does not add the multi-column class in Visual view even when multiColumn is set", () => {
+    const { container } = render(
+      <DndContext>
+        <ZoneSection zone="mainDeck" cards={[card()]} viewMode="visual" multiColumn />
+      </DndContext>,
+    );
+    expect(container.querySelector(".c500-zone__dropzone--columns")).toBeNull();
+  });
+});
+
 describe("ZoneSection grouping-axis switching (task 4.2)", () => {
   const cards = [coloredCard("Red Card", ["R"]), coloredCard("Blue Card", ["U"])];
 
@@ -134,5 +211,35 @@ describe("ZoneSection grouping-axis switching (task 4.2)", () => {
     );
     expect(screen.getByText("1")).toBeTruthy();
     expect(screen.queryByText("Artefato")).toBeNull();
+  });
+});
+
+describe("ZoneSection group label shows a card count (task 12.5)", () => {
+  it("shows the group's total card count next to its label", () => {
+    const cards = [coloredCard("Red Card", ["R"]), coloredCard("Blue Card", ["U"])];
+    const { container } = render(
+      <DndContext>
+        <ZoneSection zone="mainDeck" cards={cards} />
+      </DndContext>,
+    );
+    const label = container.querySelector(".c500-group__label");
+    expect(label?.textContent).toBe("Artefato(2)");
+    expect(label?.querySelector(".c500-group__count")?.textContent).toBe("(2)");
+  });
+});
+
+describe("ZoneSection sort axis (task 12.3)", () => {
+  it("orders cards within a group by the active sort axis", () => {
+    const cards = [
+      { ...card(), id: "a", name: "Zeta" },
+      { ...card(), id: "b", name: "Alpha" },
+    ];
+    render(
+      <DndContext>
+        <ZoneSection zone="mainDeck" cards={cards} sortAxis="name" />
+      </DndContext>,
+    );
+    const names = screen.getAllByText(/Zeta|Alpha/).map((el) => el.textContent);
+    expect(names).toEqual(["Alpha", "Zeta"]);
   });
 });

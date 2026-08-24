@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useDraggable } from "@dnd-kit/core";
 import { isBasicLand, type DeckCard } from "../../lib/deck/types";
 import { resolveCardArt } from "./card-art";
+import { manaRailForColorIdentity } from "../../lib/organizer/mana-colors";
 
 function formatPrice(price: number | undefined): string {
   if (price === undefined) return "—";
@@ -100,10 +101,15 @@ export interface CardRowProps {
 
 export function CardRow({ card, illegal, overBudget, onQuantityChange, onRemove, className, dragOverlay }: CardRowProps) {
   const [hoverPos, setHoverPos] = useState<{ x: number; y: number } | null>(null);
+  const rail = manaRailForColorIdentity(card.enrichment?.colorIdentity);
+  const railStyle = {
+    borderLeftColor: rail.colorVar,
+    boxShadow: rail.keyline ? "inset 2px 0 0 var(--c500-text)" : undefined,
+  };
 
   if (dragOverlay) {
     return (
-      <div className={`c500-card${className ? ` ${className}` : ""}`}>
+      <div className={`c500-card${className ? ` ${className}` : ""}`} style={railStyle}>
         <CardRowContent card={card} illegal={illegal} overBudget={overBudget} />
       </div>
     );
@@ -118,6 +124,7 @@ export function CardRow({ card, illegal, overBudget, onQuantityChange, onRemove,
     <div
       ref={setNodeRef}
       className={`c500-card${isDragging ? " c500-card--dragging" : ""}${className ? ` ${className}` : ""}`}
+      style={railStyle}
       {...listeners}
       {...attributes}
       onPointerEnter={(e) => setHoverPos({ x: e.clientX, y: e.clientY })}

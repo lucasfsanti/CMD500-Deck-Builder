@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import type { DeckCard } from "../lib/deck/types";
 
 const mockUseTabDeck = vi.fn();
@@ -19,7 +19,11 @@ function card(id: string, name: string, zone: DeckCard["zone"]): DeckCard {
     quantity: 1,
     zone,
     pageLowestPrice: 4,
-    pageImageUrl: undefined,
+    // LigaMagic's captured page always embeds artwork for a real card (see
+    // card-art.ts) — this fixture matches that invariant so the Commander
+    // hero block's forced Visual-mode tile renders an <img>, not a
+    // placeholder that would duplicate the card's name alongside its caption.
+    pageImageUrl: `https://example.com/${id}.jpg`,
     enrichment: {
       name,
       typeLine: "Artifact",
@@ -59,11 +63,120 @@ describe("TabRoot (task 3.1)", () => {
     expect(screen.getByText("Sol Ring")).toBeTruthy();
     expect(screen.getByText("Chalice of the Void")).toBeTruthy();
     // All four zone headers present, per deck-organizer's four-zone requirement, now at full width.
-    for (const label of ["Comandante", "Comandante Parceiro", "Deck Principal", "Maybeboard"]) {
+    for (const label of ["Comandante", "Companheiro", "Main Deck", "Maybeboard"]) {
       expect(screen.getByText(label)).toBeTruthy();
     }
     // No unsynced indicator while the source tab is open.
     expect(screen.queryByText(/Não sincronizado/)).toBeNull();
+  });
+
+  it("exposes the view-mode toggle as icon buttons with accessible names (task 7.2)", async () => {
+    mockUseTabDeck.mockReturnValue({
+      cards: [card("a", "Sol Ring", "mainDeck")],
+      pageStatus: "ok",
+      format: "commander500",
+      setFormat: vi.fn(),
+      zoneError: undefined,
+      moveCard: vi.fn(),
+      setQuantity: vi.fn(),
+    });
+    mockUseSourceTabStatus.mockReturnValue("open");
+
+    const { TabRoot } = await import("./TabRoot");
+    render(<TabRoot />);
+
+    const listButton = screen.getByRole("button", { name: "Ver em lista" });
+    const visualButton = screen.getByRole("button", { name: "Ver em modo visual" });
+    expect(listButton.getAttribute("aria-pressed")).toBe("true");
+    expect(visualButton.getAttribute("aria-pressed")).toBe("false");
+    // No leftover "Lista"/"Visual" visible text now that these are icons.
+    expect(screen.queryByText("Lista")).toBeNull();
+    expect(screen.queryByText("Visual")).toBeNull();
+  });
+
+  it("lays out the hero column, Main Deck, and analytics as three siblings in the main row (task 8.5)", async () => {
+    mockUseTabDeck.mockReturnValue({
+      cards: [
+        card("a", "Xyris, the Writhing Storm", "comandante"),
+        card("b", "Sol Ring", "mainDeck"),
+        card("c", "Chalice of the Void", "maybeboard"),
+      ],
+      pageStatus: "ok",
+      format: "commander500",
+      setFormat: vi.fn(),
+      zoneError: undefined,
+      moveCard: vi.fn(),
+      setQuantity: vi.fn(),
+    });
+    mockUseSourceTabStatus.mockReturnValue("open");
+
+    const { TabRoot } = await import("./TabRoot");
+    const { container } = render(<TabRoot />);
+
+    const heroColumn = container.querySelector(".c500-tab__hero-column");
+    expect(heroColumn?.textContent).toContain("Maybeboard");
+    expect(heroColumn?.textContent).toContain("Comandante");
+    // Main Deck and the analytics band are both siblings of the hero column
+    // within the main row — Main Deck is never pushed below a charts row.
+    const mainRow = container.querySelector(".c500-tab__main-row");
+    const analytics = container.querySelector(".c500-tab__analytics");
+    expect(heroColumn?.parentElement).toBe(mainRow);
+    expect(analytics?.parentElement).toBe(mainRow);
+    expect(mainRow?.textContent).toContain("Main Deck");
+  });
+
+  it("shows no removal control for the Comandante's card, unlike other zones (task 8.8)", async () => {
+    mockUseTabDeck.mockReturnValue({
+      cards: [
+        card("a", "Xyris, the Writhing Storm", "comandante"),
+        card("b", "Vial Smasher the Fierce", "comandanteParceiro"),
+        card("c", "Sol Ring", "mainDeck"),
+      ],
+      pageStatus: "ok",
+      format: "commander500",
+      setFormat: vi.fn(),
+      zoneError: undefined,
+      moveCard: vi.fn(),
+      setQuantity: vi.fn(),
+      removeCard: vi.fn(),
+    });
+    mockUseSourceTabStatus.mockReturnValue("open");
+
+    const { TabRoot } = await import("./TabRoot");
+    render(<TabRoot />);
+
+    expect(screen.queryByLabelText("remover Xyris, the Writhing Storm do deck")).toBeNull();
+    expect(screen.getByLabelText("remover Vial Smasher the Fierce do deck")).toBeTruthy();
+    expect(screen.getByLabelText("remover Sol Ring do deck")).toBeTruthy();
+  });
+
+  it("re-orders Main Deck cards when the sort axis switches to Price (task 12.3)", async () => {
+    mockUseTabDeck.mockReturnValue({
+      cards: [
+        { ...card("a", "Alpha", "mainDeck"), pageLowestPrice: 1 },
+        { ...card("b", "Zeta", "mainDeck"), pageLowestPrice: 100 },
+      ],
+      pageStatus: "ok",
+      format: "commander500",
+      setFormat: vi.fn(),
+      zoneError: undefined,
+      moveCard: vi.fn(),
+      setQuantity: vi.fn(),
+    });
+    mockUseSourceTabStatus.mockReturnValue("open");
+
+    const { TabRoot } = await import("./TabRoot");
+    render(<TabRoot />);
+
+    // Default sort axis (Mana Value) ties on CMC, falling back to name: Alpha before Zeta.
+    let names = screen.getAllByText(/^(Alpha|Zeta)$/).map((el) => el.textContent);
+    expect(names).toEqual(["Alpha", "Zeta"]);
+
+    fireEvent.change(screen.getByLabelText("Ordenar por"), { target: { value: "price" } });
+
+    // Price sort is descending (highest first): Zeta (R$100) before Alpha (R$1).
+    names = screen.getAllByText(/^(Alpha|Zeta)$/).map((el) => el.textContent);
+    expect(names).toEqual(["Zeta", "Alpha"]);
   });
 
   it("shows the unsynced indicator when the source tab has closed (task 3.2)", async () => {
