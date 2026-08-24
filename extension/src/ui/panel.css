@@ -613,11 +613,6 @@
 }
 
 .c500-tab__mark {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: var(--c500-mana-g);
-  border: 2px solid var(--c500-mana-gold);
   flex-shrink: 0;
 }
 
@@ -627,6 +622,22 @@
   font-weight: 700;
   margin: 0;
   letter-spacing: -0.01em;
+}
+
+/* Standard sr-only clip pattern: stays in the accessibility tree (unlike
+   display: none / visibility: hidden, which would remove it) but renders
+   nothing visible. Used to keep an element's accessible name without
+   showing its text on screen. */
+.c500-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .c500-tab__format-select {
@@ -653,6 +664,25 @@
   padding: 40px 24px;
   color: var(--c500-text-soft);
   font-size: 16px;
+}
+
+.c500-tab__footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 24px;
+  border-top: 1px solid var(--c500-line);
+  color: var(--c500-text-soft);
+  font-size: 12px;
+}
+
+.c500-tab__footer a {
+  color: var(--c500-text-soft);
+}
+
+.c500-tab__footer-version {
+  color: var(--c500-text-soft);
 }
 
 .c500-tab__body {

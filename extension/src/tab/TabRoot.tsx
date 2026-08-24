@@ -64,6 +64,67 @@ function GridIcon() {
   );
 }
 
+/**
+ * Header logo mark (task 1.1, revised): a simplified vector redraw of the
+ * extension's real logo (extension/public/icons/icon128.png) — the gold
+ * badge, dark-brown outline, blue monogram, and WUBRG dot row are all
+ * carried over, but the two-line "CMD500 Deckbuilder" script wordmark is
+ * reduced to a single bold "5" and the dots lose their glossy highlight.
+ * Downscaling the full raster logo to ~38px left the wordmark illegible;
+ * being vector, this stays crisp at any size instead of just being smaller.
+ */
+function LogoMark() {
+  return (
+    <svg
+      width="38"
+      height="38"
+      viewBox="0 0 100 100"
+      className="c500-tab__mark"
+      aria-hidden="true"
+    >
+      <rect x="5" y="5" width="90" height="90" rx="16" fill="#b1802a" stroke="#2e1f0f" strokeWidth="6" />
+      <text
+        x="50"
+        y="63"
+        textAnchor="middle"
+        fontFamily="Georgia, 'Times New Roman', serif"
+        fontWeight="900"
+        fontSize="56"
+        fill="#4a86c4"
+        stroke="#2e1f0f"
+        strokeWidth="5"
+        strokeLinejoin="round"
+        paintOrder="stroke"
+      >
+        5
+      </text>
+      {[
+        { cx: 20, fill: "#f2efe6" },
+        { cx: 35, fill: "#2f6fc0" },
+        { cx: 50, fill: "#1c1c1c" },
+        { cx: 65, fill: "#c23a2e" },
+        { cx: 80, fill: "#3f8f4a" },
+      ].map(({ cx, fill }) => (
+        <circle key={cx} cx={cx} cy="83" r="7" fill={fill} stroke="#2e1f0f" strokeWidth="2.5" />
+      ))}
+    </svg>
+  );
+}
+
+/**
+ * `chrome` is an ambient global from @types/chrome, not always defined at
+ * runtime (e.g. this component's test environment) — guard both the
+ * identifier itself and the call chain rather than assuming either exists.
+ */
+function getExtensionVersion(): string | undefined {
+  if (typeof chrome === "undefined") return undefined;
+  try {
+    return chrome.runtime?.getManifest?.()?.version;
+  } catch {
+    return undefined;
+  }
+}
+
 export function TabRoot() {
   const url = new URL(window.location.href);
   const sourceTabId = getSourceTabIdFromUrl(url);
@@ -78,6 +139,7 @@ export function TabRoot() {
   const [groupingAxis, setGroupingAxis] = useState<GroupingAxis>("type");
   const [sortAxis, setSortAxis] = useState<SortAxis>("cmc");
   const [draggedCard, setDraggedCard] = useState<DeckCard | undefined>();
+  const version = getExtensionVersion();
 
   const byZone = groupCardsByZone(cards);
   const budget = calculateBudget(cards);
@@ -98,8 +160,8 @@ export function TabRoot() {
   return (
     <div className="c500-tab">
       <header className="c500-tab__header">
-        <span className="c500-tab__mark" aria-hidden="true" />
-        <h1 className="c500-tab__title">Montador de Decks Commander 500</h1>
+        <LogoMark />
+        <h1 className="c500-tab__title c500-visually-hidden">Montador de Decks Commander 500</h1>
         <select
           className="c500-tab__format-select"
           value={format}
@@ -262,6 +324,13 @@ export function TabRoot() {
           </DndContext>
         </div>
       )}
+
+      <footer className="c500-tab__footer">
+        <a href="https://github.com/lucasfsanti" target="_blank" rel="noreferrer">
+          Feito por Lucas Santiago
+        </a>
+        {version && <span className="c500-tab__footer-version">v{version}</span>}
+      </footer>
     </div>
   );
 }

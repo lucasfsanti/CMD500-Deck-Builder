@@ -217,4 +217,72 @@ describe("TabRoot (task 3.1)", () => {
 
     expect(screen.getByText("Lendo este deck…")).toBeTruthy();
   });
+
+  it("renders the vector logo mark in the header, with the title kept as an accessible-only heading (branding)", async () => {
+    mockUseTabDeck.mockReturnValue({
+      cards: [card("a", "Sol Ring", "mainDeck")],
+      pageStatus: "ok",
+      format: "commander500",
+      setFormat: vi.fn(),
+      zoneError: undefined,
+      moveCard: vi.fn(),
+      setQuantity: vi.fn(),
+    });
+    mockUseSourceTabStatus.mockReturnValue("open");
+
+    const { TabRoot } = await import("./TabRoot");
+    const { container } = render(<TabRoot />);
+
+    const logo = container.querySelector("header svg.c500-tab__mark");
+    expect(logo).toBeTruthy();
+    expect(logo?.getAttribute("aria-hidden")).toBe("true");
+    // Nothing visible reads the title anymore, but it's still the page's
+    // accessible name via a visually-hidden heading.
+    expect(screen.getByRole("heading", { name: "Montador de Decks Commander 500" })).toBeTruthy();
+  });
+
+  it("shows a footer with the GitHub credit link and the extension's version, in every pageStatus state (branding)", async () => {
+    vi.stubGlobal("chrome", {
+      runtime: { getManifest: () => ({ version: "0.1.0" }) },
+    });
+
+    mockUseTabDeck.mockReturnValue({
+      cards: [card("a", "Sol Ring", "mainDeck")],
+      pageStatus: "ok",
+      format: "commander500",
+      setFormat: vi.fn(),
+      zoneError: undefined,
+      moveCard: vi.fn(),
+      setQuantity: vi.fn(),
+    });
+    mockUseSourceTabStatus.mockReturnValue("open");
+
+    const { TabRoot } = await import("./TabRoot");
+    render(<TabRoot />);
+
+    const link = screen.getByRole("link", { name: "Feito por Lucas Santiago" });
+    expect(link.getAttribute("href")).toBe("https://github.com/lucasfsanti");
+    expect(screen.getByText("v0.1.0")).toBeTruthy();
+
+    vi.unstubAllGlobals();
+  });
+
+  it("omits the version segment without throwing when chrome.runtime is unavailable (branding)", async () => {
+    mockUseTabDeck.mockReturnValue({
+      cards: [],
+      pageStatus: "reading",
+      format: "commander500",
+      setFormat: vi.fn(),
+      zoneError: undefined,
+      moveCard: vi.fn(),
+      setQuantity: vi.fn(),
+    });
+    mockUseSourceTabStatus.mockReturnValue("unknown");
+
+    const { TabRoot } = await import("./TabRoot");
+    render(<TabRoot />);
+
+    expect(screen.getByRole("link", { name: "Feito por Lucas Santiago" })).toBeTruthy();
+    expect(screen.queryByText(/^v\d/)).toBeNull();
+  });
 });
