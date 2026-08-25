@@ -1,0 +1,23 @@
+## 1. Light-mode CSS tokens
+
+- [x] 1.1 In `panel.css`, add a `@media (prefers-color-scheme: light)` block scoped to `:root:not([data-theme="dark"]), :host:not([data-theme="dark"])` containing the full light-mode token set from design.md's table (`--c500-text`, `--c500-text-soft`, `--c500-bg`, `--c500-bg-raised`, `--c500-line`, all seven `--c500-mana-*` tokens, `--c500-price`, both `--c500-status-*-soft` tokens, and `color-scheme: light`). Verify visually (via the OS/browser dark-mode setting or DevTools' rendering emulation) that the panel switches to the new light palette when no `data-theme` attribute is present.
+- [x] 1.2 In `panel.css`, add a `:root[data-theme="light"], :host[data-theme="light"]` block with the same token set as 1.1, so a manual light choice applies regardless of OS preference. Verify by setting `data-theme="light"` on `<html>` via DevTools and confirming the palette applies even when the OS/browser is in dark mode.
+
+## 2. Theme preference hook
+
+- [x] 2.1 (revised: persists via the existing `KeyValueStore`/`ChromeLocalStore` from `lib/scryfall/cache.ts` — the codebase's established pattern for a single persisted preference value, per `lib/deck/format-storage.ts` — rather than inventing a new bespoke storage type) Create `extension/src/tab/use-theme-preference.ts` exporting a `useThemePreference` hook: on mount, reads a stored preference via an injectable `store: KeyValueStore` parameter (defaulting to a module-level `ChromeLocalStore` instance) under a single key (`"c500ThemePreference"`); if nothing is stored, falls back to `window.matchMedia("(prefers-color-scheme: light)")` (guarded — `typeof window.matchMedia === "function"`) and subscribes to its `change` event so the panel tracks a live OS change until a manual choice is made; falls back to `"dark"` if `matchMedia` itself is unavailable. Returns `{ theme: "light" | "dark", setTheme: (theme: "light" | "dark") => void }`. Verify with a unit test injecting a fake `KeyValueStore` and a fake `matchMedia`, covering: stored preference wins over OS; OS preference used when nothing stored; dark fallback when neither is available.
+- [x] 2.2 In the same hook, on mount and whenever `theme` changes, set `document.documentElement.dataset.theme` to the resolved value (`"light"` or `"dark"`); `setTheme` writes the new value to the injected `store` (fire-and-forget, matching `use-tab-deck`'s existing async-write pattern) and updates local state immediately rather than waiting for the write to resolve, and tears down the `matchMedia` `change` listener from 2.1 (via a `hasManualChoice` state flip, not a literal same-render unsubscribe) so a later OS change no longer overrides the manual choice. Verify with a unit test asserting `document.documentElement.dataset.theme` updates after `setTheme` is called, and that a simulated `matchMedia` change event after `setTheme` no longer changes `theme`.
+
+## 3. Toggle control
+
+- [x] 3.1 In `TabRoot.tsx`, add a `SunIcon`/`MoonIcon` pair (inline SVG, `aria-hidden="true"`, following the existing `ListIcon`/`GridIcon` pattern) and a header toggle `<button>` next to the format `<select>`: shows the icon for the theme it would switch *to*, `aria-label` stating the action in Portuguese (e.g. "Mudar para tema claro" / "Mudar para tema escuro"), `onClick` calls `setTheme` from `useThemePreference` with the opposite of the current theme. Verify the app builds and the button renders in the header.
+- [x] 3.2 Wire `useThemePreference` into `TabRoot`, passing its `theme`/`setTheme` to the new button. Verify clicking the button in a running build visibly switches the panel's palette without a page reload.
+
+## 4. Tests
+
+- [x] 4.1 In `TabRoot.test.tsx`, mock `useThemePreference` and add assertions: the header renders the theme toggle button with the correct `aria-label` for the current theme, and clicking it calls `setTheme` with the opposite theme.
+
+## 5. Verification
+
+- [x] 5.1 Run the full test suite (`npm test` in `extension/`), `tsc --noEmit`, and `npm run build`, confirming everything passes.
+- [x] 5.2 Load the unpacked extension, open a real LigaMagic deck's full-tab view, and visually confirm: the panel's initial theme matches the OS/browser color-scheme setting when no preference is stored yet; clicking the toggle switches the whole panel's palette (backgrounds, text, mana-color accents, price, status colors) between light and dark immediately; closing and reopening the full-tab view (or opening a second deck's tab) keeps the manually chosen theme regardless of OS preference; all mana-color rails, gauges, and charts remain legible in both themes. Confirmed by the user directly in the browser.

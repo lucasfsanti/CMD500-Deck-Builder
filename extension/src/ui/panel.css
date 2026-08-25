@@ -88,6 +88,75 @@
   color-scheme: dark;
 }
 
+/*
+  Light theme (panel-theming): a fresh design pass in the same "Night
+  Ledger" hue language, re-tuned for a light canvas — not a revival of the
+  pre-redesign "Ledger, Reforged" palette. All tokens contrast-checked at
+  >=4.5:1 against both --c500-bg and --c500-bg-raised, the same bar the
+  dark palette holds itself to (see design.md's token table).
+
+  Two layers, both applying the same token set:
+  - OS-preference layer: applies when the browser prefers light and no
+    manual choice has been made (:not([data-theme="dark"]) guards against
+    a manual dark choice on a light-OS machine).
+  - Manual-override layer: applies unconditionally once useThemePreference
+    sets data-theme="light" on <html>, regardless of OS preference. There
+    is no matching [data-theme="dark"] token block — dark is already the
+    unguarded base above; that attribute value only exists so the
+    OS-preference layer's :not() guard has something to check against.
+*/
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]),
+  :host:not([data-theme="dark"]) {
+    --c500-text: #1a1a1d;
+    --c500-text-soft: #6b6a68;
+    --c500-bg: #ecebe7;
+    --c500-bg-raised: #ffffff;
+    --c500-line: #d8d6d1;
+
+    --c500-mana-w: #726451;
+    --c500-mana-u: #3f6a8a;
+    --c500-mana-b: #5b4a66;
+    --c500-mana-r: #a1503c;
+    --c500-mana-g: #3f6d5a;
+    --c500-mana-gold: #7f5e26;
+    --c500-mana-c: #6e6a60;
+    --c500-mana-land: #7a5f43;
+
+    --c500-price: #7a5b19;
+
+    --c500-status-good-soft: rgba(63, 109, 90, 0.14);
+    --c500-status-bad-soft: rgba(161, 80, 60, 0.14);
+
+    color-scheme: light;
+  }
+}
+
+:root[data-theme="light"],
+:host[data-theme="light"] {
+  --c500-text: #1a1a1d;
+  --c500-text-soft: #6b6a68;
+  --c500-bg: #ecebe7;
+  --c500-bg-raised: #ffffff;
+  --c500-line: #d8d6d1;
+
+  --c500-mana-w: #726451;
+  --c500-mana-u: #3f6a8a;
+  --c500-mana-b: #5b4a66;
+  --c500-mana-r: #a1503c;
+  --c500-mana-g: #3f6d5a;
+  --c500-mana-gold: #7f5e26;
+  --c500-mana-c: #6e6a60;
+  --c500-mana-land: #7a5f43;
+
+  --c500-price: #7a5b19;
+
+  --c500-status-good-soft: rgba(63, 109, 90, 0.14);
+  --c500-status-bad-soft: rgba(161, 80, 60, 0.14);
+
+  color-scheme: light;
+}
+
 /* ---------- Card rows (deck-organizer / card-visual-view, List mode) ---------- */
 
 .c500-card {
@@ -649,6 +718,19 @@
   background: var(--c500-bg);
   color: var(--c500-text);
   padding: 3px 6px;
+}
+
+.c500-tab__theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 8px;
+  border: 1px solid var(--c500-line);
+  border-radius: 6px;
+  background: var(--c500-bg);
+  color: var(--c500-text);
+  padding: 5px 7px;
+  cursor: pointer;
 }
 
 .c500-tab__unsynced {

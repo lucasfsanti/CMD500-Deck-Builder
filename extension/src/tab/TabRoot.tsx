@@ -17,6 +17,7 @@ import { CardVisualTile } from "../ui/components/CardVisualTile";
 import { manaCurveBuckets, colorBuckets, typeBuckets } from "../lib/analytics/bucket-counts";
 import { useTabDeck } from "./use-tab-deck";
 import { useSourceTabStatus } from "./use-source-tab-status";
+import { useThemePreference } from "./use-theme-preference";
 import { getSourceTabIdFromUrl, getDeckIdFromUrl } from "./use-relayed-capture";
 
 const FORMAT_LABELS: Record<Format, string> = {
@@ -60,6 +61,37 @@ function GridIcon() {
       <rect x="8" y="1" width="5" height="5" rx="1" fill="currentColor" />
       <rect x="1" y="8" width="5" height="5" rx="1" fill="currentColor" />
       <rect x="8" y="8" width="5" height="5" rx="1" fill="currentColor" />
+    </svg>
+  );
+}
+
+/**
+ * Theme toggle icons (panel-theming task 3.1): each shows the theme the
+ * button would switch *to*, following the same icon-button-with-aria-label
+ * pattern as ListIcon/GridIcon above.
+ */
+function SunIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">
+      <circle cx="7" cy="7" r="3" fill="currentColor" />
+      <g stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+        <line x1="7" y1="0.5" x2="7" y2="2" />
+        <line x1="7" y1="12" x2="7" y2="13.5" />
+        <line x1="0.5" y1="7" x2="2" y2="7" />
+        <line x1="12" y1="7" x2="13.5" y2="7" />
+        <line x1="2.4" y1="2.4" x2="3.4" y2="3.4" />
+        <line x1="10.6" y1="10.6" x2="11.6" y2="11.6" />
+        <line x1="2.4" y1="11.6" x2="3.4" y2="10.6" />
+        <line x1="10.6" y1="3.4" x2="11.6" y2="2.4" />
+      </g>
+    </svg>
+  );
+}
+
+function MoonIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">
+      <path d="M9.5 1.5a6 6 0 1 0 3 8.9A5 5 0 0 1 9.5 1.5Z" fill="currentColor" />
     </svg>
   );
 }
@@ -135,6 +167,7 @@ export function TabRoot() {
     deckId,
   );
   const sourceStatus = useSourceTabStatus(sourceTabId);
+  const { theme, setTheme } = useThemePreference();
   const [viewMode, setViewMode] = useState<ViewMode>("list");
   const [groupingAxis, setGroupingAxis] = useState<GroupingAxis>("type");
   const [sortAxis, setSortAxis] = useState<SortAxis>("cmc");
@@ -173,6 +206,15 @@ export function TabRoot() {
             </option>
           ))}
         </select>
+        <button
+          type="button"
+          className="c500-tab__theme-toggle"
+          aria-label={theme === "dark" ? "Mudar para tema claro" : "Mudar para tema escuro"}
+          title={theme === "dark" ? "Mudar para tema claro" : "Mudar para tema escuro"}
+          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+        >
+          {theme === "dark" ? <SunIcon /> : <MoonIcon />}
+        </button>
         {sourceStatus === "closed" && (
           <span className="c500-tab__unsynced">
             Não sincronizado — a aba de origem do LigaMagic foi fechada

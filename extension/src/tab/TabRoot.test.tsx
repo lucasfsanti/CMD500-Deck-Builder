@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import type { DeckCard } from "../lib/deck/types";
+import type { Theme } from "./use-theme-preference";
 
 const mockUseTabDeck = vi.fn();
 vi.mock("./use-tab-deck", () => ({
@@ -10,6 +11,13 @@ vi.mock("./use-tab-deck", () => ({
 const mockUseSourceTabStatus = vi.fn();
 vi.mock("./use-source-tab-status", () => ({
   useSourceTabStatus: () => mockUseSourceTabStatus(),
+}));
+
+const mockUseThemePreference = vi.fn<() => { theme: Theme; setTheme: (theme: Theme) => void }>(
+  () => ({ theme: "dark", setTheme: vi.fn() }),
+);
+vi.mock("./use-theme-preference", () => ({
+  useThemePreference: () => mockUseThemePreference(),
 }));
 
 function card(id: string, name: string, zone: DeckCard["zone"]): DeckCard {
@@ -284,5 +292,51 @@ describe("TabRoot (task 3.1)", () => {
 
     expect(screen.getByRole("link", { name: "Feito por Lucas Santiago" })).toBeTruthy();
     expect(screen.queryByText(/^v\d/)).toBeNull();
+  });
+
+  it("shows a theme toggle offering to switch to light while dark, and calls setTheme on click (panel-theming)", async () => {
+    const setTheme = vi.fn();
+    mockUseThemePreference.mockReturnValue({ theme: "dark", setTheme });
+    mockUseTabDeck.mockReturnValue({
+      cards: [card("a", "Sol Ring", "mainDeck")],
+      pageStatus: "ok",
+      format: "commander500",
+      setFormat: vi.fn(),
+      zoneError: undefined,
+      moveCard: vi.fn(),
+      setQuantity: vi.fn(),
+    });
+    mockUseSourceTabStatus.mockReturnValue("open");
+
+    const { TabRoot } = await import("./TabRoot");
+    render(<TabRoot />);
+
+    const toggle = screen.getByRole("button", { name: "Mudar para tema claro" });
+    fireEvent.click(toggle);
+
+    expect(setTheme).toHaveBeenCalledWith("light");
+  });
+
+  it("shows a theme toggle offering to switch to dark while light, and calls setTheme on click (panel-theming)", async () => {
+    const setTheme = vi.fn();
+    mockUseThemePreference.mockReturnValue({ theme: "light", setTheme });
+    mockUseTabDeck.mockReturnValue({
+      cards: [card("a", "Sol Ring", "mainDeck")],
+      pageStatus: "ok",
+      format: "commander500",
+      setFormat: vi.fn(),
+      zoneError: undefined,
+      moveCard: vi.fn(),
+      setQuantity: vi.fn(),
+    });
+    mockUseSourceTabStatus.mockReturnValue("open");
+
+    const { TabRoot } = await import("./TabRoot");
+    render(<TabRoot />);
+
+    const toggle = screen.getByRole("button", { name: "Mudar para tema escuro" });
+    fireEvent.click(toggle);
+
+    expect(setTheme).toHaveBeenCalledWith("dark");
   });
 });
