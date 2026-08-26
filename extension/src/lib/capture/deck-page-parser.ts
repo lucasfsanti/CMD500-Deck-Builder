@@ -2,6 +2,7 @@ import type { CapturedCard, Zone } from "../deck/types";
 import { parseBrlPrice } from "./price-parsing";
 import { zoneForHeaderLabel } from "./zone-labels";
 import { extractPageImageUrl } from "./page-image";
+import { extractManaCost } from "./mana-cost";
 
 export type CaptureResult =
   | { status: "ok"; cards: CapturedCard[] }
@@ -104,6 +105,7 @@ export function parseDeckPage(root: ParentNode): CaptureResult {
       const quantity = extractQuantity(qtyEl);
       const pageLowestPrice = extractLowestPrice(line);
       const pageImageUrl = extractPageImageUrl(cardEl);
+      const pageManaCostSymbols = extractManaCost(line);
 
       cards.push({
         id: `capture-${nextCardId++}`,
@@ -112,6 +114,7 @@ export function parseDeckPage(root: ParentNode): CaptureResult {
         zone: currentZone,
         pageLowestPrice,
         pageImageUrl,
+        pageManaCostSymbols,
       });
     }
   }

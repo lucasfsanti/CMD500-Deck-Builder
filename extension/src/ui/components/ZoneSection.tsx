@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useDroppable } from "@dnd-kit/core";
 import type { DeckCard, Zone } from "../../lib/deck/types";
 import {
@@ -64,6 +65,15 @@ export interface ZoneSectionProps {
    * width for multiple side-by-side groups.
    */
   multiColumn?: boolean;
+  /**
+   * Adds an independent name-filter control to this zone's header (per
+   * deck-organizer's "Per-zone name filter" delta). Not lifted to TabRoot —
+   * nothing outside this zone's own render needs its filter text, since
+   * budget/card count/legality are computed elsewhere from the full,
+   * unfiltered card list regardless of what any zone chooses to display.
+   * Set only on Main Deck and Maybeboard; the hero zones never get it.
+   */
+  filterable?: boolean;
 }
 
 export function ZoneSection({
@@ -79,11 +89,18 @@ export function ZoneSection({
   onRemoveCard,
   hero = false,
   multiColumn = false,
+  filterable = false,
 }: ZoneSectionProps) {
   const { setNodeRef, isOver } = useDroppable({ id: zone });
+  const [filterText, setFilterText] = useState("");
   const effectiveViewMode = hero ? "visual" : viewMode;
-  const groups = groupAndSortZone(cards, groupingAxis, sortAxis);
-  const cardCount = cards.reduce((sum, c) => sum + c.quantity, 0);
+  const trimmedFilter = filterText.trim().toLowerCase();
+  const visibleCards =
+    filterable && trimmedFilter
+      ? cards.filter((c) => c.name.toLowerCase().includes(trimmedFilter))
+      : cards;
+  const groups = groupAndSortZone(visibleCards, groupingAxis, sortAxis);
+  const cardCount = visibleCards.reduce((sum, c) => sum + c.quantity, 0);
   // A hero zone with no card (typically Companheiro when there's no partner
   // commander) collapses to a slim hint instead of reserving full hero-art
   // height — see design.md's "shrink when there is no card" decision.
@@ -94,6 +111,16 @@ export function ZoneSection({
       <div className="c500-zone__header">
         {ZONE_LABELS[zone]}
         <span className="c500-zone__count">({cardCount})</span>
+        {filterable && (
+          <input
+            type="text"
+            className="c500-zone__filter"
+            placeholder="Filtrar por nome…"
+            aria-label={`filtrar ${ZONE_LABELS[zone]} por nome`}
+            value={filterText}
+            onChange={(e) => setFilterText(e.target.value)}
+          />
+        )}
       </div>
       {error && <div className="c500-zone__error">{error}</div>}
       <div

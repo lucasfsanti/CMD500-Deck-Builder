@@ -10,6 +10,7 @@ function card(id: string, zone: DeckCard["zone"], quantity = 1): DeckCard {
     zone,
     pageLowestPrice: 1,
     pageImageUrl: undefined,
+    pageManaCostSymbols: undefined,
     enrichmentStatus: "pending",
     enrichment: undefined,
   };

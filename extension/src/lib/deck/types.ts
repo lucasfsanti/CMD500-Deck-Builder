@@ -14,6 +14,8 @@ export interface CapturedCard {
   pageLowestPrice: number | undefined;
   /** Artwork URL embedded directly in LigaMagic's own page DOM. Always available for a real card; no Scryfall dependency. */
   pageImageUrl: string | undefined;
+  /** Ordered mana-symbol codes (e.g. ["2", "G", "U", "R"]) decoded from LigaMagic's own page DOM. Undefined for cards with no shown cost (e.g. lands) or an unrecognized symbol; no Scryfall dependency. */
+  pageManaCostSymbols: string[] | undefined;
 }
 
 export type CardLayout =

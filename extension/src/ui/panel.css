@@ -225,6 +225,19 @@
   font-size: 15px;
 }
 
+.c500-mana-cost {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.c500-mana-cost__icon {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+}
+
 .c500-card__price {
   font-family: var(--c500-font-mono);
   font-variant-numeric: tabular-nums;
@@ -469,6 +482,23 @@
   font-size: 12px;
   color: var(--c500-text-soft);
   font-weight: 400;
+}
+
+.c500-zone__filter {
+  margin-left: auto;
+  font-family: var(--c500-font-body);
+  font-size: 12px;
+  font-weight: 400;
+  width: 9.5em;
+  padding: 3px 7px;
+  color: var(--c500-text);
+  background: var(--c500-bg);
+  border: 1px solid var(--c500-line);
+  border-radius: 4px;
+}
+
+.c500-zone__filter::placeholder {
+  color: var(--c500-text-soft);
 }
 
 .c500-zone__dropzone {

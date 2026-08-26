@@ -34,6 +34,18 @@ describe("parseDeckPage (tasks 3.1, 3.3)", () => {
     expect(card).toMatchObject({ zone: "comandante", quantity: 1, pageLowestPrice: 2.34 });
   });
 
+  it("captures a card's mana cost from the page's own mana-symbol markup", () => {
+    if (result.status !== "ok") throw new Error("expected ok");
+    const card = byName(result.cards, "Xyris, the Writhing Storm");
+    expect(card?.pageManaCostSymbols).toEqual(["2", "G", "U", "R"]);
+  });
+
+  it("leaves pageManaCostSymbols undefined for a card with no mana-cost markup (e.g. a land)", () => {
+    if (result.status !== "ok") throw new Error("expected ok");
+    const card = byName(result.cards, "Forest");
+    expect(card?.pageManaCostSymbols).toBeUndefined();
+  });
+
   it("assigns the partner commander to comandanteParceiro", () => {
     if (result.status !== "ok") throw new Error("expected ok");
     const card = byName(result.cards, "Vial Smasher the Fierce");

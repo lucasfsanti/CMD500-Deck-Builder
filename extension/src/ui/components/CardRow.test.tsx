@@ -11,6 +11,7 @@ const baseCard: DeckCard = {
   zone: "mainDeck",
   pageLowestPrice: 10,
   pageImageUrl: "https://repositorio.sbrauble.com/example.jpg",
+  pageManaCostSymbols: undefined,
   enrichment: undefined,
   enrichmentStatus: "pending",
 };
@@ -120,6 +121,25 @@ describe("CardRow color-identity rail (task 3.2)", () => {
     const { container } = renderCard({});
     const row = container.querySelector(".c500-card") as HTMLElement;
     expect(row.style.borderLeftColor).toBe("var(--c500-line)");
+  });
+});
+
+describe("CardRow mana cost icons", () => {
+  it("shows mana-cost icons between the name and price for a card with a captured cost", () => {
+    const { container } = renderCard({ card: { ...baseCard, pageManaCostSymbols: ["2", "G", "U", "R"] } });
+    const row = container.querySelector(".c500-card")!;
+    const children = [...row.children];
+    const nameIndex = children.findIndex((el) => el.classList.contains("c500-card__name"));
+    const manaCostIndex = children.findIndex((el) => el.classList.contains("c500-mana-cost"));
+    const priceIndex = children.findIndex((el) => el.classList.contains("c500-card__price"));
+    expect(manaCostIndex).toBeGreaterThan(nameIndex);
+    expect(manaCostIndex).toBeLessThan(priceIndex);
+    expect(container.querySelectorAll(".c500-mana-cost__icon")).toHaveLength(4);
+  });
+
+  it("shows no mana-cost icons for a card with no captured cost", () => {
+    const { container } = renderCard({ card: { ...baseCard, pageManaCostSymbols: undefined } });
+    expect(container.querySelector(".c500-mana-cost")).toBeNull();
   });
 });
 

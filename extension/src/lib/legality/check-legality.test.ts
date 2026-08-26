@@ -14,6 +14,7 @@ function card(
     zone,
     pageLowestPrice: 1,
     pageImageUrl: undefined,
+    pageManaCostSymbols: undefined,
     enrichment: {
       name,
       typeLine: "Creature",

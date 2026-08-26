@@ -332,6 +332,7 @@ export function TabRoot() {
                   viewMode={viewMode}
                   groupingAxis={groupingAxis}
                   sortAxis={sortAxis}
+                  filterable
                   onQuantityChange={setQuantity}
                   onRemoveCard={removeCard}
                 />
@@ -346,6 +347,7 @@ export function TabRoot() {
                 groupingAxis={groupingAxis}
                 sortAxis={sortAxis}
                 multiColumn
+                filterable
                 onQuantityChange={setQuantity}
                 onRemoveCard={removeCard}
               />

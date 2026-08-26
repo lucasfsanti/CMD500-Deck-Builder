@@ -16,6 +16,7 @@ function card(
     zone,
     pageLowestPrice: 1,
     pageImageUrl: undefined,
+    pageManaCostSymbols: undefined,
     enrichmentStatus: "ok",
     enrichment: {
       name,
@@ -109,6 +110,7 @@ describe("groupAndSortZone grouping axis (task 4.1)", () => {
       zone: "mainDeck",
       pageLowestPrice: 1,
       pageImageUrl: undefined,
+      pageManaCostSymbols: undefined,
       enrichment: undefined,
       enrichmentStatus: "pending",
     };

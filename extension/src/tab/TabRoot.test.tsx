@@ -32,6 +32,7 @@ function card(id: string, name: string, zone: DeckCard["zone"]): DeckCard {
     // hero block's forced Visual-mode tile renders an <img>, not a
     // placeholder that would duplicate the card's name alongside its caption.
     pageImageUrl: `https://example.com/${id}.jpg`,
+    pageManaCostSymbols: undefined,
     enrichment: {
       name,
       typeLine: "Artifact",
@@ -76,6 +77,44 @@ describe("TabRoot (task 3.1)", () => {
     }
     // No unsynced indicator while the source tab is open.
     expect(screen.queryByText(/Não sincronizado/)).toBeNull();
+  });
+
+  it("keeps budget, card count, and legality unaffected while a zone's filter narrows what's visible", async () => {
+    const illegalCard: DeckCard = {
+      ...card("b", "Sol Ring", "mainDeck"),
+      enrichment: { ...card("b", "Sol Ring", "mainDeck").enrichment!, legalInCommander: false },
+    };
+    mockUseTabDeck.mockReturnValue({
+      cards: [
+        card("a", "Xyris, the Writhing Storm", "comandante"),
+        card("z", "Llanowar Elves", "mainDeck"),
+        illegalCard,
+      ],
+      pageStatus: "ok",
+      format: "commander500",
+      setFormat: vi.fn(),
+      zoneError: undefined,
+      moveCard: vi.fn(),
+      setQuantity: vi.fn(),
+    });
+    mockUseSourceTabStatus.mockReturnValue("open");
+
+    const { TabRoot } = await import("./TabRoot");
+    const { container } = render(<TabRoot />);
+
+    const budgetBefore = container.querySelector(".c500-gauge__amount")?.textContent;
+    const cardCountBefore = container.querySelectorAll(".c500-gauge__amount")[1]?.textContent;
+    const legalityBefore = container.querySelector(".c500-legality")?.textContent;
+
+    fireEvent.change(screen.getByLabelText("filtrar Main Deck por nome"), {
+      target: { value: "Llanowar" },
+    });
+
+    expect(screen.getByText("Llanowar Elves")).toBeTruthy();
+    expect(screen.queryByText("Sol Ring")).toBeNull();
+    expect(container.querySelector(".c500-gauge__amount")?.textContent).toBe(budgetBefore);
+    expect(container.querySelectorAll(".c500-gauge__amount")[1]?.textContent).toBe(cardCountBefore);
+    expect(container.querySelector(".c500-legality")?.textContent).toBe(legalityBefore);
   });
 
   it("exposes the view-mode toggle as icon buttons with accessible names (task 7.2)", async () => {

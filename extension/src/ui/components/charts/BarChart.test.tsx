@@ -16,6 +16,7 @@ function card(
     zone: "mainDeck",
     pageLowestPrice: 1,
     pageImageUrl: undefined,
+    pageManaCostSymbols: undefined,
     enrichment: {
       name,
       typeLine,

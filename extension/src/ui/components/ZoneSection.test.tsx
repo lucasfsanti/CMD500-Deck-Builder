@@ -12,6 +12,7 @@ function card(): DeckCard {
     zone: "mainDeck",
     pageLowestPrice: 4,
     pageImageUrl: undefined,
+    pageManaCostSymbols: undefined,
     enrichment: {
       name: "Sol Ring",
       typeLine: "Artifact",
@@ -225,6 +226,88 @@ describe("ZoneSection group label shows a card count (task 12.5)", () => {
     const label = container.querySelector(".c500-group__label");
     expect(label?.textContent).toBe("Artefato(2)");
     expect(label?.querySelector(".c500-group__count")?.textContent).toBe("(2)");
+  });
+});
+
+describe("ZoneSection per-zone name filter", () => {
+  const cards = [coloredCard("Red Card", ["R"]), coloredCard("Blue Card", ["U"])];
+
+  it("renders no filter input when filterable is not set", () => {
+    render(
+      <DndContext>
+        <ZoneSection zone="mainDeck" cards={cards} />
+      </DndContext>,
+    );
+    expect(screen.queryByLabelText("filtrar Main Deck por nome")).toBeNull();
+  });
+
+  it("renders a filter input when filterable is set", () => {
+    render(
+      <DndContext>
+        <ZoneSection zone="mainDeck" cards={cards} filterable />
+      </DndContext>,
+    );
+    expect(screen.getByLabelText("filtrar Main Deck por nome")).toBeTruthy();
+  });
+
+  it("narrows visible cards to substring matches, case-insensitively, and updates the header count", () => {
+    const { container } = render(
+      <DndContext>
+        <ZoneSection zone="mainDeck" cards={cards} filterable />
+      </DndContext>,
+    );
+    expect(screen.getByText("Red Card")).toBeTruthy();
+    expect(screen.getByText("Blue Card")).toBeTruthy();
+
+    fireEvent.change(screen.getByLabelText("filtrar Main Deck por nome"), {
+      target: { value: "red" },
+    });
+
+    expect(screen.getByText("Red Card")).toBeTruthy();
+    expect(screen.queryByText("Blue Card")).toBeNull();
+    expect(container.querySelector(".c500-zone__count")?.textContent).toBe("(1)");
+  });
+
+  it("hides a group left with no matches after filtering", () => {
+    render(
+      <DndContext>
+        <ZoneSection zone="mainDeck" cards={cards} groupingAxis="color" filterable />
+      </DndContext>,
+    );
+    expect(screen.getByText("Vermelho")).toBeTruthy();
+    expect(screen.getByText("Azul")).toBeTruthy();
+
+    fireEvent.change(screen.getByLabelText("filtrar Main Deck por nome"), {
+      target: { value: "red" },
+    });
+
+    expect(screen.getByText("Vermelho")).toBeTruthy();
+    expect(screen.queryByText("Azul")).toBeNull();
+  });
+
+  it("restores every card when the filter is cleared", () => {
+    render(
+      <DndContext>
+        <ZoneSection zone="mainDeck" cards={cards} filterable />
+      </DndContext>,
+    );
+    const input = screen.getByLabelText("filtrar Main Deck por nome");
+
+    fireEvent.change(input, { target: { value: "red" } });
+    expect(screen.queryByText("Blue Card")).toBeNull();
+
+    fireEvent.change(input, { target: { value: "" } });
+    expect(screen.getByText("Red Card")).toBeTruthy();
+    expect(screen.getByText("Blue Card")).toBeTruthy();
+  });
+
+  it("does not offer a filter in the hero (Comandante) zone", () => {
+    render(
+      <DndContext>
+        <ZoneSection zone="comandante" cards={[card()]} hero filterable={false} />
+      </DndContext>,
+    );
+    expect(screen.queryByLabelText("filtrar Comandante por nome")).toBeNull();
   });
 });
 

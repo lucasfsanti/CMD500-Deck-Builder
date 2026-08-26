@@ -12,6 +12,7 @@ function card(overrides: Partial<DeckCard> = {}): DeckCard {
     zone: "mainDeck",
     pageLowestPrice: 4,
     pageImageUrl: undefined,
+    pageManaCostSymbols: undefined,
     enrichment: {
       name: "Sol Ring",
       typeLine: "Artifact",
