@@ -13,6 +13,7 @@ function card(name: string, price: number): DeckCard {
     pageLowestPrice: price,
     pageImageUrl: undefined,
     pageManaCostSymbols: undefined,
+    pageNamePt: undefined,
     enrichment: undefined,
     enrichmentStatus: "pending",
   };

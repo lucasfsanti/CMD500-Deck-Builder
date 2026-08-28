@@ -1,5 +1,6 @@
 import { useDraggable } from "@dnd-kit/core";
 import { isBasicLand, type DeckCard } from "../../lib/deck/types";
+import { displayName, type NameLanguage } from "../../lib/deck/display-name";
 import { resolveCardArt } from "./card-art";
 import { manaRailForColorIdentity } from "../../lib/organizer/mana-colors";
 
@@ -12,6 +13,7 @@ interface CardVisualTileContentProps {
   card: DeckCard;
   illegal?: boolean;
   overBudget?: boolean;
+  nameLanguage?: NameLanguage;
   onQuantityChange?: (cardId: string, quantity: number) => void;
   onRemove?: (cardId: string) => void;
   /** Only the hero tile shows a name caption — grid tiles rely on artwork alone (card-visual-view spec). */
@@ -22,6 +24,7 @@ function CardVisualTileContent({
   card,
   illegal,
   overBudget,
+  nameLanguage = "en",
   onQuantityChange,
   onRemove,
   showCaption,
@@ -32,17 +35,18 @@ function CardVisualTileContent({
     borderLeftColor: rail.colorVar,
     boxShadow: rail.keyline ? "inset 2px 0 0 var(--c500-text)" : undefined,
   };
+  const name = displayName(card, nameLanguage);
 
   return (
     <>
       <div className="c500-tile__art" style={railStyle}>
         {imageUrl ? (
-          <img src={imageUrl} alt={card.name} className="c500-tile__img" />
+          <img src={imageUrl} alt={name} className="c500-tile__img" />
         ) : (
           <div
             className={`c500-tile__placeholder${artUnresolved ? " c500-tile__placeholder--unresolved" : ""}`}
           >
-            {card.name}
+            {name}
           </div>
         )}
         {illegal && (
@@ -57,7 +61,7 @@ function CardVisualTileContent({
             onClick={(e) => e.stopPropagation()}
             onPointerDown={(e) => e.stopPropagation()}
             onChange={(e) => onQuantityChange?.(card.id, Number.parseInt(e.target.value, 10) || 0)}
-            aria-label={`quantidade de ${card.name}`}
+            aria-label={`quantidade de ${name}`}
           />
         )}
         {onRemove && (
@@ -69,15 +73,15 @@ function CardVisualTileContent({
               onRemove(card.id);
             }}
             onPointerDown={(e) => e.stopPropagation()}
-            aria-label={`remover ${card.name} do deck`}
+            aria-label={`remover ${name} do deck`}
           >
             ×
           </button>
         )}
       </div>
       {showCaption && (
-        <div className="c500-tile__caption" title={card.name}>
-          {card.name}
+        <div className="c500-tile__caption" title={name}>
+          {name}
         </div>
       )}
       <div
@@ -93,6 +97,8 @@ export interface CardVisualTileProps {
   card: DeckCard;
   illegal?: boolean;
   overBudget?: boolean;
+  /** Active card-name display language, per card-name-language's spec. Defaults to English. */
+  nameLanguage?: NameLanguage;
   onQuantityChange?: (cardId: string, quantity: number) => void;
   onRemove?: (cardId: string) => void;
   /** Extra class name(s), e.g. for the DragOverlay clone's "lifted" styling. */
@@ -112,6 +118,7 @@ export function CardVisualTile({
   card,
   illegal,
   overBudget,
+  nameLanguage = "en",
   onQuantityChange,
   onRemove,
   className,
@@ -125,7 +132,13 @@ export function CardVisualTile({
   if (dragOverlay) {
     return (
       <div className={`c500-tile${sizeClassName}${className ? ` ${className}` : ""}`}>
-        <CardVisualTileContent card={card} illegal={illegal} overBudget={overBudget} showCaption={showCaption} />
+        <CardVisualTileContent
+          card={card}
+          illegal={illegal}
+          overBudget={overBudget}
+          nameLanguage={nameLanguage}
+          showCaption={showCaption}
+        />
       </div>
     );
   }
@@ -146,6 +159,7 @@ export function CardVisualTile({
         card={card}
         illegal={illegal}
         overBudget={overBudget}
+        nameLanguage={nameLanguage}
         onQuantityChange={onQuantityChange}
         onRemove={onRemove}
         showCaption={showCaption}

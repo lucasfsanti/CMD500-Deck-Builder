@@ -1,10 +1,4 @@
-# localization Specification
-
-## Purpose
-
-Renders all user-facing UI text and both project READMEs in Brazilian Portuguese, since the extension's entire audience captures decks from LigaMagic, a Brazilian, Portuguese-language site; captured card names are excluded and stay untranslated.
-
-## Requirements
+## MODIFIED Requirements
 
 ### Requirement: UI text renders in Brazilian Portuguese
 All user-facing strings in the deckbuilder UI — labels, headings, buttons, status and error messages, and tooltips — SHALL render in Brazilian Portuguese. Captured card names are exempt from this UI-text rule: they render in English by default and switch to LigaMagic's own Portuguese names only when the user activates the name-language toggle (see `card-name-language`), independent of the surrounding UI text's language.
@@ -20,10 +14,3 @@ All user-facing strings in the deckbuilder UI — labels, headings, buttons, sta
 #### Scenario: Exported card names always stay English
 - **WHEN** the user exports the decklist, in either export format
 - **THEN** card names in the exported text are always in English, regardless of the name-language toggle's current setting
-
-### Requirement: Project documentation is in Brazilian Portuguese
-Both `README.md` and `extension/README.md` SHALL be written in Brazilian Portuguese.
-
-#### Scenario: A reader opens either README
-- **WHEN** a reader opens `README.md` or `extension/README.md`
-- **THEN** its content is written in Brazilian Portuguese

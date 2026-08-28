@@ -16,6 +16,7 @@ function card(
     pageLowestPrice,
     pageImageUrl: undefined,
     pageManaCostSymbols: undefined,
+    pageNamePt: undefined,
     enrichment: undefined,
     enrichmentStatus: "pending",
   };

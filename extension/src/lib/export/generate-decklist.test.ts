@@ -12,6 +12,7 @@ function card(name: string, zone: DeckCard["zone"], quantity = 1): DeckCard {
     pageLowestPrice: 1,
     pageImageUrl: undefined,
     pageManaCostSymbols: undefined,
+    pageNamePt: undefined,
     enrichment: undefined,
     enrichmentStatus: "pending",
   };
@@ -100,6 +101,20 @@ describe("export reflects current organizer state, not last capture (verificatio
 
     expect(generateLigaMagicExport(edited)).toBe("4 Sol Ring");
     expect(generateLigaMagicExport(captured)).toBe("1 Sol Ring");
+  });
+});
+
+describe("export always uses the canonical English name (card-name-language spec)", () => {
+  it("uses the English name in both formats, never the Portuguese one, regardless of the display toggle", () => {
+    const cards = [{ ...card("Sol Ring", "mainDeck"), pageNamePt: "Anel Solar" }];
+
+    const ligaExport = generateLigaMagicExport(cards);
+    const readableExport = generateReadableExport(cards);
+
+    expect(ligaExport).toContain("Sol Ring");
+    expect(ligaExport).not.toContain("Anel Solar");
+    expect(readableExport).toContain("Sol Ring");
+    expect(readableExport).not.toContain("Anel Solar");
   });
 });
 

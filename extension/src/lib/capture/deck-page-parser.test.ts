@@ -134,6 +134,41 @@ describe("parseDeckPage artwork capture (task 3.1)", () => {
   });
 });
 
+describe("parseDeckPage Portuguese name capture", () => {
+  it("captures LigaMagic's Portuguese display name alongside the canonical English name", () => {
+    const doc = loadFixture("ligamagic-deck-full.html");
+    const result = parseDeckPage(doc);
+    if (result.status !== "ok") throw new Error("expected ok");
+    const card = byName(result.cards, "Xyris, the Writhing Storm");
+    expect(card?.pageNamePt).toBe("Xyris, a Tempestade Serpenteante");
+  });
+
+  it("falls back to the page's own display text for both name and pageNamePt when the href can't be parsed", () => {
+    const doc = new DOMParser().parseFromString(
+      `
+      <div id="dk-val-1-1">
+        <div class="pdeck-block">
+          <div class="deck-line"><div class="deck-type deck-type-first">Main Deck <i>(1)</i></div></div>
+          <div class="deck-line">
+            <div class="deck-box-left">
+              <div class="deck-qty">1</div>
+              <div class="deck-card"><a href="javascript:void(0)">Carta Sem Link</a></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `,
+      "text/html",
+    );
+
+    const result = parseDeckPage(doc);
+    expect(result.status).toBe("ok");
+    if (result.status !== "ok") return;
+    expect(result.cards[0]?.name).toBe("Carta Sem Link");
+    expect(result.cards[0]?.pageNamePt).toBe("Carta Sem Link");
+  });
+});
+
 describe("parseDeckPage on unrecognized markup (task 3.5)", () => {
   it("reports unrecognized-page instead of an empty/partial deck", () => {
     const doc = loadFixture("ligamagic-unrecognized.html");

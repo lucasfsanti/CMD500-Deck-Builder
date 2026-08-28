@@ -13,6 +13,7 @@ function card(): DeckCard {
     pageLowestPrice: 4,
     pageImageUrl: undefined,
     pageManaCostSymbols: undefined,
+    pageNamePt: undefined,
     enrichment: {
       name: "Sol Ring",
       typeLine: "Artifact",
@@ -300,6 +301,44 @@ describe("ZoneSection per-zone name filter", () => {
     fireEvent.change(input, { target: { value: "" } });
     expect(screen.getByText("Red Card")).toBeTruthy();
     expect(screen.getByText("Blue Card")).toBeTruthy();
+  });
+
+  it("matches a card's Portuguese name even while English names are displayed (nameLanguage defaults to en)", () => {
+    const ptCards = [
+      { ...coloredCard("Sol Ring", ["R"]), pageNamePt: "Anel Solar" },
+      { ...coloredCard("Rhystic Study", ["U"]), pageNamePt: "Estudo Rístico" },
+    ];
+    render(
+      <DndContext>
+        <ZoneSection zone="mainDeck" cards={ptCards} filterable />
+      </DndContext>,
+    );
+
+    fireEvent.change(screen.getByLabelText("filtrar Main Deck por nome"), {
+      target: { value: "anel" },
+    });
+
+    expect(screen.getByText("Sol Ring")).toBeTruthy();
+    expect(screen.queryByText("Rhystic Study")).toBeNull();
+  });
+
+  it("matches a card's English name even while Portuguese names are displayed", () => {
+    const ptCards = [
+      { ...coloredCard("Sol Ring", ["R"]), pageNamePt: "Anel Solar" },
+      { ...coloredCard("Rhystic Study", ["U"]), pageNamePt: "Estudo Rístico" },
+    ];
+    render(
+      <DndContext>
+        <ZoneSection zone="mainDeck" cards={ptCards} filterable nameLanguage="pt" />
+      </DndContext>,
+    );
+
+    fireEvent.change(screen.getByLabelText("filtrar Main Deck por nome"), {
+      target: { value: "sol ring" },
+    });
+
+    expect(screen.getByText("Anel Solar")).toBeTruthy();
+    expect(screen.queryByText("Estudo Rístico")).toBeNull();
   });
 
   it("does not offer a filter in the hero (Comandante) zone", () => {

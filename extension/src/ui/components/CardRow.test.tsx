@@ -12,6 +12,7 @@ const baseCard: DeckCard = {
   pageLowestPrice: 10,
   pageImageUrl: "https://repositorio.sbrauble.com/example.jpg",
   pageManaCostSymbols: undefined,
+  pageNamePt: undefined,
   enrichment: undefined,
   enrichmentStatus: "pending",
 };
@@ -189,6 +190,34 @@ describe("CardRow mana cost icons", () => {
       card: { ...baseCard, pageManaCostSymbols: ["5", "W", "W"] },
     });
     expect(container.querySelectorAll(".c500-mana-cost__icon")).toHaveLength(3);
+  });
+});
+
+describe("CardRow name-language toggle (card-name-language spec)", () => {
+  const ptCard: DeckCard = { ...baseCard, name: "Sol Ring", pageNamePt: "Anel Solar" };
+
+  it("shows the English name by default", () => {
+    const { getByText } = renderCard({ card: ptCard });
+    expect(getByText("Sol Ring")).not.toBeNull();
+  });
+
+  it("shows the Portuguese name, aria-labels, and hover preview when nameLanguage is pt", () => {
+    const { getByText, getByLabelText, container } = renderCard({
+      card: ptCard,
+      nameLanguage: "pt",
+      onRemove: () => {},
+    });
+    expect(getByText("Anel Solar")).not.toBeNull();
+    expect(getByLabelText("remover Anel Solar do deck")).not.toBeNull();
+
+    fireEvent.pointerEnter(container.querySelector(".c500-card")!, { clientX: 10, clientY: 20 });
+    const preview = container.querySelector(".c500-hover-preview");
+    expect(preview!.querySelector("img")).toHaveProperty("alt", "Anel Solar");
+  });
+
+  it("falls back to the English name in Portuguese mode when pageNamePt is undefined", () => {
+    const { getByText } = renderCard({ card: baseCard, nameLanguage: "pt" });
+    expect(getByText("Test Card")).not.toBeNull();
   });
 });
 

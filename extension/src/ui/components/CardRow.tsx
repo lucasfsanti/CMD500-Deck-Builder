@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useDraggable } from "@dnd-kit/core";
 import { isBasicLand, type DeckCard } from "../../lib/deck/types";
+import { displayName, type NameLanguage } from "../../lib/deck/display-name";
 import { resolveCardArt } from "./card-art";
 import { manaRailForColorIdentity } from "../../lib/organizer/mana-colors";
 import { ManaCostIcons } from "./ManaCostIcons";
@@ -14,11 +15,20 @@ interface CardRowContentProps {
   card: DeckCard;
   illegal?: boolean;
   overBudget?: boolean;
+  nameLanguage?: NameLanguage;
   onQuantityChange?: (cardId: string, quantity: number) => void;
   onRemove?: (cardId: string) => void;
 }
 
-function CardRowContent({ card, illegal, overBudget, onQuantityChange, onRemove }: CardRowContentProps) {
+function CardRowContent({
+  card,
+  illegal,
+  overBudget,
+  nameLanguage = "en",
+  onQuantityChange,
+  onRemove,
+}: CardRowContentProps) {
+  const name = displayName(card, nameLanguage);
   return (
     <>
       {isBasicLand(card.name) && (
@@ -30,12 +40,12 @@ function CardRowContent({ card, illegal, overBudget, onQuantityChange, onRemove 
           onClick={(e) => e.stopPropagation()}
           onPointerDown={(e) => e.stopPropagation()}
           onChange={(e) => onQuantityChange?.(card.id, Number.parseInt(e.target.value, 10) || 0)}
-          aria-label={`quantidade de ${card.name}`}
+          aria-label={`quantidade de ${name}`}
         />
       )}
       {illegal && <span className="c500-card__badge c500-card__badge--illegal" title="Ilegal neste formato" />}
-      <span className="c500-card__name" title={card.name}>
-        {card.name}
+      <span className="c500-card__name" title={name}>
+        {name}
       </span>
       {card.enrichment?.faceManaCosts ? (
         <ManaCostIcons symbolGroups={card.enrichment.faceManaCosts} />
@@ -57,7 +67,7 @@ function CardRowContent({ card, illegal, overBudget, onQuantityChange, onRemove 
             onRemove(card.id);
           }}
           onPointerDown={(e) => e.stopPropagation()}
-          aria-label={`remover ${card.name} do deck`}
+          aria-label={`remover ${name} do deck`}
         >
           ×
         </button>
@@ -70,18 +80,20 @@ interface CardHoverPreviewProps {
   card: DeckCard;
   x: number;
   y: number;
+  nameLanguage?: NameLanguage;
 }
 
 /** card-visual-view's List-mode hover preview: a floating artwork preview near the pointer. */
-function CardHoverPreview({ card, x, y }: CardHoverPreviewProps) {
+function CardHoverPreview({ card, x, y, nameLanguage = "en" }: CardHoverPreviewProps) {
   const { imageUrl, unresolved } = resolveCardArt(card);
+  const name = displayName(card, nameLanguage);
   return (
     <div className="c500-hover-preview" style={{ left: x, top: y }}>
       {imageUrl ? (
-        <img src={imageUrl} alt={card.name} className="c500-tile__img" />
+        <img src={imageUrl} alt={name} className="c500-tile__img" />
       ) : (
         <div className={`c500-tile__placeholder${unresolved ? " c500-tile__placeholder--unresolved" : ""}`}>
-          {card.name}
+          {name}
         </div>
       )}
     </div>
@@ -93,6 +105,8 @@ export interface CardRowProps {
   illegal?: boolean;
   /** True when this card counts toward budget and the deck is currently over the R$500 cap. */
   overBudget?: boolean;
+  /** Active card-name display language, per card-name-language's spec. Defaults to English. */
+  nameLanguage?: NameLanguage;
   onQuantityChange?: (cardId: string, quantity: number) => void;
   onRemove?: (cardId: string) => void;
   /** Extra class name(s), e.g. for the DragOverlay clone's "lifted" styling. */
@@ -105,7 +119,16 @@ export interface CardRowProps {
   dragOverlay?: boolean;
 }
 
-export function CardRow({ card, illegal, overBudget, onQuantityChange, onRemove, className, dragOverlay }: CardRowProps) {
+export function CardRow({
+  card,
+  illegal,
+  overBudget,
+  nameLanguage = "en",
+  onQuantityChange,
+  onRemove,
+  className,
+  dragOverlay,
+}: CardRowProps) {
   const [hoverPos, setHoverPos] = useState<{ x: number; y: number } | null>(null);
   const rail = manaRailForColorIdentity(card.enrichment?.colorIdentity);
   const railStyle = {
@@ -116,7 +139,7 @@ export function CardRow({ card, illegal, overBudget, onQuantityChange, onRemove,
   if (dragOverlay) {
     return (
       <div className={`c500-card${className ? ` ${className}` : ""}`} style={railStyle}>
-        <CardRowContent card={card} illegal={illegal} overBudget={overBudget} />
+        <CardRowContent card={card} illegal={illegal} overBudget={overBudget} nameLanguage={nameLanguage} />
       </div>
     );
   }
@@ -141,10 +164,13 @@ export function CardRow({ card, illegal, overBudget, onQuantityChange, onRemove,
         card={card}
         illegal={illegal}
         overBudget={overBudget}
+        nameLanguage={nameLanguage}
         onQuantityChange={onQuantityChange}
         onRemove={onRemove}
       />
-      {hoverPos && !isDragging && <CardHoverPreview card={card} x={hoverPos.x} y={hoverPos.y} />}
+      {hoverPos && !isDragging && (
+        <CardHoverPreview card={card} x={hoverPos.x} y={hoverPos.y} nameLanguage={nameLanguage} />
+      )}
     </div>
   );
 }

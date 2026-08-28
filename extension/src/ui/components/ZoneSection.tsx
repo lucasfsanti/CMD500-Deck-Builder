@@ -9,6 +9,7 @@ import {
   type SortAxis,
 } from "../../lib/organizer/group-sort";
 import { isBudgetCounted } from "../../lib/budget/calculate-budget";
+import type { NameLanguage } from "../../lib/deck/display-name";
 import { CardRow } from "./CardRow";
 import { CardVisualTile } from "./CardVisualTile";
 
@@ -47,6 +48,17 @@ export interface ZoneSectionProps {
   viewMode?: ViewMode;
   groupingAxis?: GroupingAxis;
   sortAxis?: SortAxis;
+  /** Active card-name display language, per card-name-language's spec. Defaults to English. */
+  nameLanguage?: NameLanguage;
+  /**
+   * The name-language snapshot to sort by when `sortAxis` is "name" —
+   * distinct from `nameLanguage` (which only affects display): per
+   * deck-organizer's spec, the Name axis's order is frozen to whatever
+   * language was active when the user (re)selected it, not the live
+   * toggle. The caller (TabRoot) owns taking that snapshot. Defaults to
+   * English.
+   */
+  sortNameLanguage?: NameLanguage;
   onQuantityChange?: (cardId: string, quantity: number) => void;
   onRemoveCard?: (cardId: string) => void;
   /**
@@ -85,6 +97,8 @@ export function ZoneSection({
   viewMode = "list",
   groupingAxis = "type",
   sortAxis = "cmc",
+  nameLanguage = "en",
+  sortNameLanguage = "en",
   onQuantityChange,
   onRemoveCard,
   hero = false,
@@ -97,9 +111,13 @@ export function ZoneSection({
   const trimmedFilter = filterText.trim().toLowerCase();
   const visibleCards =
     filterable && trimmedFilter
-      ? cards.filter((c) => c.name.toLowerCase().includes(trimmedFilter))
+      ? cards.filter(
+          (c) =>
+            c.name.toLowerCase().includes(trimmedFilter) ||
+            (c.pageNamePt?.toLowerCase().includes(trimmedFilter) ?? false),
+        )
       : cards;
-  const groups = groupAndSortZone(visibleCards, groupingAxis, sortAxis);
+  const groups = groupAndSortZone(visibleCards, groupingAxis, sortAxis, sortNameLanguage);
   const cardCount = visibleCards.reduce((sum, c) => sum + c.quantity, 0);
   // A hero zone with no card (typically Companheiro when there's no partner
   // commander) collapses to a slim hint instead of reserving full hero-art
@@ -146,6 +164,7 @@ export function ZoneSection({
                     size={hero ? "hero" : "default"}
                     illegal={illegalCardIds?.has(card.id)}
                     overBudget={Boolean(isDeckOverBudget) && isBudgetCounted(card)}
+                    nameLanguage={nameLanguage}
                     onQuantityChange={onQuantityChange}
                     onRemove={onRemoveCard}
                   />
@@ -155,6 +174,7 @@ export function ZoneSection({
                     card={card}
                     illegal={illegalCardIds?.has(card.id)}
                     overBudget={Boolean(isDeckOverBudget) && isBudgetCounted(card)}
+                    nameLanguage={nameLanguage}
                     onQuantityChange={onQuantityChange}
                     onRemove={onRemoveCard}
                   />

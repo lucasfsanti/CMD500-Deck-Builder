@@ -28,7 +28,7 @@ describe("useTabDeck (task 2.5)", () => {
   it("seeds cards from the relayed capture once it resolves", async () => {
     mockCapture = {
       status: "ok",
-      cards: [{ id: "a", name: "Sol Ring", quantity: 1, zone: "mainDeck", pageLowestPrice: 4, pageImageUrl: undefined, pageManaCostSymbols: undefined }],
+      cards: [{ id: "a", name: "Sol Ring", quantity: 1, zone: "mainDeck", pageLowestPrice: 4, pageImageUrl: undefined, pageManaCostSymbols: undefined, pageNamePt: undefined }],
     };
 
     const { result } = renderHook(() => useTabDeck(1, undefined));
@@ -85,7 +85,7 @@ describe("useTabDeck (task 2.5)", () => {
   it("moves a card between zones", async () => {
     mockCapture = {
       status: "ok",
-      cards: [{ id: "a", name: "Sol Ring", quantity: 1, zone: "mainDeck", pageLowestPrice: 4, pageImageUrl: undefined, pageManaCostSymbols: undefined }],
+      cards: [{ id: "a", name: "Sol Ring", quantity: 1, zone: "mainDeck", pageLowestPrice: 4, pageImageUrl: undefined, pageManaCostSymbols: undefined, pageNamePt: undefined }],
     };
 
     const { result } = renderHook(() => useTabDeck(1, undefined));
@@ -100,8 +100,8 @@ describe("useTabDeck (task 2.5)", () => {
     mockCapture = {
       status: "ok",
       cards: [
-        { id: "a", name: "Sol Ring", quantity: 1, zone: "mainDeck", pageLowestPrice: 4, pageImageUrl: undefined, pageManaCostSymbols: undefined },
-        { id: "b", name: "Llanowar Elves", quantity: 1, zone: "mainDeck", pageLowestPrice: 1, pageImageUrl: undefined, pageManaCostSymbols: undefined },
+        { id: "a", name: "Sol Ring", quantity: 1, zone: "mainDeck", pageLowestPrice: 4, pageImageUrl: undefined, pageManaCostSymbols: undefined, pageNamePt: undefined },
+        { id: "b", name: "Llanowar Elves", quantity: 1, zone: "mainDeck", pageLowestPrice: 1, pageImageUrl: undefined, pageManaCostSymbols: undefined, pageNamePt: undefined },
       ],
     };
     const lookupCards = vi.fn(async (names: string[]) =>
@@ -134,7 +134,7 @@ describe("useTabDeck (task 2.5)", () => {
   it("edits a card's quantity", async () => {
     mockCapture = {
       status: "ok",
-      cards: [{ id: "a", name: "Sol Ring", quantity: 1, zone: "mainDeck", pageLowestPrice: 4, pageImageUrl: undefined, pageManaCostSymbols: undefined }],
+      cards: [{ id: "a", name: "Sol Ring", quantity: 1, zone: "mainDeck", pageLowestPrice: 4, pageImageUrl: undefined, pageManaCostSymbols: undefined, pageNamePt: undefined }],
     };
 
     const { result } = renderHook(() => useTabDeck(1, undefined));
@@ -148,7 +148,7 @@ describe("useTabDeck (task 2.5)", () => {
   it("removes a card from the deck", async () => {
     mockCapture = {
       status: "ok",
-      cards: [{ id: "a", name: "Sol Ring", quantity: 1, zone: "mainDeck", pageLowestPrice: 4, pageImageUrl: undefined, pageManaCostSymbols: undefined }],
+      cards: [{ id: "a", name: "Sol Ring", quantity: 1, zone: "mainDeck", pageLowestPrice: 4, pageImageUrl: undefined, pageManaCostSymbols: undefined, pageNamePt: undefined }],
     };
 
     const { result } = renderHook(() => useTabDeck(1, undefined));
@@ -163,8 +163,8 @@ describe("useTabDeck (task 2.5)", () => {
     mockCapture = {
       status: "ok",
       cards: [
-        { id: "a", name: "Sol Ring", quantity: 3, zone: "mainDeck", pageLowestPrice: 4, pageImageUrl: undefined, pageManaCostSymbols: undefined },
-        { id: "b", name: "Island", quantity: 20, zone: "mainDeck", pageLowestPrice: 1, pageImageUrl: undefined, pageManaCostSymbols: undefined },
+        { id: "a", name: "Sol Ring", quantity: 3, zone: "mainDeck", pageLowestPrice: 4, pageImageUrl: undefined, pageManaCostSymbols: undefined, pageNamePt: undefined },
+        { id: "b", name: "Island", quantity: 20, zone: "mainDeck", pageLowestPrice: 1, pageImageUrl: undefined, pageManaCostSymbols: undefined, pageNamePt: undefined },
       ],
     };
 
@@ -178,7 +178,7 @@ describe("useTabDeck (task 2.5)", () => {
   it("re-normalizes a non-basic card's quantity on a relayed re-sync", async () => {
     mockCapture = {
       status: "ok",
-      cards: [{ id: "a", name: "Sol Ring", quantity: 1, zone: "mainDeck", pageLowestPrice: 4, pageImageUrl: undefined, pageManaCostSymbols: undefined }],
+      cards: [{ id: "a", name: "Sol Ring", quantity: 1, zone: "mainDeck", pageLowestPrice: 4, pageImageUrl: undefined, pageManaCostSymbols: undefined, pageNamePt: undefined }],
     };
 
     const { result, rerender } = renderHook(() => useTabDeck(1, undefined));
@@ -186,7 +186,7 @@ describe("useTabDeck (task 2.5)", () => {
 
     mockCapture = {
       status: "ok",
-      cards: [{ id: "a", name: "Sol Ring", quantity: 2, zone: "mainDeck", pageLowestPrice: 4, pageImageUrl: undefined, pageManaCostSymbols: undefined }],
+      cards: [{ id: "a", name: "Sol Ring", quantity: 2, zone: "mainDeck", pageLowestPrice: 4, pageImageUrl: undefined, pageManaCostSymbols: undefined, pageNamePt: undefined }],
     };
     rerender();
 

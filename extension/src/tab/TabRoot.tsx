@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { DndContext, DragOverlay, pointerWithin, type DragEndEvent, type DragStartEvent } from "@dnd-kit/core";
 import type { DeckCard, Format } from "../lib/deck/types";
+import type { NameLanguage } from "../lib/deck/display-name";
 import { groupCardsByZone, type GroupingAxis, type SortAxis } from "../lib/organizer/group-sort";
 import { resolveDropZone } from "../lib/organizer/resolve-drop";
 import { calculateBudget } from "../lib/budget/calculate-budget";
@@ -18,6 +19,7 @@ import { manaCurveBuckets, colorBuckets, typeBuckets } from "../lib/analytics/bu
 import { useTabDeck } from "./use-tab-deck";
 import { useSourceTabStatus } from "./use-source-tab-status";
 import { useThemePreference } from "./use-theme-preference";
+import { useNameLanguagePreference } from "./use-name-language-preference";
 import { getSourceTabIdFromUrl, getDeckIdFromUrl } from "./use-relayed-capture";
 
 const FORMAT_LABELS: Record<Format, string> = {
@@ -168,9 +170,15 @@ export function TabRoot() {
   );
   const sourceStatus = useSourceTabStatus(sourceTabId);
   const { theme, setTheme } = useThemePreference();
+  const { language: nameLanguage, setLanguage: setNameLanguage } = useNameLanguagePreference();
   const [viewMode, setViewMode] = useState<ViewMode>("list");
   const [groupingAxis, setGroupingAxis] = useState<GroupingAxis>("type");
   const [sortAxis, setSortAxis] = useState<SortAxis>("cmc");
+  // Snapshot of nameLanguage taken when the user (re)selects the Name sort
+  // axis — deliberately not the live nameLanguage itself, so flipping the
+  // display-language toggle afterward doesn't silently re-sort an
+  // already-Name-sorted zone (deck-organizer spec).
+  const [sortNameLanguage, setSortNameLanguage] = useState<NameLanguage>(nameLanguage);
   const [draggedCard, setDraggedCard] = useState<DeckCard | undefined>();
   const version = getExtensionVersion();
 
@@ -214,6 +222,23 @@ export function TabRoot() {
           onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
         >
           {theme === "dark" ? <SunIcon /> : <MoonIcon />}
+        </button>
+        <button
+          type="button"
+          className="c500-tab__name-language-toggle"
+          aria-label={
+            nameLanguage === "en"
+              ? "Mudar nomes das cartas para português"
+              : "Mudar nomes das cartas para inglês"
+          }
+          title={
+            nameLanguage === "en"
+              ? "Mudar nomes das cartas para português"
+              : "Mudar nomes das cartas para inglês"
+          }
+          onClick={() => setNameLanguage(nameLanguage === "en" ? "pt" : "en")}
+        >
+          {nameLanguage === "en" ? "PT" : "EN"}
         </button>
         {sourceStatus === "closed" && (
           <span className="c500-tab__unsynced">
@@ -274,7 +299,13 @@ export function TabRoot() {
             </label>
             <label className="c500-tab__grouping">
               Ordenar por
-              <select value={sortAxis} onChange={(e) => setSortAxis(e.target.value as SortAxis)}>
+              <select
+                value={sortAxis}
+                onChange={(e) => {
+                  setSortAxis(e.target.value as SortAxis);
+                  setSortNameLanguage(nameLanguage);
+                }}
+              >
                 {Object.entries(SORT_AXIS_LABELS).map(([value, label]) => (
                   <option key={value} value={value}>
                     {label}
@@ -282,6 +313,17 @@ export function TabRoot() {
                 ))}
               </select>
             </label>
+            {sortAxis === "name" && sortNameLanguage !== nameLanguage && (
+              <button
+                type="button"
+                className="c500-tab__resync-sort"
+                title="A ordenação por nome está usando o idioma anterior — clique para reordenar com o idioma atual"
+                aria-label="Reordenar por nome no idioma atual"
+                onClick={() => setSortNameLanguage(nameLanguage)}
+              >
+                ↻
+              </button>
+            )}
             <ExportMenu cards={cards} />
           </div>
 
@@ -305,6 +347,8 @@ export function TabRoot() {
                     isDeckOverBudget={budget.isOverCap}
                     hero
                     sortAxis={sortAxis}
+                    sortNameLanguage={sortNameLanguage}
+                    nameLanguage={nameLanguage}
                     onQuantityChange={setQuantity}
                     // The commander isn't removable via this control — see
                     // deck-organizer's "Explicit card removal" delta. A
@@ -319,6 +363,8 @@ export function TabRoot() {
                     isDeckOverBudget={budget.isOverCap}
                     hero
                     sortAxis={sortAxis}
+                    sortNameLanguage={sortNameLanguage}
+                    nameLanguage={nameLanguage}
                     onQuantityChange={setQuantity}
                     onRemoveCard={removeCard}
                   />
@@ -332,6 +378,8 @@ export function TabRoot() {
                   viewMode={viewMode}
                   groupingAxis={groupingAxis}
                   sortAxis={sortAxis}
+                  sortNameLanguage={sortNameLanguage}
+                  nameLanguage={nameLanguage}
                   filterable
                   onQuantityChange={setQuantity}
                   onRemoveCard={removeCard}
@@ -346,6 +394,8 @@ export function TabRoot() {
                 viewMode={viewMode}
                 groupingAxis={groupingAxis}
                 sortAxis={sortAxis}
+                sortNameLanguage={sortNameLanguage}
+                nameLanguage={nameLanguage}
                 multiColumn
                 filterable
                 onQuantityChange={setQuantity}
@@ -360,9 +410,19 @@ export function TabRoot() {
             <DragOverlay dropAnimation={null}>
               {draggedCard &&
                 (viewMode === "visual" ? (
-                  <CardVisualTile card={draggedCard} dragOverlay className="c500-drag-overlay" />
+                  <CardVisualTile
+                    card={draggedCard}
+                    nameLanguage={nameLanguage}
+                    dragOverlay
+                    className="c500-drag-overlay"
+                  />
                 ) : (
-                  <CardRow card={draggedCard} dragOverlay className="c500-drag-overlay" />
+                  <CardRow
+                    card={draggedCard}
+                    nameLanguage={nameLanguage}
+                    dragOverlay
+                    className="c500-drag-overlay"
+                  />
                 ))}
             </DragOverlay>
           </DndContext>

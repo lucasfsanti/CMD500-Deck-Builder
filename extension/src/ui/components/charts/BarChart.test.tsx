@@ -17,6 +17,7 @@ function card(
     pageLowestPrice: 1,
     pageImageUrl: undefined,
     pageManaCostSymbols: undefined,
+    pageNamePt: undefined,
     enrichment: {
       name,
       typeLine,

@@ -1,4 +1,5 @@
 import type { DeckCard, Zone } from "../deck/types";
+import { displayName, type NameLanguage } from "../deck/display-name";
 
 export const TYPE_ORDER = [
   "Creature",
@@ -112,8 +113,16 @@ function compareByColor(a: DeckCard, b: DeckCard): number {
   );
 }
 
-function compareByName(a: DeckCard, b: DeckCard): number {
-  return a.name.localeCompare(b.name);
+/**
+ * Compares two cards by name in the given display language — "pt-BR"
+ * collation for Portuguese names (so accented letters like "É"/"Í"/"Ç"
+ * collate the way a Portuguese speaker expects), the default locale for
+ * English. Per deck-organizer's spec, only the primary Name-axis comparison
+ * uses a caller-chosen language; every other call site passes "en" fixed.
+ */
+function compareByName(a: DeckCard, b: DeckCard, language: NameLanguage): number {
+  const locale = language === "pt" ? "pt-BR" : undefined;
+  return displayName(a, language).localeCompare(displayName(b, language), locale);
 }
 
 /** Descending (highest first); a card with no resolved price sorts after every priced card. */
@@ -124,10 +133,13 @@ function compareByPrice(a: DeckCard, b: DeckCard): number {
   return b.pageLowestPrice - a.pageLowestPrice;
 }
 
-function compareBySortAxis(sortAxis: SortAxis): (a: DeckCard, b: DeckCard) => number {
+function compareBySortAxis(
+  sortAxis: SortAxis,
+  sortNameLanguage: NameLanguage,
+): (a: DeckCard, b: DeckCard) => number {
   switch (sortAxis) {
     case "name":
-      return compareByName;
+      return (a, b) => compareByName(a, b, sortNameLanguage);
     case "color":
       return compareByColor;
     case "price":
@@ -137,13 +149,18 @@ function compareBySortAxis(sortAxis: SortAxis): (a: DeckCard, b: DeckCard) => nu
   }
 }
 
-/** Sorts a single group's cards by the active sort axis, with name as the tiebreak. */
-function sortWithinGroup(cards: DeckCard[], sortAxis: SortAxis): DeckCard[] {
-  const primaryCompare = compareBySortAxis(sortAxis);
-  return [...cards].sort((a, b) => primaryCompare(a, b) || compareByName(a, b));
+/**
+ * Sorts a single group's cards by the active sort axis, with name as the
+ * tiebreak. `sortNameLanguage` only affects the primary Name-axis
+ * comparison — the trailing tiebreak always compares canonical English
+ * names, regardless of the active display language (deck-organizer spec).
+ */
+function sortWithinGroup(cards: DeckCard[], sortAxis: SortAxis, sortNameLanguage: NameLanguage): DeckCard[] {
+  const primaryCompare = compareBySortAxis(sortAxis, sortNameLanguage);
+  return [...cards].sort((a, b) => primaryCompare(a, b) || compareByName(a, b, "en"));
 }
 
-function groupByType(cards: DeckCard[], sortAxis: SortAxis): CardGroup[] {
+function groupByType(cards: DeckCard[], sortAxis: SortAxis, sortNameLanguage: NameLanguage): CardGroup[] {
   const byType = new Map<string, DeckCard[]>();
   for (const card of cards) {
     const type = typeOf(card);
@@ -156,14 +173,14 @@ function groupByType(cards: DeckCard[], sortAxis: SortAxis): CardGroup[] {
   for (const type of TYPE_ORDER) {
     const bucket = byType.get(type);
     if (!bucket || bucket.length === 0) continue;
-    groups.push({ type, cards: sortWithinGroup(bucket, sortAxis) });
+    groups.push({ type, cards: sortWithinGroup(bucket, sortAxis, sortNameLanguage) });
   }
   return groups;
 }
 
 const COLOR_GROUP_ORDER = ["Colorless", "White", "Blue", "Black", "Red", "Green", "Multicolor"];
 
-function groupByColor(cards: DeckCard[], sortAxis: SortAxis): CardGroup[] {
+function groupByColor(cards: DeckCard[], sortAxis: SortAxis, sortNameLanguage: NameLanguage): CardGroup[] {
   const byColor = new Map<string, DeckCard[]>();
   for (const card of cards) {
     const label = colorGroupLabel(card.enrichment?.colorIdentity);
@@ -176,14 +193,14 @@ function groupByColor(cards: DeckCard[], sortAxis: SortAxis): CardGroup[] {
   for (const label of COLOR_GROUP_ORDER) {
     const bucket = byColor.get(label);
     if (!bucket || bucket.length === 0) continue;
-    groups.push({ type: label, cards: sortWithinGroup(bucket, sortAxis) });
+    groups.push({ type: label, cards: sortWithinGroup(bucket, sortAxis, sortNameLanguage) });
   }
   return groups;
 }
 
 const UNKNOWN_CMC = "unknown";
 
-function groupByCmc(cards: DeckCard[], sortAxis: SortAxis): CardGroup[] {
+function groupByCmc(cards: DeckCard[], sortAxis: SortAxis, sortNameLanguage: NameLanguage): CardGroup[] {
   const byCmc = new Map<number | typeof UNKNOWN_CMC, DeckCard[]>();
   for (const card of cards) {
     const key = card.enrichment?.cmc ?? UNKNOWN_CMC;
@@ -206,7 +223,10 @@ function groupByCmc(cards: DeckCard[], sortAxis: SortAxis): CardGroup[] {
   for (const key of orderedKeys) {
     const bucket = byCmc.get(key);
     if (!bucket || bucket.length === 0) continue;
-    groups.push({ type: key === UNKNOWN_CMC ? "?" : String(key), cards: sortWithinGroup(bucket, sortAxis) });
+    groups.push({
+      type: key === UNKNOWN_CMC ? "?" : String(key),
+      cards: sortWithinGroup(bucket, sortAxis, sortNameLanguage),
+    });
   }
   return groups;
 }
@@ -216,16 +236,20 @@ function groupByCmc(cards: DeckCard[], sortAxis: SortAxis): CardGroup[] {
  * or mana cost — type is the default), with groups ordered by that axis's
  * own natural order. Cards within a group are ordered by the given sort
  * axis (mana value by default), then by name, per the deck-organizer
- * spec's grouping requirement.
+ * spec's grouping requirement. `sortNameLanguage` is the display language to
+ * use only when `sortAxis` is "name" — it is the caller's job to snapshot
+ * this at Name-axis selection time rather than pass the live toggle value,
+ * per deck-organizer's toggle-snapshot requirement.
  */
 export function groupAndSortZone(
   cards: DeckCard[],
   groupingAxis: GroupingAxis = "type",
   sortAxis: SortAxis = "cmc",
+  sortNameLanguage: NameLanguage = "en",
 ): CardGroup[] {
-  if (groupingAxis === "color") return groupByColor(cards, sortAxis);
-  if (groupingAxis === "cmc") return groupByCmc(cards, sortAxis);
-  return groupByType(cards, sortAxis);
+  if (groupingAxis === "color") return groupByColor(cards, sortAxis, sortNameLanguage);
+  if (groupingAxis === "cmc") return groupByCmc(cards, sortAxis, sortNameLanguage);
+  return groupByType(cards, sortAxis, sortNameLanguage);
 }
 
 export function groupCardsByZone(cards: DeckCard[]): Record<Zone, DeckCard[]> {

@@ -17,6 +17,7 @@ function card(
     pageLowestPrice: 1,
     pageImageUrl: undefined,
     pageManaCostSymbols: undefined,
+    pageNamePt: undefined,
     enrichmentStatus: "ok",
     enrichment: {
       name,
@@ -112,6 +113,7 @@ describe("groupAndSortZone grouping axis (task 4.1)", () => {
       pageLowestPrice: 1,
       pageImageUrl: undefined,
       pageManaCostSymbols: undefined,
+      pageNamePt: undefined,
       enrichment: undefined,
       enrichmentStatus: "pending",
     };
@@ -161,6 +163,53 @@ describe("groupAndSortZone sort axis (task 12.2)", () => {
     ];
     const groups = groupAndSortZone(cards, "type", "price");
     expect(groups[0]!.cards.map((c) => c.name)).toEqual(["Expensive", "Mid", "Cheap", "Unpriced"]);
+  });
+});
+
+describe("groupAndSortZone name-language sorting (deck-organizer spec, card-name-language)", () => {
+  it("sorts by Name using the Portuguese name and pt-BR collation when sortNameLanguage is pt", () => {
+    const cards = [
+      { ...card("Zebra", "Creature", ["G"], 1), pageNamePt: "Anel Solar" },
+      { ...card("Aardvark", "Creature", ["G"], 1), pageNamePt: "Estudo Rístico" },
+      { ...card("Middle", "Creature", ["G"], 1), pageNamePt: "Élan Vital" },
+    ];
+    const groups = groupAndSortZone(cards, "type", "name", "pt");
+    // Portuguese names: "Anel Solar", "Élan Vital", "Estudo Rístico" —
+    // pt-BR collation orders "É" alongside "E", not after "Z"/ASCII order.
+    expect(groups[0]!.cards.map((c) => c.name)).toEqual(["Zebra", "Middle", "Aardvark"]);
+  });
+
+  it("sorts by Name using the English name when sortNameLanguage is en (default, unchanged)", () => {
+    const cards = [
+      { ...card("Zebra", "Creature", ["G"], 1), pageNamePt: "Anel Solar" },
+      { ...card("Aardvark", "Creature", ["G"], 1), pageNamePt: "Estudo Rístico" },
+    ];
+    const groups = groupAndSortZone(cards, "type", "name", "en");
+    expect(groups[0]!.cards.map((c) => c.name)).toEqual(["Aardvark", "Zebra"]);
+  });
+
+  it("falls back to the English name for a card with no captured Portuguese name, even when sorting by pt", () => {
+    const cards = [
+      { ...card("Zebra", "Creature", ["G"], 1), pageNamePt: undefined },
+      { ...card("Aardvark", "Creature", ["G"], 1), pageNamePt: "Zoológico" },
+    ];
+    const groups = groupAndSortZone(cards, "type", "name", "pt");
+    // Aardvark's Portuguese name ("Zoológico") sorts after Zebra's English
+    // fallback name ("Zebra"), proving the fallback participated in the sort.
+    expect(groups[0]!.cards.map((c) => c.name)).toEqual(["Zebra", "Aardvark"]);
+  });
+
+  it("ignores sortNameLanguage for the tiebreak on a non-name sort axis, always comparing English names", () => {
+    const cards = [
+      { ...card("Zebra", "Creature", ["G"], 1), pageNamePt: "Anel Solar" },
+      { ...card("Aardvark", "Creature", ["G"], 1), pageNamePt: "Zoológico" },
+    ];
+    // Both cards tie on CMC (1), so the tiebreak decides the order. Their
+    // Portuguese names sort the *opposite* way ("Anel Solar" before
+    // "Zoológico", i.e. Zebra before Aardvark) — asserting English order
+    // below proves the tiebreak ignored sortNameLanguage="pt".
+    const groups = groupAndSortZone(cards, "type", "cmc", "pt");
+    expect(groups[0]!.cards.map((c) => c.name)).toEqual(["Aardvark", "Zebra"]);
   });
 });
 

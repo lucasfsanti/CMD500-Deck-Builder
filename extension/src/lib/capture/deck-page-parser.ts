@@ -51,9 +51,9 @@ let nextCardId = 0;
 
 /**
  * Parses the "Padrão" tab of a LigaMagic deck page into captured cards, per
- * the deck-page-capture spec: card name (from the card's canonical English
- * href, avoiding the page's Portuguese display name), quantity, zone, and
- * lowest displayed price.
+ * the deck-page-capture spec: the card's canonical English name (from its
+ * href) alongside LigaMagic's own Portuguese display name (its link text),
+ * quantity, zone, and lowest displayed price.
  */
 export function parseDeckPage(root: ParentNode): CaptureResult {
   const container = findPrimaryTabContainer(root);
@@ -98,8 +98,15 @@ export function parseDeckPage(root: ParentNode): CaptureResult {
       if (!cardEl) continue;
 
       const href = cardEl.getAttribute("href") ?? "";
-      const name = extractCardNameFromHref(href) ?? cardEl.textContent?.trim();
+      const englishName = extractCardNameFromHref(href);
+      const pageText = cardEl.textContent?.trim();
+      const name = englishName ?? pageText;
       if (!name) continue;
+      // Whenever the href resolved a canonical English name, the anchor's own
+      // visible text is LigaMagic's Portuguese display name. When it didn't,
+      // there's no distinct Portuguese text to fall back to either — `name`
+      // already holds `pageText` in that case, so both fields end up equal.
+      const pageNamePt = englishName ? pageText : name;
 
       const qtyEl = line.querySelector(":scope > .deck-box-left > .deck-qty");
       const quantity = extractQuantity(qtyEl);
@@ -115,6 +122,7 @@ export function parseDeckPage(root: ParentNode): CaptureResult {
         pageLowestPrice,
         pageImageUrl,
         pageManaCostSymbols,
+        pageNamePt,
       });
     }
   }

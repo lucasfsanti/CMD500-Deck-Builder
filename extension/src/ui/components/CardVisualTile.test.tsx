@@ -13,6 +13,7 @@ function card(overrides: Partial<DeckCard> = {}): DeckCard {
     pageLowestPrice: 4,
     pageImageUrl: undefined,
     pageManaCostSymbols: undefined,
+    pageNamePt: undefined,
     enrichment: {
       name: "Sol Ring",
       typeLine: "Artifact",
@@ -59,6 +60,30 @@ describe("CardVisualTile (task 4.2)", () => {
     const { container } = renderTile({ illegal: true, overBudget: true });
     expect(container.querySelector(".c500-card__badge--illegal")).not.toBeNull();
     expect(container.querySelector(".c500-card__price--over-budget")).not.toBeNull();
+  });
+});
+
+describe("CardVisualTile name-language toggle (card-name-language spec)", () => {
+  it("shows the English name by default", () => {
+    renderTile({ card: card({ pageNamePt: "Anel Solar" }) });
+    expect(screen.getByAltText("Sol Ring")).not.toBeNull();
+  });
+
+  it("shows the Portuguese name in artwork alt text, caption, and aria-labels when nameLanguage is pt", () => {
+    renderTile({
+      card: card({ pageNamePt: "Anel Solar" }),
+      nameLanguage: "pt",
+      size: "hero",
+      onRemove: () => {},
+    });
+    expect(screen.getByAltText("Anel Solar")).not.toBeNull();
+    expect(screen.getByLabelText("remover Anel Solar do deck")).not.toBeNull();
+    expect(screen.getByText("Anel Solar")).not.toBeNull();
+  });
+
+  it("falls back to the English name in Portuguese mode when pageNamePt is undefined", () => {
+    renderTile({ card: card({ pageNamePt: undefined }), nameLanguage: "pt" });
+    expect(screen.getByAltText("Sol Ring")).not.toBeNull();
   });
 });
 

@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import type { DeckCard } from "../lib/deck/types";
 import type { Theme } from "./use-theme-preference";
+import type { NameLanguage } from "../lib/deck/display-name";
 
 const mockUseTabDeck = vi.fn();
 vi.mock("./use-tab-deck", () => ({
@@ -20,6 +21,13 @@ vi.mock("./use-theme-preference", () => ({
   useThemePreference: () => mockUseThemePreference(),
 }));
 
+const mockUseNameLanguagePreference = vi.fn<
+  () => { language: NameLanguage; setLanguage: (language: NameLanguage) => void }
+>(() => ({ language: "en", setLanguage: vi.fn() }));
+vi.mock("./use-name-language-preference", () => ({
+  useNameLanguagePreference: () => mockUseNameLanguagePreference(),
+}));
+
 function card(id: string, name: string, zone: DeckCard["zone"]): DeckCard {
   return {
     id,
@@ -33,6 +41,7 @@ function card(id: string, name: string, zone: DeckCard["zone"]): DeckCard {
     // placeholder that would duplicate the card's name alongside its caption.
     pageImageUrl: `https://example.com/${id}.jpg`,
     pageManaCostSymbols: undefined,
+    pageNamePt: undefined,
     enrichment: {
       name,
       typeLine: "Artifact",
@@ -378,5 +387,144 @@ describe("TabRoot (task 3.1)", () => {
     fireEvent.click(toggle);
 
     expect(setTheme).toHaveBeenCalledWith("dark");
+  });
+});
+
+describe("TabRoot name-language toggle (card-name-language spec)", () => {
+  it("shows a toggle offering to switch to Portuguese by default, and calls setLanguage on click", async () => {
+    const setLanguage = vi.fn();
+    mockUseNameLanguagePreference.mockReturnValue({ language: "en", setLanguage });
+    mockUseTabDeck.mockReturnValue({
+      cards: [card("a", "Sol Ring", "mainDeck")],
+      pageStatus: "ok",
+      format: "commander500",
+      setFormat: vi.fn(),
+      zoneError: undefined,
+      moveCard: vi.fn(),
+      setQuantity: vi.fn(),
+    });
+    mockUseSourceTabStatus.mockReturnValue("open");
+
+    const { TabRoot } = await import("./TabRoot");
+    render(<TabRoot />);
+
+    const toggle = screen.getByRole("button", { name: "Mudar nomes das cartas para português" });
+    expect(toggle.textContent).toBe("PT");
+    fireEvent.click(toggle);
+
+    expect(setLanguage).toHaveBeenCalledWith("pt");
+  });
+
+  it("shows a toggle offering to switch to English while Portuguese is active, and displays Portuguese names", async () => {
+    const setLanguage = vi.fn();
+    mockUseNameLanguagePreference.mockReturnValue({ language: "pt", setLanguage });
+    mockUseTabDeck.mockReturnValue({
+      cards: [{ ...card("a", "Sol Ring", "mainDeck"), pageNamePt: "Anel Solar" }],
+      pageStatus: "ok",
+      format: "commander500",
+      setFormat: vi.fn(),
+      zoneError: undefined,
+      moveCard: vi.fn(),
+      setQuantity: vi.fn(),
+    });
+    mockUseSourceTabStatus.mockReturnValue("open");
+
+    const { TabRoot } = await import("./TabRoot");
+    render(<TabRoot />);
+
+    expect(screen.getByText("Anel Solar")).toBeTruthy();
+    expect(screen.queryByText("Sol Ring")).toBeNull();
+
+    const toggle = screen.getByRole("button", { name: "Mudar nomes das cartas para inglês" });
+    expect(toggle.textContent).toBe("EN");
+    fireEvent.click(toggle);
+
+    expect(setLanguage).toHaveBeenCalledWith("en");
+  });
+});
+
+describe("TabRoot Name-axis sort snapshot and resync hint (deck-organizer spec)", () => {
+  function setup(cards: DeckCard[]) {
+    let language: NameLanguage = "en";
+    const setLanguage = vi.fn((next: NameLanguage) => {
+      language = next;
+    });
+    mockUseNameLanguagePreference.mockImplementation(() => ({ language, setLanguage }));
+    mockUseTabDeck.mockReturnValue({
+      cards,
+      pageStatus: "ok",
+      format: "commander500",
+      setFormat: vi.fn(),
+      zoneError: undefined,
+      moveCard: vi.fn(),
+      setQuantity: vi.fn(),
+    });
+    mockUseSourceTabStatus.mockReturnValue("open");
+  }
+
+  function mainDeckNames(container: HTMLElement): (string | null)[] {
+    return [...container.querySelectorAll(".c500-card__name")].map((el) => el.textContent);
+  }
+
+  it("sorts by the language active at selection time, ignores a later toggle until resync, then resyncs on click", async () => {
+    setup([
+      { ...card("a", "Zebra", "mainDeck"), pageNamePt: "Anel Solar" },
+      { ...card("b", "Aardvark", "mainDeck"), pageNamePt: "Zoológico" },
+    ]);
+
+    const { TabRoot } = await import("./TabRoot");
+    const { container, rerender } = render(<TabRoot />);
+
+    // Select the Name sort axis while English is active.
+    fireEvent.change(screen.getByLabelText("Ordenar por"), { target: { value: "name" } });
+    expect(mainDeckNames(container)).toEqual(["Aardvark", "Zebra"]);
+    expect(screen.queryByRole("button", { name: "Reordenar por nome no idioma atual" })).toBeNull();
+
+    // Toggle to Portuguese: names redisplay in Portuguese, but the ORDER
+    // stays the English-selected one (Aardvark's pt name first, even though
+    // it isn't alphabetically first in Portuguese) — proving no auto re-sort.
+    fireEvent.click(screen.getByRole("button", { name: "Mudar nomes das cartas para português" }));
+    rerender(<TabRoot />);
+    expect(mainDeckNames(container)).toEqual(["Zoológico", "Anel Solar"]);
+    expect(screen.getByRole("button", { name: "Reordenar por nome no idioma atual" })).toBeTruthy();
+
+    // Clicking the resync hint re-sorts using the now-active Portuguese names.
+    fireEvent.click(screen.getByRole("button", { name: "Reordenar por nome no idioma atual" }));
+    expect(mainDeckNames(container)).toEqual(["Anel Solar", "Zoológico"]);
+    expect(screen.queryByRole("button", { name: "Reordenar por nome no idioma atual" })).toBeNull();
+  });
+
+  it("re-snapshots to the current language when Name is re-selected, even though it was already selected", async () => {
+    setup([
+      { ...card("a", "Zebra", "mainDeck"), pageNamePt: "Anel Solar" },
+      { ...card("b", "Aardvark", "mainDeck"), pageNamePt: "Zoológico" },
+    ]);
+
+    const { TabRoot } = await import("./TabRoot");
+    const { container, rerender } = render(<TabRoot />);
+    const sortSelect = screen.getByLabelText("Ordenar por");
+
+    fireEvent.change(sortSelect, { target: { value: "name" } });
+    fireEvent.click(screen.getByRole("button", { name: "Mudar nomes das cartas para português" }));
+    rerender(<TabRoot />);
+    expect(screen.getByRole("button", { name: "Reordenar por nome no idioma atual" })).toBeTruthy();
+
+    // Re-selecting "name" while it's already the active axis is itself a
+    // sort-axis interaction, so it re-snapshots without needing the hint.
+    fireEvent.change(sortSelect, { target: { value: "name" } });
+    expect(mainDeckNames(container)).toEqual(["Anel Solar", "Zoológico"]);
+    expect(screen.queryByRole("button", { name: "Reordenar por nome no idioma atual" })).toBeNull();
+  });
+
+  it("shows no resync hint when sorted by a non-name axis, even after toggling language", async () => {
+    setup([{ ...card("a", "Zebra", "mainDeck"), pageNamePt: "Anel Solar" }]);
+
+    const { TabRoot } = await import("./TabRoot");
+    const { rerender } = render(<TabRoot />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Mudar nomes das cartas para português" }));
+    rerender(<TabRoot />);
+
+    expect(screen.queryByRole("button", { name: "Reordenar por nome no idioma atual" })).toBeNull();
   });
 });

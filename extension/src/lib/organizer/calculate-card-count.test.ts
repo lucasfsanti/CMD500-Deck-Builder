@@ -11,6 +11,7 @@ function card(name: string, zone: DeckCard["zone"], quantity = 1): DeckCard {
     pageLowestPrice: 1,
     pageImageUrl: undefined,
     pageManaCostSymbols: undefined,
+    pageNamePt: undefined,
     enrichment: undefined,
     enrichmentStatus: "pending",
   };

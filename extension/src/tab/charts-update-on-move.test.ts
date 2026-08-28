@@ -49,7 +49,7 @@ describe("charts update within the same interaction as a move into Main Deck (ta
     mockCapture = {
       status: "ok",
       cards: [
-        { id: "a", name: "Maybeboard Card", quantity: 1, zone: "maybeboard", pageLowestPrice: 1, pageImageUrl: undefined, pageManaCostSymbols: undefined },
+        { id: "a", name: "Maybeboard Card", quantity: 1, zone: "maybeboard", pageLowestPrice: 1, pageImageUrl: undefined, pageManaCostSymbols: undefined, pageNamePt: undefined },
       ],
     };
 

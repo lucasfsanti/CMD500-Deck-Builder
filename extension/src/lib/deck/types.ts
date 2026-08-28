@@ -16,6 +16,8 @@ export interface CapturedCard {
   pageImageUrl: string | undefined;
   /** Ordered mana-symbol codes (e.g. ["2", "G", "U", "R"]) decoded from LigaMagic's own page DOM. Undefined for cards with no shown cost (e.g. lands) or an unrecognized symbol; no Scryfall dependency. */
   pageManaCostSymbols: string[] | undefined;
+  /** LigaMagic's own Portuguese display name for this card, captured from the page's link text. Undefined only if the page's markup could not be parsed at all. */
+  pageNamePt: string | undefined;
 }
 
 export type CardLayout =

@@ -30,14 +30,19 @@ export function parseCollectionPage(root: ParentNode): CaptureResult {
   for (const cardEl of rows) {
     const link = cardEl.querySelector("a");
     const href = link?.getAttribute("href") ?? "";
-    let name: string | undefined;
+    let englishName: string | undefined;
     try {
-      name = new URL(href, "https://www.ligamagic.com.br").searchParams.get("card") ?? undefined;
+      englishName = new URL(href, "https://www.ligamagic.com.br").searchParams.get("card") ?? undefined;
     } catch {
-      name = undefined;
+      englishName = undefined;
     }
-    name = name ?? link?.textContent?.trim();
+    const pageText = link?.textContent?.trim();
+    const name = englishName ?? pageText;
     if (!name) continue;
+    // Same fallback rule as deck-page-parser: when the href resolved a
+    // canonical English name, the link's own text is the Portuguese display
+    // name; otherwise both fields end up holding the same fallback text.
+    const pageNamePt = englishName ? pageText : name;
 
     const row = cardEl.closest(".deck-line") ?? cardEl.parentElement;
     const qtyText = row?.querySelector(".deck-qty")?.textContent ?? "";
@@ -61,6 +66,7 @@ export function parseCollectionPage(root: ParentNode): CaptureResult {
       pageLowestPrice,
       pageImageUrl: link ? extractPageImageUrl(link) : undefined,
       pageManaCostSymbols: row ? extractManaCost(row) : undefined,
+      pageNamePt,
     });
   }
 

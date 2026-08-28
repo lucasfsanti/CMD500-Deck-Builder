@@ -1,0 +1,36 @@
+## 1. Capture the Portuguese display name
+
+- [x] 1.1 Add `pageNamePt: string | undefined` to `CapturedCard` in `extension/src/lib/deck/types.ts`, documented the same way as `pageLowestPrice`/`pageImageUrl` (page-captured, may be absent). Verify the project typechecks with the new field in place.
+- [x] 1.2 In `extension/src/lib/capture/deck-page-parser.ts`, capture the card anchor's `textContent` as `pageNamePt` whenever `extractCardNameFromHref(href)` succeeds; when it fails, fall back to that same text for both `name` and `pageNamePt`. Verify with `deck-page-parser.test.ts` against the real fixture (`extension/test/fixtures/ligamagic-deck-full.html`): e.g. the Xyris row yields `name: "Xyris, the Writhing Storm"` and `pageNamePt: "Xyris, a Tempestade Serpenteante"`; a row exercising the href-failure fallback yields the same text in both fields.
+- [x] 1.3 Apply the same change to `extension/src/lib/capture/collection-page-parser.ts`. Verify with `collection-page-parser.test.ts`, mirroring the deck-page-parser cases above.
+
+## 2. Name-language preference
+
+- [x] 2.1 Add `extension/src/tab/use-name-language-preference.ts`, mirroring `use-theme-preference.ts`'s persisted-preference shape (backed by `ChromeLocalStore`, a new storage key such as `c500NameLanguagePreference`) but without theme's OS-preference detection — the default is always `"en"` when nothing is stored. Verify with a new `use-name-language-preference.test.ts`: defaults to `"en"` with no stored value; `setLanguage("pt")` persists and is read back; a second hook instance backed by the same store reflects a previously stored `"pt"` on mount (covers the cross-tab persistence scenario from `card-name-language`'s spec).
+
+## 3. Display the active language
+
+- [x] 3.1 Add a `displayName(card: { name: string; pageNamePt?: string }, language: "en" | "pt"): string` helper (e.g. `extension/src/lib/deck/display-name.ts`) returning `pageNamePt ?? name` for `"pt"` and `name` for `"en"`. Verify with unit tests: `"pt"` with `pageNamePt` set returns the Portuguese name; `"pt"` with `pageNamePt` undefined falls back to `name`; `"en"` always returns `name` regardless of `pageNamePt`.
+- [x] 3.2 In `extension/src/tab/TabRoot.tsx`, wire in `useNameLanguagePreference`, render a text toggle button in the header next to the theme toggle (showing "PT" while English is active, "EN" while Portuguese is active, per design.md's destination-state convention), and thread the active language down to `CardRow` and `CardVisualTile` as a prop. Verify via `TabRoot.test.tsx`: the toggle renders, defaults to English-displayed names, and activating it switches displayed names to Portuguese without a remount.
+- [x] 3.3 In `extension/src/ui/components/CardRow.tsx`, use `displayName` for the row's name text, the hover preview's (`CardHoverPreview`) name text, and the name-derived `aria-label`s (quantity field, removal control), replacing the direct `card.name` reads. Verify via `CardRow.test.tsx`: with the Portuguese language active and `pageNamePt` set, the row and hover preview show the Portuguese name; with English active, behavior is unchanged from today.
+- [x] 3.4 Apply the same change to `extension/src/ui/components/CardVisualTile.tsx` (caption text, alt text, name-derived `aria-label`s). Verify via `CardVisualTile.test.tsx`, mirroring the `CardRow` cases above.
+
+## 4. Name-aware sorting with a toggle snapshot
+
+- [x] 4.1 In `extension/src/lib/organizer/group-sort.ts`, give `compareByName` a required `language: "en" | "pt"` parameter, comparing `pageNamePt ?? name` with `localeCompare(..., "pt-BR")` for `"pt"` and `name` with the default locale for `"en"`. Update `compareBySortAxis`/`sortWithinGroup`/`groupAndSortZone` (and its `groupByType`/`groupByColor`/`groupByCmc` callees) to accept a `sortNameLanguage` parameter used only for the primary Name-axis comparison; the trailing tiebreak call inside `sortWithinGroup` always passes `"en"` explicitly. Verify with `group-sort.test.ts`: sorting by Name with `"pt"` orders cards by their Portuguese names (including an accented-character case, e.g. a name starting with "É" sorting correctly relative to unaccented names); sorting by Name with `"en"` is unchanged from today; sorting by Price/CMC/Color with mixed English/Portuguese data still tiebreaks by English name regardless of the `sortNameLanguage` argument passed in.
+- [x] 4.2 In `TabRoot.tsx`, add `sortNameLanguage` state, initialized from the live name-language toggle. The sort-axis `<select>`'s `onChange` handler sets both `sortAxis` and `sortNameLanguage` (the latter to the toggle's current live value) together. Pass `sortNameLanguage` (not the live toggle value) into `groupAndSortZone`. Verify via `TabRoot.test.tsx`: selecting the Name sort axis while English is active sorts by English names; switching the name-language toggle afterward does not change the already-Name-sorted order; selecting a different sort axis and back to Name re-snapshots to whatever language is live at that point.
+- [x] 4.3 Add a small resync-hint control (e.g. a "↻" button) next to the sort-axis control, shown only when `sortAxis === "name"` and the live toggle value differs from `sortNameLanguage`; activating it sets `sortNameLanguage` to the current live value. Verify via `TabRoot.test.tsx`: the hint is absent when sorted by Name with the snapshot matching the live toggle, or when sorted by any other axis; it appears after toggling language while Name-sorted, and clicking it re-sorts the zone and hides the hint again.
+
+## 5. Filter matches both names
+
+- [x] 5.1 In `extension/src/ui/components/ZoneSection.tsx`, extend the filter predicate to also match `pageNamePt` (case-insensitive), independent of the active display language. Verify via `ZoneSection.test.tsx`: with English names displayed, typing a substring that only matches a card's Portuguese name still includes that card in the filtered results (and the inverse, with Portuguese displayed and an English-only substring).
+
+## 6. Export stays English-only
+
+- [x] 6.1 Add a regression test to `generate-decklist.test.ts`: a card with both `name` and a distinct `pageNamePt` produces export text (both the LigaMagic-import and readable formats) containing only the canonical English name. Verify the test passes without any production-code change, confirming `generate-decklist.ts` is unaffected by construction (per design.md).
+
+## 7. Full-suite verification
+
+- [x] 7.1 Run the full test suite and typecheck; verify everything passes, including all new and updated tests from tasks 1-6.
+- [x] 7.2 Run `openspec validate add-card-name-language-toggle --strict` and verify it reports the change as valid.
+- [x] 7.3 Launch the extension via a real-browser pass against a live LigaMagic deck page and confirm: the header toggle defaults to English; switching it redisplays List rows, Visual tiles, and hover previews in Portuguese immediately; the per-zone filter matches a card by its Portuguese name while English is still displayed; sorting by Name, then toggling language, leaves the order unchanged until the resync hint (or reselecting the sort axis) is used; exporting (either format) while Portuguese is active still produces English card names.

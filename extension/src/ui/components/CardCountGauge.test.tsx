@@ -13,6 +13,7 @@ function card(quantity: number): DeckCard {
     pageLowestPrice: 1,
     pageImageUrl: undefined,
     pageManaCostSymbols: undefined,
+    pageNamePt: undefined,
     enrichment: undefined,
     enrichmentStatus: "pending",
   };
