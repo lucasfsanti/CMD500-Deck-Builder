@@ -25,4 +25,32 @@ describe("ManaCostIcons", () => {
     const { container } = render(<ManaCostIcons symbols={[]} />);
     expect(container.querySelectorAll("img")).toHaveLength(0);
   });
+
+  it("renders each face's icons separated by a // divider, given symbolGroups", () => {
+    const { container } = render(
+      <ManaCostIcons symbolGroups={[["2", "G", "U"], ["1", "G", "U"]]} />,
+    );
+    const mana = container.querySelector(".c500-mana-cost")!;
+    const iconsAndDividers = [...mana.children].map((el) =>
+      el.classList.contains("c500-mana-cost__divider") ? "//" : el.getAttribute("alt"),
+    );
+    expect(iconsAndDividers).toEqual(["2", "G", "U", "//", "1", "G", "U"]);
+    expect(container.querySelectorAll(".c500-mana-cost__divider")).toHaveLength(1);
+  });
+
+  it("shows no divider before the first group or after the last", () => {
+    const { container } = render(<ManaCostIcons symbolGroups={[["W"], ["U"], ["B"]]} />);
+    expect(container.querySelectorAll(".c500-mana-cost__divider")).toHaveLength(2);
+    const mana = container.querySelector(".c500-mana-cost")!;
+    expect(mana.firstElementChild?.getAttribute("alt")).toBe("W");
+    expect(mana.lastElementChild?.getAttribute("alt")).toBe("B");
+  });
+
+  it("symbolGroups takes precedence over symbols when both are given", () => {
+    const { container } = render(
+      <ManaCostIcons symbols={["X"]} symbolGroups={[["A"], ["B"]]} />,
+    );
+    expect(container.querySelectorAll(".c500-mana-cost__icon")).toHaveLength(2);
+    expect(container.querySelector('img[alt="X"]')).toBeNull();
+  });
 });

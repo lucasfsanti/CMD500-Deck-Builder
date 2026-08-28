@@ -238,6 +238,14 @@
   border-radius: 50%;
 }
 
+/* Separates per-face cost groups (double-faced/split/adventure cards) — the
+   same "//" LigaMagic's and Scryfall's own names for these cards already use. */
+.c500-mana-cost__divider {
+  font-family: var(--c500-font-mono);
+  font-size: 11px;
+  color: var(--c500-text-soft);
+}
+
 .c500-card__price {
   font-family: var(--c500-font-mono);
   font-variant-numeric: tabular-nums;

@@ -47,6 +47,27 @@ const SLUG_TO_SYMBOL: Record<string, string> = {
   bp: "BP",
   rp: "RP",
   gp: "GP",
+  // Two-color hybrid mana. `bg` and `gu` are confirmed against real decks
+  // (Lluwen, Imperfect Naturalist; Thranduil, Sindarin Liege // Silvan
+  // Rally); both follow the same alphabetically-ordered two-letter slug
+  // (colors sorted b < g < r < u < w), so the other eight pairs are
+  // extended by that same convention. A wrong guess here is harmless — an
+  // entry for a slug LigaMagic never actually produces is simply dead code,
+  // it can't cause a wrong decode (see the file-level comment above). The
+  // canonical code deliberately has no separator (`BG`, not `B/G`) — it's
+  // used verbatim as an asset filename stem, and the real SVG is served at
+  // `.../symb/BG.svg`, confirmed live; a `/` would 404 (the same lesson the
+  // Phyrexian entries above already reflect: `BP.svg`, not `B/P.svg`).
+  bg: "BG",
+  br: "BR",
+  bu: "BU",
+  bw: "BW",
+  gr: "GR",
+  gu: "GU",
+  gw: "GW",
+  ru: "RU",
+  rw: "RW",
+  uw: "UW",
 };
 
 /**

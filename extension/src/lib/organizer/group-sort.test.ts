@@ -27,6 +27,7 @@ function card(
       legalInCommander: true,
       scryfallId: name,
       imageUrl: undefined,
+      faceManaCosts: undefined,
     },
   };
 }

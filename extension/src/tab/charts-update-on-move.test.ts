@@ -31,6 +31,7 @@ describe("charts update within the same interaction as a move into Main Deck (ta
                 legalInCommander: true,
                 scryfallId: "a",
                 imageUrl: undefined,
+                faceManaCosts: undefined,
               },
             },
           ]),

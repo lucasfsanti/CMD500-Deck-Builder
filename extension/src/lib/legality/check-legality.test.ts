@@ -24,6 +24,7 @@ function card(
       legalInCommander: true,
       scryfallId: name,
       imageUrl: undefined,
+      faceManaCosts: undefined,
     },
     enrichmentStatus: "ok",
     ...overrides,
@@ -43,6 +44,7 @@ describe("checkLegality — Commander 500 (task 6.2)", () => {
           legalInCommander: false,
           scryfallId: "balance",
           imageUrl: undefined,
+          faceManaCosts: undefined,
         },
       }),
     ];

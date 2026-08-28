@@ -110,6 +110,7 @@ describe("CardRow color-identity rail (task 3.2)", () => {
           legalInCommander: true,
           scryfallId: "a",
           imageUrl: undefined,
+          faceManaCosts: undefined,
         },
       },
     });
@@ -140,6 +141,54 @@ describe("CardRow mana cost icons", () => {
   it("shows no mana-cost icons for a card with no captured cost", () => {
     const { container } = renderCard({ card: { ...baseCard, pageManaCostSymbols: undefined } });
     expect(container.querySelector(".c500-mana-cost")).toBeNull();
+  });
+
+  const enrichmentWith = (faceManaCosts: string[][] | undefined) => ({
+    name: baseCard.name,
+    typeLine: "Creature",
+    colorIdentity: [],
+    cmc: 3,
+    layout: "normal" as const,
+    legalInCommander: true,
+    scryfallId: "a",
+    imageUrl: undefined,
+    faceManaCosts,
+  });
+
+  it("shows each face's icons separated by // when enrichment resolves faceManaCosts (e.g. a split card)", () => {
+    const { container } = renderCard({
+      card: {
+        ...baseCard,
+        pageManaCostSymbols: ["1", "R", "1", "U"],
+        enrichmentStatus: "ok",
+        enrichment: enrichmentWith([
+          ["1", "R"],
+          ["1", "U"],
+        ]),
+      },
+    });
+    expect(container.querySelectorAll(".c500-mana-cost__divider")).toHaveLength(1);
+    expect(container.querySelectorAll(".c500-mana-cost__icon")).toHaveLength(4);
+  });
+
+  it("falls back to the page-captured cost once enrichment resolves with no faceManaCosts (a normal single-cost card)", () => {
+    const { container } = renderCard({
+      card: {
+        ...baseCard,
+        pageManaCostSymbols: ["2", "G", "U", "R"],
+        enrichmentStatus: "ok",
+        enrichment: enrichmentWith(undefined),
+      },
+    });
+    expect(container.querySelectorAll(".c500-mana-cost__divider")).toHaveLength(0);
+    expect(container.querySelectorAll(".c500-mana-cost__icon")).toHaveLength(4);
+  });
+
+  it("shows the page-captured cost, not suppressed, while enrichment is still pending", () => {
+    const { container } = renderCard({
+      card: { ...baseCard, pageManaCostSymbols: ["5", "W", "W"] },
+    });
+    expect(container.querySelectorAll(".c500-mana-cost__icon")).toHaveLength(3);
   });
 });
 

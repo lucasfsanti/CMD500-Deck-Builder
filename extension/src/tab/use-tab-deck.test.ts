@@ -108,7 +108,7 @@ describe("useTabDeck (task 2.5)", () => {
       Object.fromEntries(
         names.map((name) => [
           name,
-          { status: "ok" as const, card: { name, typeLine: "Artifact", colorIdentity: [], cmc: 1, layout: "normal" as const, legalInCommander: true, scryfallId: name, imageUrl: undefined } },
+          { status: "ok" as const, card: { name, typeLine: "Artifact", colorIdentity: [], cmc: 1, layout: "normal" as const, legalInCommander: true, scryfallId: name, imageUrl: undefined, faceManaCosts: undefined } },
         ]),
       ),
     );

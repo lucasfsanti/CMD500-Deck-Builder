@@ -26,6 +26,7 @@ const ENRICHMENT_TABLE: Record<string, CardEnrichment> = {
     legalInCommander: true,
     scryfallId: "xyris",
     imageUrl: undefined,
+    faceManaCosts: undefined,
   },
   "Vial Smasher the Fierce": {
     name: "Vial Smasher the Fierce",
@@ -36,6 +37,7 @@ const ENRICHMENT_TABLE: Record<string, CardEnrichment> = {
     legalInCommander: true,
     scryfallId: "vial-smasher",
     imageUrl: undefined,
+    faceManaCosts: undefined,
   },
   "Llanowar Elves": {
     name: "Llanowar Elves",
@@ -46,6 +48,7 @@ const ENRICHMENT_TABLE: Record<string, CardEnrichment> = {
     legalInCommander: true,
     scryfallId: "llanowar-elves",
     imageUrl: undefined,
+    faceManaCosts: undefined,
   },
   "Sol Ring": {
     name: "Sol Ring",
@@ -56,6 +59,7 @@ const ENRICHMENT_TABLE: Record<string, CardEnrichment> = {
     legalInCommander: true, // legal in Commander 500; banned-in-deck under Duel Commander
     scryfallId: "sol-ring",
     imageUrl: undefined,
+    faceManaCosts: undefined,
   },
   Forest: {
     name: "Forest",
@@ -66,6 +70,7 @@ const ENRICHMENT_TABLE: Record<string, CardEnrichment> = {
     legalInCommander: true,
     scryfallId: "forest",
     imageUrl: undefined,
+    faceManaCosts: undefined,
   },
   "Chalice of the Void": {
     name: "Chalice of the Void",
@@ -76,6 +81,7 @@ const ENRICHMENT_TABLE: Record<string, CardEnrichment> = {
     legalInCommander: true,
     scryfallId: "chalice",
     imageUrl: undefined,
+    faceManaCosts: undefined,
   },
   "Rhystic Study": {
     name: "Rhystic Study",
@@ -86,6 +92,7 @@ const ENRICHMENT_TABLE: Record<string, CardEnrichment> = {
     legalInCommander: true,
     scryfallId: "rhystic-study",
     imageUrl: undefined,
+    faceManaCosts: undefined,
   },
 };
 

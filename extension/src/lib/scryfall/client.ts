@@ -1,5 +1,6 @@
 import { normalizeCardName } from "./normalize-name";
 import { TimedCache, MemoryStore, type KeyValueStore } from "./cache";
+import { parseScryfallManaCost } from "./mana-cost";
 import type { CardEnrichment, CardLayout, EnrichmentResult } from "../deck/types";
 
 const SCRYFALL_BASE = "https://api.scryfall.com";
@@ -20,8 +21,12 @@ interface ScryfallCardResponse {
   prints_search_uri: string;
   /** Present for single-faced cards; absent for double-faced layouts (see card_faces). */
   image_uris?: ScryfallImageUris;
-  /** Present for double-faced/split-style layouts; each face may carry its own image_uris. */
-  card_faces?: Array<{ image_uris?: ScryfallImageUris }>;
+  /**
+   * Present for double-faced/split-style layouts; each face may carry its own
+   * image_uris and its own mana_cost (empty string when that face has no
+   * printed cost, e.g. a transform card's back face or an MDFC land face).
+   */
+  card_faces?: Array<{ image_uris?: ScryfallImageUris; mana_cost?: string }>;
 }
 
 interface ScryfallListResponse<T> {
@@ -78,6 +83,26 @@ function resolveImageUrl(card: ScryfallCardResponse): string | undefined {
   return card.image_uris?.normal ?? card.card_faces?.[0]?.image_uris?.normal;
 }
 
+/**
+ * Resolves per-face mana costs for a card with more than one face carrying
+ * its own real printed cost (double-faced, split, adventure, ...) — the case
+ * where LigaMagic's own page markup concatenates both costs with no way to
+ * tell them apart. Undefined for a card with zero or one real per-face cost
+ * (including a transform card's blank-cost back face, or a meld card, which
+ * carries no card_faces mana_cost data at all), or if any face's cost can't
+ * be confidently canonicalized — same "absence over wrong data" rule as the
+ * rest of mana-cost handling.
+ */
+function resolveFaceManaCosts(card: ScryfallCardResponse): string[][] | undefined {
+  const realCosts = (card.card_faces ?? [])
+    .map((face) => face.mana_cost)
+    .filter((cost): cost is string => Boolean(cost));
+  if (realCosts.length < 2) return undefined;
+
+  const parsed = realCosts.map(parseScryfallManaCost);
+  return parsed.every((cost): cost is string[] => Boolean(cost)) ? parsed : undefined;
+}
+
 function toEnrichment(card: ScryfallCardResponse): CardEnrichment {
   return {
     name: card.name,
@@ -88,6 +113,7 @@ function toEnrichment(card: ScryfallCardResponse): CardEnrichment {
     legalInCommander: card.legalities["commander"] === "legal",
     scryfallId: card.id,
     imageUrl: resolveImageUrl(card),
+    faceManaCosts: resolveFaceManaCosts(card),
   };
 }
 

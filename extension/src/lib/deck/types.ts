@@ -42,6 +42,13 @@ export interface CardEnrichment {
   scryfallId: string;
   /** Card artwork for card-visual-view. Undefined when Scryfall has no image for this card. */
   imageUrl: string | undefined;
+  /**
+   * Each face's own canonical mana-symbol codes (e.g. [["2","G","U"], ["1","G","U"]]),
+   * for a card with more than one face carrying a real printed cost (double-faced,
+   * split, adventure). Undefined for a card with zero or one real per-face cost —
+   * including a transform card's blank-cost back face, or a meld card.
+   */
+  faceManaCosts: string[][] | undefined;
 }
 
 export type EnrichmentResult =

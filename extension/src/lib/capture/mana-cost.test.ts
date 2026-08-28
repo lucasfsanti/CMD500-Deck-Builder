@@ -53,4 +53,59 @@ describe("extractManaCost", () => {
     `);
     expect(extractManaCost(row)).toEqual(["1", "BP", "BP"]);
   });
+
+  it("decodes two-color hybrid mana symbols (Black/Green and Green/Blue, confirmed live)", () => {
+    const bg = cardRow(`
+      <div class="deck-cmc">
+        <span class="txt-mana">
+          <abbr class="mtg-symbol mtg-symbol-bg"></abbr>
+          <abbr class="mtg-symbol mtg-symbol-bg"></abbr>
+        </span>
+      </div>
+    `);
+    expect(extractManaCost(bg)).toEqual(["BG", "BG"]);
+
+    const gu = cardRow(`
+      <div class="deck-cmc">
+        <span class="txt-mana">
+          <abbr class="mtg-symbol mtg-symbol-gu"></abbr>
+        </span>
+      </div>
+    `);
+    expect(extractManaCost(gu)).toEqual(["GU"]);
+  });
+
+  it("decodes a hybrid pair inferred from the alphabetical convention (Red/White)", () => {
+    const row = cardRow(`
+      <div class="deck-cmc">
+        <span class="txt-mana">
+          <abbr class="mtg-symbol mtg-symbol-rw"></abbr>
+        </span>
+      </div>
+    `);
+    expect(extractManaCost(row)).toEqual(["RW"]);
+  });
+
+  it("decodes Lluwen, Imperfect Naturalist's real cost ({B/G}{B/G})", () => {
+    const row = cardRow(`
+      <div class="deck-cmc">
+        <span class="txt-mana">
+          <abbr class="mtg-symbol mtg-symbol-bg"></abbr>
+          <abbr class="mtg-symbol mtg-symbol-bg"></abbr>
+        </span>
+      </div>
+    `);
+    expect(extractManaCost(row)).toEqual(["BG", "BG"]);
+  });
+
+  it("decodes Revitalizing Repast's real cost ({B/G})", () => {
+    const row = cardRow(`
+      <div class="deck-cmc">
+        <span class="txt-mana">
+          <abbr class="mtg-symbol mtg-symbol-bg"></abbr>
+        </span>
+      </div>
+    `);
+    expect(extractManaCost(row)).toEqual(["BG"]);
+  });
 });

@@ -24,9 +24,25 @@ const delverOfSecrets = {
   id: "ghi-789",
   prints_search_uri: "https://api.scryfall.com/cards/search?q=delver",
   // Double-faced cards have no top-level image_uris — only per-face.
+  // Transform back faces have no printed mana cost at all (mana_cost: "").
   card_faces: [
-    { image_uris: { normal: "https://cards.scryfall.io/normal/delver-front.jpg" } },
-    { image_uris: { normal: "https://cards.scryfall.io/normal/delver-back.jpg" } },
+    { image_uris: { normal: "https://cards.scryfall.io/normal/delver-front.jpg" }, mana_cost: "{U}" },
+    { image_uris: { normal: "https://cards.scryfall.io/normal/delver-back.jpg" }, mana_cost: "" },
+  ],
+};
+
+const thranduil = {
+  name: "Thranduil, Sindarin Liege // Silvan Rally",
+  type_line: "Legendary Creature — Elf Noble // Sorcery",
+  color_identity: ["G", "U"],
+  cmc: 3,
+  layout: "adventure",
+  legalities: { commander: "legal" },
+  id: "jkl-012",
+  prints_search_uri: "https://api.scryfall.com/cards/search?q=thranduil",
+  card_faces: [
+    { mana_cost: "{2}{G/U}{G/U}" },
+    { mana_cost: "{1}{G/U}{G/U}" },
   ],
 };
 
@@ -114,6 +130,36 @@ describe("ScryfallClient.lookupCard", () => {
     expect(result.status === "ok" && result.card.imageUrl).toBe(
       "https://cards.scryfall.io/normal/delver-front.jpg",
     );
+  });
+
+  it("resolves faceManaCosts for a card with more than one real per-face cost", async () => {
+    const fetchImpl = vi.fn(async () => jsonResponse(thranduil));
+    const client = new ScryfallClient({ fetchImpl });
+
+    const result = await client.lookupCard("Thranduil, Sindarin Liege");
+
+    expect(result.status === "ok" && result.card.faceManaCosts).toEqual([
+      ["2", "GU", "GU"],
+      ["1", "GU", "GU"],
+    ]);
+  });
+
+  it("leaves faceManaCosts undefined for a card with only one real per-face cost (transform)", async () => {
+    const fetchImpl = vi.fn(async () => jsonResponse(delverOfSecrets));
+    const client = new ScryfallClient({ fetchImpl });
+
+    const result = await client.lookupCard("Delver of Secrets");
+
+    expect(result.status === "ok" && result.card.faceManaCosts).toBeUndefined();
+  });
+
+  it("leaves faceManaCosts undefined for a normal single-faced card", async () => {
+    const fetchImpl = vi.fn(async () => jsonResponse(solRing));
+    const client = new ScryfallClient({ fetchImpl });
+
+    const result = await client.lookupCard("Sol Ring");
+
+    expect(result.status === "ok" && result.card.faceManaCosts).toBeUndefined();
   });
 
   it("returns not-found for a name with no Scryfall match, even after fuzzy matching (task 1.4)", async () => {

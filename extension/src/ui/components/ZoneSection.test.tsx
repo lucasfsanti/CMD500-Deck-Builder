@@ -22,6 +22,7 @@ function card(): DeckCard {
       legalInCommander: true,
       scryfallId: "a",
       imageUrl: "https://cards.scryfall.io/normal/sol-ring.jpg",
+      faceManaCosts: undefined,
     },
     enrichmentStatus: "ok",
   };

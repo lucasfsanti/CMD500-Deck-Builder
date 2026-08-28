@@ -42,6 +42,7 @@ function card(id: string, name: string, zone: DeckCard["zone"]): DeckCard {
       legalInCommander: true,
       scryfallId: id,
       imageUrl: undefined,
+      faceManaCosts: undefined,
     },
     enrichmentStatus: "ok",
   };

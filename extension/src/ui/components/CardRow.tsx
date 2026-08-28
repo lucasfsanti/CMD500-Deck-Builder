@@ -37,7 +37,11 @@ function CardRowContent({ card, illegal, overBudget, onQuantityChange, onRemove 
       <span className="c500-card__name" title={card.name}>
         {card.name}
       </span>
-      <ManaCostIcons symbols={card.pageManaCostSymbols} />
+      {card.enrichment?.faceManaCosts ? (
+        <ManaCostIcons symbolGroups={card.enrichment.faceManaCosts} />
+      ) : (
+        <ManaCostIcons symbols={card.pageManaCostSymbols} />
+      )}
       <span
         className={`c500-card__price${card.pageLowestPrice === undefined ? " c500-card__price--unknown" : ""}${overBudget ? " c500-card__price--over-budget" : ""}`}
         title={overBudget ? "Conta para o deck estar acima do limite de R$500" : undefined}
