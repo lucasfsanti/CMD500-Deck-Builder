@@ -1,4 +1,5 @@
 import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { isBasicLand, type DeckCard } from "../../lib/deck/types";
 import { displayName, type NameLanguage } from "../../lib/deck/display-name";
 import { resolveCardArt } from "./card-art";
@@ -143,15 +144,20 @@ export function CardVisualTile({
   // useSortable (rather than plain useDraggable) also registers this tile as
   // a droppable, so another card dragged onto it can resolve as a same-group
   // reorder target (custom-group-order) — not just a zone-level move.
-  const { attributes, listeners, setNodeRef, isDragging } = useSortable({
+  const { attributes, listeners, setNodeRef, isDragging, transform, transition } = useSortable({
     id: card.id,
     data: { card },
   });
+  // Applies the shift dnd-kit already computes for every other tile in this
+  // group while one is being dragged over a new position — the "gap opens
+  // between neighbors" reorder preview (zone-header-and-reorder-preview).
+  const sortableStyle = { transform: CSS.Transform.toString(transform), transition };
 
   return (
     <div
       ref={setNodeRef}
       className={`c500-tile${sizeClassName}${isDragging ? " c500-tile--dragging" : ""}${className ? ` ${className}` : ""}`}
+      style={sortableStyle}
       {...listeners}
       {...attributes}
     >

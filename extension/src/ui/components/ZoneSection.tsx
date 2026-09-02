@@ -163,8 +163,10 @@ export function ZoneSection({
   return (
     <section className={`c500-zone${hero ? " c500-zone--hero" : ""}${heroEmpty ? " c500-zone--hero-empty" : ""}${collapsed ? " c500-zone--collapsed" : ""}`}>
       <div className="c500-zone__header">
-        {ZONE_LABELS[zone]}
-        <span className="c500-zone__count">({cardCount})</span>
+        <span className="c500-zone__title">
+          {ZONE_LABELS[zone]}
+          <span className="c500-zone__count">({cardCount})</span>
+        </span>
         {onToggleCollapse && (
           <button
             type="button"

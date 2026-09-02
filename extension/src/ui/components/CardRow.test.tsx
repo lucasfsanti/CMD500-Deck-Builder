@@ -1,8 +1,34 @@
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { render, fireEvent } from "@testing-library/react";
 import { DndContext } from "@dnd-kit/core";
 import { CardRow } from "./CardRow";
 import type { DeckCard } from "../../lib/deck/types";
+
+// Delegates to the real useSortable for every existing test (mockTransform/
+// mockIsDragging stay null), only overriding the specific field a test
+// explicitly sets — lets the transform-styling and dragging-visibility
+// tests below live alongside the rest without a fully separate mocked file.
+// isDragging in particular can't be reached any other way here: it only
+// goes true mid a real pointer-driven drag session, which jsdom can't
+// simulate.
+const { mockTransform, mockIsDragging } = vi.hoisted(() => ({
+  mockTransform: { current: null as { x: number; y: number; scaleX: number; scaleY: number } | null },
+  mockIsDragging: { current: null as boolean | null },
+}));
+vi.mock("@dnd-kit/sortable", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@dnd-kit/sortable")>();
+  return {
+    ...actual,
+    useSortable: (...args: Parameters<typeof actual.useSortable>) => {
+      const real = actual.useSortable(...args);
+      const withTransform = mockTransform.current
+        ? { ...real, transform: mockTransform.current, transition: "transform 200ms ease" }
+        : real;
+      if (mockIsDragging.current === null) return withTransform;
+      return { ...withTransform, isDragging: mockIsDragging.current };
+    },
+  };
+});
 
 const baseCard: DeckCard = {
   id: "a",
@@ -305,5 +331,38 @@ describe("CardRow artwork hover preview (task 5.4)", () => {
     expect(preview!.querySelector(".c500-tile__placeholder--unresolved")?.textContent).toBe(
       baseCard.name,
     );
+  });
+});
+
+describe("CardRow reorder-preview transform (zone-header-and-reorder-preview)", () => {
+  afterEach(() => {
+    mockTransform.current = null;
+    mockIsDragging.current = null;
+  });
+
+  it("keeps the dragging class applied while isDragging is true (now fully hidden via CSS, not just faded)", () => {
+    mockIsDragging.current = true;
+    const { container } = renderCard({});
+    expect(container.querySelector(".c500-card--dragging")).not.toBeNull();
+  });
+
+  it("does not apply the dragging class while isDragging is false", () => {
+    mockIsDragging.current = false;
+    const { container } = renderCard({});
+    expect(container.querySelector(".c500-card--dragging")).toBeNull();
+  });
+
+  it("applies the transform/transition useSortable reports to the row's own style", () => {
+    mockTransform.current = { x: 12, y: -8, scaleX: 1, scaleY: 1 };
+    const { container } = renderCard({});
+    const row = container.querySelector(".c500-card") as HTMLElement;
+    expect(row.style.transform).toBe("translate3d(12px, -8px, 0) scaleX(1) scaleY(1)");
+    expect(row.style.transition).toBe("transform 200ms ease");
+  });
+
+  it("renders no transform when useSortable reports none (unchanged default behavior)", () => {
+    const { container } = renderCard({});
+    const row = container.querySelector(".c500-card") as HTMLElement;
+    expect(row.style.transform).toBe("");
   });
 });

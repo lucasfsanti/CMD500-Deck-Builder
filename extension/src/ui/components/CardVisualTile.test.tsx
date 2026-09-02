@@ -1,8 +1,30 @@
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { DndContext } from "@dnd-kit/core";
 import { CardVisualTile } from "./CardVisualTile";
 import type { DeckCard } from "../../lib/deck/types";
+
+// Delegates to the real useSortable for every existing test (mockTransform/
+// mockIsDragging stay null), only overriding the specific field a test
+// explicitly sets — see CardRow.test.tsx's identical pattern.
+const { mockTransform, mockIsDragging } = vi.hoisted(() => ({
+  mockTransform: { current: null as { x: number; y: number; scaleX: number; scaleY: number } | null },
+  mockIsDragging: { current: null as boolean | null },
+}));
+vi.mock("@dnd-kit/sortable", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@dnd-kit/sortable")>();
+  return {
+    ...actual,
+    useSortable: (...args: Parameters<typeof actual.useSortable>) => {
+      const real = actual.useSortable(...args);
+      const withTransform = mockTransform.current
+        ? { ...real, transform: mockTransform.current, transition: "transform 200ms ease" }
+        : real;
+      if (mockIsDragging.current === null) return withTransform;
+      return { ...withTransform, isDragging: mockIsDragging.current };
+    },
+  };
+});
 
 function card(overrides: Partial<DeckCard> = {}): DeckCard {
   return {
@@ -266,5 +288,38 @@ describe("CardVisualTile artwork source preference (task 3.2)", () => {
     });
     expect(screen.queryByRole("img")).toBeNull();
     expect(screen.getAllByText("Sol Ring").length).toBeGreaterThan(0);
+  });
+});
+
+describe("CardVisualTile reorder-preview transform (zone-header-and-reorder-preview)", () => {
+  afterEach(() => {
+    mockTransform.current = null;
+    mockIsDragging.current = null;
+  });
+
+  it("keeps the dragging class applied while isDragging is true (now fully hidden via CSS, not just faded)", () => {
+    mockIsDragging.current = true;
+    const { container } = renderTile();
+    expect(container.querySelector(".c500-tile--dragging")).not.toBeNull();
+  });
+
+  it("does not apply the dragging class while isDragging is false", () => {
+    mockIsDragging.current = false;
+    const { container } = renderTile();
+    expect(container.querySelector(".c500-tile--dragging")).toBeNull();
+  });
+
+  it("applies the transform/transition useSortable reports to the tile's own style", () => {
+    mockTransform.current = { x: 12, y: -8, scaleX: 1, scaleY: 1 };
+    const { container } = renderTile();
+    const tile = container.querySelector(".c500-tile") as HTMLElement;
+    expect(tile.style.transform).toBe("translate3d(12px, -8px, 0) scaleX(1) scaleY(1)");
+    expect(tile.style.transition).toBe("transform 200ms ease");
+  });
+
+  it("renders no transform when useSortable reports none (unchanged default behavior)", () => {
+    const { container } = renderTile();
+    const tile = container.querySelector(".c500-tile") as HTMLElement;
+    expect(tile.style.transform).toBe("");
   });
 });

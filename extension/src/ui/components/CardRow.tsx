@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { isBasicLand, type DeckCard } from "../../lib/deck/types";
 import { displayName, type NameLanguage } from "../../lib/deck/display-name";
 import { resolveCardArt } from "./card-art";
@@ -143,16 +144,22 @@ export function CardRow({
   // useSortable (rather than plain useDraggable) also registers this row as
   // a droppable, so another card dragged onto it can resolve as a same-group
   // reorder target (custom-group-order) — not just a zone-level move.
-  const { attributes, listeners, setNodeRef, isDragging } = useSortable({
+  const { attributes, listeners, setNodeRef, isDragging, transform, transition } = useSortable({
     id: card.id,
     data: { card },
   });
+  // Applies the shift dnd-kit already computes for every other card in this
+  // group while one is being dragged over a new position — the "gap opens
+  // between neighbors" reorder preview (zone-header-and-reorder-preview).
+  // The dragged row itself gets a transform too (dnd-kit doesn't special-case
+  // the active item), which is harmless since it's fully hidden while dragging.
+  const sortableStyle = { transform: CSS.Transform.toString(transform), transition };
 
   return (
     <div
       ref={setNodeRef}
       className={`c500-card${isDragging ? " c500-card--dragging" : ""}${className ? ` ${className}` : ""}`}
-      style={railStyle}
+      style={{ ...railStyle, ...sortableStyle }}
       {...listeners}
       {...attributes}
       onPointerEnter={(e) => setHoverPos({ x: e.clientX, y: e.clientY })}

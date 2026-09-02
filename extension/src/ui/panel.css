@@ -185,8 +185,17 @@
   border-color: var(--c500-line);
 }
 
+/*
+  Fully hidden rather than faded (zone-header-and-reorder-preview): the
+  floating DragOverlay ghost is now the only visible representation of a
+  card being carried, so the original doesn't linger as a second copy while
+  its neighbors shift to open a gap at its current hover position. Kept in
+  the layout (not display: none) so those neighbors' shift is measured
+  against a stable set of item sizes.
+*/
 .c500-card--dragging {
-  opacity: 0.5;
+  opacity: 0;
+  pointer-events: none;
 }
 
 /*
@@ -414,8 +423,10 @@ input[type="number"] {
   touch-action: none;
 }
 
+/* See .c500-card--dragging's comment — same reasoning, List/Visual parity. */
 .c500-tile--dragging {
-  opacity: 0.5;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .c500-tile__art {
@@ -528,15 +539,32 @@ input[type="number"] {
   border-bottom: 1px solid var(--c500-line);
 }
 
+/*
+  Three fixed regions (zone-header-and-reorder-preview), the same in every
+  zone regardless of which controls it has: title+count on the left, the
+  name filter centered (empty track for zones without one), and the
+  collapse toggle anchored to the right — via explicit grid-column
+  assignment on each region below, not DOM order, so a zone with no filter
+  still puts the toggle in exactly the same corner as one that has it.
+*/
 .c500-zone__header {
-  display: flex;
-  align-items: baseline;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
   gap: 6px;
   padding: 10px 14px 4px;
   font-family: var(--c500-font-body);
   font-size: 16px;
   font-weight: 700;
   letter-spacing: -0.01em;
+}
+
+.c500-zone__title {
+  grid-column: 1;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  min-width: 0;
 }
 
 .c500-zone__count {
@@ -546,19 +574,14 @@ input[type="number"] {
   font-weight: 400;
 }
 
-/*
-  Per-zone collapse/expand toggle (zone-collapse-toggle): a small chevron
-  button, present on every zone's header. Sits before the filter input (on
-  the zones that have one) so the filter's own margin-left: auto still
-  pushes it to the header's right edge.
-*/
 .c500-zone__toggle {
+  grid-column: 3;
+  justify-self: end;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 20px;
   height: 20px;
-  margin-left: auto;
   border: none;
   border-radius: 4px;
   background: transparent;
@@ -573,7 +596,8 @@ input[type="number"] {
 }
 
 .c500-zone__filter {
-  margin-left: auto;
+  grid-column: 2;
+  justify-self: center;
   font-family: var(--c500-font-body);
   font-size: 12px;
   font-weight: 400;

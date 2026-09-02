@@ -574,3 +574,36 @@ describe("ZoneSection collapse/expand toggle (zone-collapse-toggle)", () => {
     expect(container.querySelector(".c500-zone--hero-empty")).not.toBeNull();
   });
 });
+
+describe("ZoneSection header layout (zone-header-and-reorder-preview)", () => {
+  it("wraps the title and count in their own element, distinct from the toggle and filter", () => {
+    const { container } = render(
+      <DndContext>
+        <ZoneSection zone="mainDeck" cards={[card()]} filterable onToggleCollapse={vi.fn()} />
+      </DndContext>,
+    );
+    const header = container.querySelector(".c500-zone__header")!;
+    const title = header.querySelector(".c500-zone__title")!;
+    expect(title).not.toBeNull();
+    expect(title.textContent).toBe("Main Deck(1)");
+    // Title, filter, and toggle are three separate, sibling header regions —
+    // not the title's own descendants — so each can be assigned its own
+    // grid column independently of the others' presence.
+    expect(title.querySelector(".c500-zone__filter")).toBeNull();
+    expect(title.querySelector(".c500-zone__toggle")).toBeNull();
+    expect(header.querySelector(".c500-zone__filter")).not.toBeNull();
+    expect(header.querySelector(".c500-zone__toggle")).not.toBeNull();
+  });
+
+  it("still places the toggle as its own header region when no filter is present (hero zone)", () => {
+    const { container } = render(
+      <DndContext>
+        <ZoneSection zone="comandante" cards={[card()]} hero onToggleCollapse={vi.fn()} />
+      </DndContext>,
+    );
+    const header = container.querySelector(".c500-zone__header")!;
+    expect(header.querySelector(".c500-zone__title")).not.toBeNull();
+    expect(header.querySelector(".c500-zone__toggle")).not.toBeNull();
+    expect(header.querySelector(".c500-zone__filter")).toBeNull();
+  });
+});
