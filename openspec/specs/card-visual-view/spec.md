@@ -67,11 +67,11 @@ If a card's artwork cannot be resolved from either the captured LigaMagic page d
 - **THEN** that card renders with its artwork in Visual view, not a placeholder
 
 ### Requirement: List view artwork hover preview
-While in List view, hovering a card row SHALL show a floating preview of that card's artwork near the pointer, using the same artwork resolution as Visual view (captured page artwork, falling back to Scryfall enrichment). The preview SHALL disappear when the pointer leaves the row.
+While in List view, hovering a card row SHALL show a floating preview of that card's artwork near the pointer, using the same artwork resolution as Visual view (captured page artwork, falling back to Scryfall enrichment). The preview SHALL render at a fixed 312×445px, matching LigaMagic's own hover-tooltip presentation size, rather than Visual view's small-tile size. The preview SHALL disappear when the pointer leaves the row.
 
 #### Scenario: User hovers a row in List view
 - **WHEN** the pointer hovers over a card row in List view
-- **THEN** a floating preview of that card's artwork appears near the pointer
+- **THEN** a floating preview of that card's artwork appears near the pointer, rendered at 312×445px
 
 #### Scenario: User moves the pointer off a hovered row
 - **WHEN** the pointer leaves a row that was showing its hover preview

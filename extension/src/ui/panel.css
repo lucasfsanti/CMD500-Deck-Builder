@@ -398,8 +398,8 @@ input[type="number"] {
 */
 .c500-hover-preview {
   position: fixed;
-  width: 210px;
-  height: 294px;
+  width: 312px;
+  height: 445px;
   transform: translate(16px, -50%);
   border-radius: 8px;
   overflow: hidden;
