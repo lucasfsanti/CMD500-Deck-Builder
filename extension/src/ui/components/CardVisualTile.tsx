@@ -1,13 +1,10 @@
-import { useDraggable } from "@dnd-kit/core";
+import { useSortable } from "@dnd-kit/sortable";
 import { isBasicLand, type DeckCard } from "../../lib/deck/types";
 import { displayName, type NameLanguage } from "../../lib/deck/display-name";
 import { resolveCardArt } from "./card-art";
 import { manaRailForColorIdentity } from "../../lib/organizer/mana-colors";
-
-function formatPrice(price: number | undefined): string {
-  if (price === undefined) return "—";
-  return `R$${price.toFixed(2).replace(".", ",")}`;
-}
+import { PriceCell } from "./PriceCell";
+import { QuantityStepper } from "./QuantityStepper";
 
 interface CardVisualTileContentProps {
   card: DeckCard;
@@ -16,6 +13,7 @@ interface CardVisualTileContentProps {
   nameLanguage?: NameLanguage;
   onQuantityChange?: (cardId: string, quantity: number) => void;
   onRemove?: (cardId: string) => void;
+  onPriceChange?: (cardId: string, price: number | undefined) => void;
   /** Only the hero tile shows a name caption — grid tiles rely on artwork alone (card-visual-view spec). */
   showCaption?: boolean;
 }
@@ -27,6 +25,7 @@ function CardVisualTileContent({
   nameLanguage = "en",
   onQuantityChange,
   onRemove,
+  onPriceChange,
   showCaption,
 }: CardVisualTileContentProps) {
   const { imageUrl, unresolved: artUnresolved } = resolveCardArt(card);
@@ -36,6 +35,7 @@ function CardVisualTileContent({
     boxShadow: rail.keyline ? "inset 2px 0 0 var(--c500-text)" : undefined,
   };
   const name = displayName(card, nameLanguage);
+  const basicLand = isBasicLand(card.name);
 
   return (
     <>
@@ -51,18 +51,6 @@ function CardVisualTileContent({
         )}
         {illegal && (
           <span className="c500-card__badge c500-card__badge--illegal" title="Ilegal neste formato" />
-        )}
-        {isBasicLand(card.name) && (
-          <input
-            className="c500-tile__qty"
-            type="number"
-            min={0}
-            value={card.quantity}
-            onClick={(e) => e.stopPropagation()}
-            onPointerDown={(e) => e.stopPropagation()}
-            onChange={(e) => onQuantityChange?.(card.id, Number.parseInt(e.target.value, 10) || 0)}
-            aria-label={`quantidade de ${name}`}
-          />
         )}
         {onRemove && (
           <button
@@ -84,11 +72,18 @@ function CardVisualTileContent({
           {name}
         </div>
       )}
-      <div
-        className={`c500-tile__price${card.pageLowestPrice === undefined ? " c500-card__price--unknown" : ""}${overBudget ? " c500-card__price--over-budget" : ""}`}
-      >
-        {formatPrice(card.pageLowestPrice)}
-      </div>
+      {basicLand ? (
+        <QuantityStepper card={card} name={name} onQuantityChange={onQuantityChange} onRemove={onRemove} />
+      ) : (
+        <PriceCell
+          card={card}
+          name={name}
+          overBudget={overBudget}
+          className="c500-tile__price"
+          as="div"
+          onPriceChange={onPriceChange}
+        />
+      )}
     </>
   );
 }
@@ -101,6 +96,7 @@ export interface CardVisualTileProps {
   nameLanguage?: NameLanguage;
   onQuantityChange?: (cardId: string, quantity: number) => void;
   onRemove?: (cardId: string) => void;
+  onPriceChange?: (cardId: string, price: number | undefined) => void;
   /** Extra class name(s), e.g. for the DragOverlay clone's "lifted" styling. */
   className?: string;
   /**
@@ -121,6 +117,7 @@ export function CardVisualTile({
   nameLanguage = "en",
   onQuantityChange,
   onRemove,
+  onPriceChange,
   className,
   dragOverlay,
   size = "default",
@@ -143,7 +140,10 @@ export function CardVisualTile({
     );
   }
 
-  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
+  // useSortable (rather than plain useDraggable) also registers this tile as
+  // a droppable, so another card dragged onto it can resolve as a same-group
+  // reorder target (custom-group-order) — not just a zone-level move.
+  const { attributes, listeners, setNodeRef, isDragging } = useSortable({
     id: card.id,
     data: { card },
   });
@@ -162,6 +162,7 @@ export function CardVisualTile({
         nameLanguage={nameLanguage}
         onQuantityChange={onQuantityChange}
         onRemove={onRemove}
+        onPriceChange={onPriceChange}
         showCaption={showCaption}
       />
     </div>

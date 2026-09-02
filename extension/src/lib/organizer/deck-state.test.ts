@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { moveCard, setCardQuantity, removeCard } from "./deck-state";
+import { moveCard, setCardQuantity, setCardPrice, removeCard, reorderWithinGroup, clearCustomOrder } from "./deck-state";
 import type { DeckCard } from "../deck/types";
 
 function card(id: string, zone: DeckCard["zone"], quantity = 1): DeckCard {
@@ -90,6 +90,68 @@ describe("setCardQuantity (task 4.5)", () => {
     const cards = [card("a", "maybeboard", 1)];
     const updated = setCardQuantity(cards, "a", 5);
     expect(updated.find((c) => c.id === "a")?.zone).toBe("maybeboard");
+  });
+});
+
+describe("setCardPrice", () => {
+  it("updates a card's price", () => {
+    const cards = [card("a", "mainDeck")];
+    const updated = setCardPrice(cards, "a", 7.5);
+    expect(updated.find((c) => c.id === "a")?.pageLowestPrice).toBe(7.5);
+  });
+
+  it("rejects a negative price, leaving the deck unchanged", () => {
+    const cards = [card("a", "mainDeck")];
+    const updated = setCardPrice(cards, "a", -1);
+    expect(updated).toBe(cards);
+  });
+
+  it("rejects a NaN price, leaving the deck unchanged", () => {
+    const cards = [card("a", "mainDeck")];
+    const updated = setCardPrice(cards, "a", Number.NaN);
+    expect(updated).toBe(cards);
+  });
+
+  it("sets a price on a card whose price was previously undefined", () => {
+    const cards = [{ ...card("a", "mainDeck"), pageLowestPrice: undefined }];
+    const updated = setCardPrice(cards, "a", 12);
+    expect(updated.find((c) => c.id === "a")?.pageLowestPrice).toBe(12);
+  });
+});
+
+describe("reorderWithinGroup", () => {
+  it("stamps rank onto every card in the given sequence", () => {
+    const cards = [card("a", "mainDeck"), card("b", "mainDeck"), card("c", "mainDeck")];
+    const updated = reorderWithinGroup(cards, "type", "Creature", ["c", "a", "b"]);
+    expect(updated.find((c) => c.id === "c")?.customOrder).toEqual({ axis: "type", groupKey: "Creature", rank: 0 });
+    expect(updated.find((c) => c.id === "a")?.customOrder).toEqual({ axis: "type", groupKey: "Creature", rank: 1 });
+    expect(updated.find((c) => c.id === "b")?.customOrder).toEqual({ axis: "type", groupKey: "Creature", rank: 2 });
+  });
+
+  it("leaves cards outside the given group/ids untouched", () => {
+    const cards = [card("a", "mainDeck"), card("b", "mainDeck")];
+    const updated = reorderWithinGroup(cards, "type", "Creature", ["a"]);
+    expect(updated.find((c) => c.id === "b")?.customOrder).toBeUndefined();
+  });
+
+  it("overwrites a previous custom order when called again with a different sequence", () => {
+    const cards = [card("a", "mainDeck"), card("b", "mainDeck")];
+    const first = reorderWithinGroup(cards, "type", "Creature", ["a", "b"]);
+    const second = reorderWithinGroup(first, "type", "Creature", ["b", "a"]);
+    expect(second.find((c) => c.id === "b")?.customOrder?.rank).toBe(0);
+    expect(second.find((c) => c.id === "a")?.customOrder?.rank).toBe(1);
+  });
+});
+
+describe("clearCustomOrder", () => {
+  it("strips customOrder from every card, regardless of which axis/group it was set under", () => {
+    const cards = [
+      { ...card("a", "mainDeck"), customOrder: { axis: "type" as const, groupKey: "Creature", rank: 0 } },
+      { ...card("b", "mainDeck"), customOrder: { axis: "color" as const, groupKey: "Blue", rank: 3 } },
+      card("c", "mainDeck"),
+    ];
+    const updated = clearCustomOrder(cards);
+    expect(updated.every((c) => c.customOrder === undefined)).toBe(true);
   });
 });
 

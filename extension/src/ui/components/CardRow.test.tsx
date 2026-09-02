@@ -61,6 +61,18 @@ describe("CardRow quantity field scoped to basic lands", () => {
     const { getByLabelText } = renderCard({ card: { ...baseCard, name: "Island", quantity: 20 } });
     expect(getByLabelText("quantidade de Island")).toHaveProperty("value", "20");
   });
+
+  it("shows the quantity stepper and no price for a basic land", () => {
+    const { container, queryByText } = renderCard({ card: { ...baseCard, name: "Island" } });
+    expect(container.querySelector(".c500-qty-stepper")).not.toBeNull();
+    expect(queryByText("R$10,00")).toBeNull();
+  });
+
+  it("shows the price and no quantity stepper for a non-basic card", () => {
+    const { container, getByText } = renderCard({});
+    expect(container.querySelector(".c500-qty-stepper")).toBeNull();
+    expect(getByText("R$10,00")).toBeTruthy();
+  });
 });
 
 describe("CardRow removal control", () => {
@@ -93,6 +105,42 @@ describe("CardRow removal control", () => {
 
     fireEvent.pointerDown(getByLabelText("remover Test Card do deck"));
     expect(ancestorPointerDown).not.toHaveBeenCalled();
+  });
+});
+
+describe("CardRow price edit (deck-organizer manual-price-edit)", () => {
+  it("commits a new price on click + Enter", () => {
+    let changed: [string, number | undefined] | undefined;
+    const { getByText, getByLabelText } = renderCard({
+      onPriceChange: (id, price) => (changed = [id, price]),
+    });
+
+    fireEvent.click(getByText("R$10,00"));
+    const input = getByLabelText("editar preço de Test Card");
+    fireEvent.change(input, { target: { value: "25" } });
+    fireEvent.keyDown(input, { key: "Enter" });
+
+    expect(changed).toEqual(["a", 25]);
+  });
+
+  it("does not trigger a drag when clicking into the price editor", () => {
+    const ancestorPointerDown = vi.fn();
+    const { getByText } = render(
+      <div onPointerDown={ancestorPointerDown}>
+        <DndContext>
+          <CardRow card={baseCard} onPriceChange={() => {}} />
+        </DndContext>
+      </div>,
+    );
+
+    fireEvent.pointerDown(getByText("R$10,00"));
+    expect(ancestorPointerDown).not.toHaveBeenCalled();
+  });
+
+  it("stays read-only when onPriceChange is not provided", () => {
+    const { getByText, queryByLabelText } = renderCard({});
+    fireEvent.click(getByText("R$10,00"));
+    expect(queryByLabelText("editar preço de Test Card")).toBeNull();
   });
 });
 

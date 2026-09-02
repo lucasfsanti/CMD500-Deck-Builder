@@ -213,6 +213,81 @@ describe("groupAndSortZone name-language sorting (deck-organizer spec, card-name
   });
 });
 
+describe("groupAndSortZone custom order (custom-group-order)", () => {
+  it("ignores the sort axis for a fully custom-ordered group", () => {
+    const cards = [
+      { ...card("Low", "Creature", ["G"], 1), customOrder: { axis: "type" as const, groupKey: "Creature", rank: 1 } },
+      { ...card("High", "Creature", ["G"], 5), customOrder: { axis: "type" as const, groupKey: "Creature", rank: 0 } },
+    ];
+    // By CMC (the default sort axis) this would be Low (1) then High (5) —
+    // asserting the reverse proves rank won, not CMC.
+    const groups = groupAndSortZone(cards, "type", "cmc");
+    expect(groups[0]!.cards.map((c) => c.name)).toEqual(["High", "Low"]);
+  });
+
+  it("leaves a group with no custom order sorted by the active sort axis, unchanged", () => {
+    const cards = [
+      card("High", "Creature", ["G"], 5),
+      card("Low", "Creature", ["G"], 1),
+    ];
+    const groups = groupAndSortZone(cards, "type", "cmc");
+    expect(groups[0]!.cards.map((c) => c.name)).toEqual(["Low", "High"]);
+  });
+
+  it("appends a new unranked card after every ranked card in an otherwise custom-ordered group", () => {
+    const cards = [
+      { ...card("Second", "Creature", ["G"], 5), customOrder: { axis: "type" as const, groupKey: "Creature", rank: 1 } },
+      { ...card("First", "Creature", ["G"], 9), customOrder: { axis: "type" as const, groupKey: "Creature", rank: 0 } },
+      // Lowest CMC of the three — would sort first under the "cmc" sort
+      // axis, but has no rank in this group, so it must land last instead.
+      card("Newcomer", "Creature", ["G"], 1),
+    ];
+    const groups = groupAndSortZone(cards, "type", "cmc");
+    expect(groups[0]!.cards.map((c) => c.name)).toEqual(["First", "Second", "Newcomer"]);
+  });
+
+  it("falls back to sort-axis order for a customOrder stamped under a different grouping axis", () => {
+    const cards = [
+      // Ranked under "color", not the active "type" axis — should be
+      // ignored here and sorted by CMC like an unranked card would be.
+      { ...card("High", "Creature", ["G"], 5), customOrder: { axis: "color" as const, groupKey: "Green", rank: 0 } },
+      card("Low", "Creature", ["G"], 1),
+    ];
+    const groups = groupAndSortZone(cards, "type", "cmc");
+    expect(groups[0]!.cards.map((c) => c.name)).toEqual(["Low", "High"]);
+  });
+
+  it("falls back to sort-axis order for a customOrder stamped under a different group key", () => {
+    const cards = [
+      // Ranked under the "Instant" group key, but this card is actually in
+      // the "Creature" group under the active "type" axis — mismatch means
+      // the rank is ignored.
+      { ...card("High", "Creature", ["G"], 5), customOrder: { axis: "type" as const, groupKey: "Instant", rank: 0 } },
+      card("Low", "Creature", ["G"], 1),
+    ];
+    const groups = groupAndSortZone(cards, "type", "cmc");
+    expect(groups[0]!.cards.map((c) => c.name)).toEqual(["Low", "High"]);
+  });
+
+  it("reactivates a custom order after switching away from and back to the axis it was stamped under", () => {
+    const cards = [
+      { ...card("Low", "Creature", ["G"], 1), customOrder: { axis: "type" as const, groupKey: "Creature", rank: 1 } },
+      { ...card("High", "Creature", ["G"], 5), customOrder: { axis: "type" as const, groupKey: "Creature", rank: 0 } },
+    ];
+
+    // Switch to Color grouping: the custom order goes dormant (different
+    // partition), so this group's cards fall back to the sort axis (CMC).
+    const colorGroups = groupAndSortZone(cards, "color", "cmc");
+    expect(colorGroups[0]!.cards.map((c) => c.name)).toEqual(["Low", "High"]);
+
+    // Switch back to Type grouping: the same underlying cards still carry
+    // their "type" customOrder, so it reactivates without needing to be
+    // re-created.
+    const typeGroups = groupAndSortZone(cards, "type", "cmc");
+    expect(typeGroups[0]!.cards.map((c) => c.name)).toEqual(["High", "Low"]);
+  });
+});
+
 describe("groupCardsByZone", () => {
   it("splits cards into their four zones", () => {
     const cards = [

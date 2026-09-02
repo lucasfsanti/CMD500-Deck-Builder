@@ -145,6 +145,84 @@ describe("useTabDeck (task 2.5)", () => {
     expect(result.current.cards[0]?.quantity).toBe(4);
   });
 
+  it("edits a card's price", async () => {
+    mockCapture = {
+      status: "ok",
+      cards: [{ id: "a", name: "Sol Ring", quantity: 1, zone: "mainDeck", pageLowestPrice: 4, pageImageUrl: undefined, pageManaCostSymbols: undefined, pageNamePt: undefined }],
+    };
+
+    const { result } = renderHook(() => useTabDeck(1, undefined));
+    await waitFor(() => expect(result.current.cards).toHaveLength(1));
+
+    act(() => result.current.setPrice("a", 7.5));
+
+    expect(result.current.cards[0]?.pageLowestPrice).toBe(7.5);
+  });
+
+  it("reorders cards within a group", async () => {
+    mockCapture = {
+      status: "ok",
+      cards: [
+        { id: "a", name: "Sol Ring", quantity: 1, zone: "mainDeck", pageLowestPrice: 4, pageImageUrl: undefined, pageManaCostSymbols: undefined, pageNamePt: undefined },
+        { id: "b", name: "Mind Stone", quantity: 1, zone: "mainDeck", pageLowestPrice: 1, pageImageUrl: undefined, pageManaCostSymbols: undefined, pageNamePt: undefined },
+      ],
+    };
+
+    const { result } = renderHook(() => useTabDeck(1, undefined));
+    await waitFor(() => expect(result.current.cards).toHaveLength(2));
+
+    act(() => result.current.reorderWithinGroup("type", "Artifact", ["b", "a"]));
+
+    expect(result.current.cards.find((c) => c.id === "b")?.customOrder).toEqual({
+      axis: "type",
+      groupKey: "Artifact",
+      rank: 0,
+    });
+    expect(result.current.cards.find((c) => c.id === "a")?.customOrder).toEqual({
+      axis: "type",
+      groupKey: "Artifact",
+      rank: 1,
+    });
+  });
+
+  it("clears every card's custom order", async () => {
+    mockCapture = {
+      status: "ok",
+      cards: [
+        { id: "a", name: "Sol Ring", quantity: 1, zone: "mainDeck", pageLowestPrice: 4, pageImageUrl: undefined, pageManaCostSymbols: undefined, pageNamePt: undefined },
+      ],
+    };
+
+    const { result } = renderHook(() => useTabDeck(1, undefined));
+    await waitFor(() => expect(result.current.cards).toHaveLength(1));
+
+    act(() => result.current.reorderWithinGroup("type", "Artifact", ["a"]));
+    expect(result.current.cards[0]?.customOrder).toBeDefined();
+
+    act(() => result.current.clearCustomOrder());
+    expect(result.current.cards[0]?.customOrder).toBeUndefined();
+  });
+
+  it("keeps an edited price across a subsequent relayed re-sync", async () => {
+    mockCapture = {
+      status: "ok",
+      cards: [{ id: "a", name: "Sol Ring", quantity: 1, zone: "mainDeck", pageLowestPrice: 4, pageImageUrl: undefined, pageManaCostSymbols: undefined, pageNamePt: undefined }],
+    };
+
+    const { result, rerender } = renderHook(() => useTabDeck(1, undefined));
+    await waitFor(() => expect(result.current.cards).toHaveLength(1));
+
+    act(() => result.current.setPrice("a", 7.5));
+
+    mockCapture = {
+      status: "ok",
+      cards: [{ id: "a", name: "Sol Ring", quantity: 1, zone: "mainDeck", pageLowestPrice: 4, pageImageUrl: undefined, pageManaCostSymbols: undefined, pageNamePt: undefined }],
+    };
+    rerender();
+
+    expect(result.current.cards[0]?.pageLowestPrice).toBe(7.5);
+  });
+
   it("removes a card from the deck", async () => {
     mockCapture = {
       status: "ok",

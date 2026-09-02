@@ -1,8 +1,21 @@
 import { describe, expect, it, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { DndContext } from "@dnd-kit/core";
+import type { SortableContextProps } from "@dnd-kit/sortable";
 import { ZoneSection } from "./ZoneSection";
 import type { DeckCard } from "../../lib/deck/types";
+
+const { sortableContextSpy } = vi.hoisted(() => ({ sortableContextSpy: vi.fn() }));
+vi.mock("@dnd-kit/sortable", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@dnd-kit/sortable")>();
+  return {
+    ...actual,
+    SortableContext: (props: SortableContextProps) => {
+      sortableContextSpy(props.items);
+      return <actual.SortableContext {...props} />;
+    },
+  };
+});
 
 function card(): DeckCard {
   return {
@@ -103,6 +116,76 @@ describe("ZoneSection view-mode switching (task 4.4)", () => {
     );
     fireEvent.click(screen.getByLabelText("remover Sol Ring do deck"));
     expect(onRemoveCard).toHaveBeenCalledWith("a");
+  });
+
+  it("passes onPriceChange through to the rendered card", () => {
+    const onPriceChange = vi.fn();
+    render(
+      <DndContext>
+        <ZoneSection zone="mainDeck" cards={[card()]} onPriceChange={onPriceChange} />
+      </DndContext>,
+    );
+    fireEvent.click(screen.getByText("R$4,00"));
+    const input = screen.getByLabelText("editar preço de Sol Ring");
+    fireEvent.change(input, { target: { value: "9" } });
+    fireEvent.keyDown(input, { key: "Enter" });
+    expect(onPriceChange).toHaveBeenCalledWith("a", 9);
+  });
+
+  it("gives each group its own SortableContext, scoped to that group's own card ids (custom-group-order)", () => {
+    sortableContextSpy.mockClear();
+    const cards = [
+      coloredCard("Red Card", ["R"]),
+      coloredCard("Blue Card", ["U"]),
+      { ...coloredCard("Second Blue Card", ["U"]), id: "Second Blue Card" },
+    ];
+    render(
+      <DndContext>
+        <ZoneSection zone="mainDeck" cards={cards} groupingAxis="color" />
+      </DndContext>,
+    );
+
+    const callsItems = sortableContextSpy.mock.calls.map((call) => call[0]);
+    expect(callsItems).toContainEqual(["Red Card"]);
+    expect(callsItems).toContainEqual(["Blue Card", "Second Blue Card"]);
+    // No call mixes ids across the Red and Blue groups.
+    for (const items of callsItems) {
+      const hasRed = items.includes("Red Card");
+      const hasBlue = items.includes("Blue Card") || items.includes("Second Blue Card");
+      expect(hasRed && hasBlue).toBe(false);
+    }
+  });
+
+  it("gives each group its own SortableContext in Visual mode too (custom-group-order, card-visual-view parity)", () => {
+    sortableContextSpy.mockClear();
+    const cards = [
+      coloredCard("Red Card", ["R"]),
+      coloredCard("Blue Card", ["U"]),
+      { ...coloredCard("Second Blue Card", ["U"]), id: "Second Blue Card" },
+    ];
+    render(
+      <DndContext>
+        <ZoneSection zone="mainDeck" cards={cards} groupingAxis="color" viewMode="visual" />
+      </DndContext>,
+    );
+
+    const callsItems = sortableContextSpy.mock.calls.map((call) => call[0]);
+    expect(callsItems).toContainEqual(["Red Card"]);
+    expect(callsItems).toContainEqual(["Blue Card", "Second Blue Card"]);
+  });
+
+  it("passes onPriceChange through to the rendered tile in Visual mode", () => {
+    const onPriceChange = vi.fn();
+    render(
+      <DndContext>
+        <ZoneSection zone="mainDeck" cards={[card()]} viewMode="visual" onPriceChange={onPriceChange} />
+      </DndContext>,
+    );
+    fireEvent.click(screen.getByText("R$4,00"));
+    const input = screen.getByLabelText("editar preço de Sol Ring");
+    fireEvent.change(input, { target: { value: "9" } });
+    fireEvent.keyDown(input, { key: "Enter" });
+    expect(onPriceChange).toHaveBeenCalledWith("a", 9);
   });
 });
 
@@ -364,5 +447,130 @@ describe("ZoneSection sort axis (task 12.3)", () => {
     );
     const names = screen.getAllByText(/Zeta|Alpha/).map((el) => el.textContent);
     expect(names).toEqual(["Alpha", "Zeta"]);
+  });
+});
+
+describe("ZoneSection collapse/expand toggle (zone-collapse-toggle)", () => {
+  it("renders no toggle when onToggleCollapse is not provided", () => {
+    render(
+      <DndContext>
+        <ZoneSection zone="mainDeck" cards={[card()]} />
+      </DndContext>,
+    );
+    expect(screen.queryByRole("button", { name: /recolher|expandir/i })).toBeNull();
+  });
+
+  it("shows an expanded toggle (aria-expanded=true) by default", () => {
+    render(
+      <DndContext>
+        <ZoneSection zone="mainDeck" cards={[card()]} onToggleCollapse={vi.fn()} />
+      </DndContext>,
+    );
+    const toggle = screen.getByRole("button", { name: "recolher Main Deck" });
+    expect(toggle.getAttribute("aria-expanded")).toBe("true");
+  });
+
+  it("shows a collapsed toggle (aria-expanded=false) when collapsed", () => {
+    render(
+      <DndContext>
+        <ZoneSection zone="mainDeck" cards={[card()]} collapsed onToggleCollapse={vi.fn()} />
+      </DndContext>,
+    );
+    const toggle = screen.getByRole("button", { name: "expandir Main Deck" });
+    expect(toggle.getAttribute("aria-expanded")).toBe("false");
+  });
+
+  it("calls onToggleCollapse when the toggle is clicked", () => {
+    const onToggleCollapse = vi.fn();
+    render(
+      <DndContext>
+        <ZoneSection zone="mainDeck" cards={[card()]} onToggleCollapse={onToggleCollapse} />
+      </DndContext>,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "recolher Main Deck" }));
+    expect(onToggleCollapse).toHaveBeenCalled();
+  });
+
+  it("hides card rows and the filter input while collapsed", () => {
+    render(
+      <DndContext>
+        <ZoneSection zone="mainDeck" cards={[card()]} filterable collapsed onToggleCollapse={vi.fn()} />
+      </DndContext>,
+    );
+    expect(screen.queryByText("Sol Ring")).toBeNull();
+    expect(screen.queryByLabelText("filtrar Main Deck por nome")).toBeNull();
+    // The count stays visible even while collapsed.
+    expect(screen.getByText("(1)")).toBeTruthy();
+  });
+
+  it("shows card rows and the filter input while expanded", () => {
+    render(
+      <DndContext>
+        <ZoneSection zone="mainDeck" cards={[card()]} filterable collapsed={false} onToggleCollapse={vi.fn()} />
+      </DndContext>,
+    );
+    expect(screen.getByText("Sol Ring")).toBeTruthy();
+    expect(screen.getByLabelText("filtrar Main Deck por nome")).toBeTruthy();
+  });
+
+  it("keeps the droppable dropzone element mounted while collapsed", () => {
+    const { container } = render(
+      <DndContext>
+        <ZoneSection zone="mainDeck" cards={[card()]} collapsed onToggleCollapse={vi.fn()} />
+      </DndContext>,
+    );
+    const dropzone = container.querySelector(".c500-zone__dropzone");
+    expect(dropzone).not.toBeNull();
+    expect(dropzone?.classList.contains("c500-zone__dropzone--collapsed")).toBe(true);
+  });
+
+  it("re-expands and shows cards again when collapsed flips back to false (round-trip via re-render)", () => {
+    const { rerender, container } = render(
+      <DndContext>
+        <ZoneSection zone="mainDeck" cards={[card()]} collapsed onToggleCollapse={vi.fn()} />
+      </DndContext>,
+    );
+    expect(screen.queryByText("Sol Ring")).toBeNull();
+    expect(container.querySelector(".c500-zone__dropzone--collapsed")).not.toBeNull();
+
+    rerender(
+      <DndContext>
+        <ZoneSection zone="mainDeck" cards={[card()]} collapsed={false} onToggleCollapse={vi.fn()} />
+      </DndContext>,
+    );
+
+    expect(screen.getByText("Sol Ring")).toBeTruthy();
+    expect(container.querySelector(".c500-zone__dropzone--collapsed")).toBeNull();
+    expect(screen.getByRole("button", { name: "recolher Main Deck" }).getAttribute("aria-expanded")).toBe(
+      "true",
+    );
+  });
+
+  it("collapses a hero zone that holds a card down to header-only, distinct from the empty-hero slim hint", () => {
+    const { container } = render(
+      <DndContext>
+        <ZoneSection zone="comandanteParceiro" cards={[card()]} hero collapsed onToggleCollapse={vi.fn()} />
+      </DndContext>,
+    );
+    expect(container.querySelector(".c500-zone--hero")).not.toBeNull();
+    expect(container.querySelector(".c500-zone--hero-empty")).toBeNull();
+    expect(container.querySelector(".c500-zone__dropzone--collapsed")).not.toBeNull();
+    expect(screen.queryByText("Sol Ring")).toBeNull();
+  });
+
+  it("keeps the empty-hero slim-hint class on an empty hero zone regardless of collapsed state", () => {
+    const { container, rerender } = render(
+      <DndContext>
+        <ZoneSection zone="comandanteParceiro" cards={[]} hero collapsed={false} onToggleCollapse={vi.fn()} />
+      </DndContext>,
+    );
+    expect(container.querySelector(".c500-zone--hero-empty")).not.toBeNull();
+
+    rerender(
+      <DndContext>
+        <ZoneSection zone="comandanteParceiro" cards={[]} hero collapsed onToggleCollapse={vi.fn()} />
+      </DndContext>,
+    );
+    expect(container.querySelector(".c500-zone--hero-empty")).not.toBeNull();
   });
 });

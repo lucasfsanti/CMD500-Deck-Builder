@@ -202,17 +202,52 @@
   transform: scale(1.03);
 }
 
-.c500-card__qty {
+/*
+  Add/remove/edit quantity control for basic lands (deck-organizer), shared
+  between List and Visual view. Replaces the price field in both, so it
+  lives in that flex slot rather than needing its own positioning.
+*/
+.c500-qty-stepper {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.c500-qty-stepper__btn {
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--c500-line);
+  border-radius: 4px;
+  background: var(--c500-bg);
+  color: var(--c500-text);
+  font-family: var(--c500-font-mono);
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.c500-qty-stepper__btn:hover {
+  background: var(--c500-bg-raised);
+  border-color: var(--c500-text-soft);
+}
+
+.c500-qty-stepper__input {
   font-family: var(--c500-font-mono);
   font-variant-numeric: tabular-nums;
   font-size: 13px;
-  width: 2.6em;
-  padding: 3px 4px;
+  width: 4ch;
+  padding: 3px 2px;
   text-align: center;
   color: var(--c500-text);
   background: var(--c500-bg);
   border: 1px solid var(--c500-line);
   border-radius: 4px;
+  cursor: text;
   flex-shrink: 0;
 }
 
@@ -251,7 +286,40 @@
   font-variant-numeric: tabular-nums;
   font-size: 13px;
   color: var(--c500-price);
+  cursor: pointer;
   flex-shrink: 0;
+}
+
+.c500-price-input {
+  font-family: var(--c500-font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 13px;
+  width: 4.6em;
+  padding: 2px 4px;
+  text-align: right;
+  color: var(--c500-text);
+  background: var(--c500-bg);
+  border: 1px solid var(--c500-line);
+  border-radius: 4px;
+  cursor: text;
+  flex-shrink: 0;
+}
+
+/*
+  Every number input in the deck view (quantity stepper, price editor) uses
+  its own +/- buttons or typing, not the browser's native spin arrows — those
+  arrows also silently ate into each field's fixed width, which is why a
+  basic land's 2-digit-or-more quantity used to clip.
+*/
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
 }
 
 .c500-card__price--unknown {
@@ -399,21 +467,6 @@
   color: var(--c500-mana-r);
 }
 
-.c500-tile__qty {
-  position: absolute;
-  top: 6px;
-  left: 6px;
-  width: 2.8em;
-  font-family: var(--c500-font-mono);
-  font-size: 13px;
-  padding: 3px 4px;
-  text-align: center;
-  color: var(--c500-text);
-  border: 1px solid var(--c500-line);
-  border-radius: 5px;
-  background: rgba(23, 23, 27, 0.85);
-}
-
 .c500-tile__remove {
   position: absolute;
   top: 6px;
@@ -459,6 +512,7 @@
   font-variant-numeric: tabular-nums;
   font-size: 13px;
   color: var(--c500-price);
+  cursor: pointer;
 }
 
 .c500-tile-grid {
@@ -492,6 +546,32 @@
   font-weight: 400;
 }
 
+/*
+  Per-zone collapse/expand toggle (zone-collapse-toggle): a small chevron
+  button, present on every zone's header. Sits before the filter input (on
+  the zones that have one) so the filter's own margin-left: auto still
+  pushes it to the header's right edge.
+*/
+.c500-zone__toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  margin-left: auto;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--c500-text-soft);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.c500-zone__toggle:hover {
+  background: var(--c500-bg-raised);
+  color: var(--c500-text);
+}
+
 .c500-zone__filter {
   margin-left: auto;
   font-family: var(--c500-font-body);
@@ -514,6 +594,18 @@
   padding: 0 8px 8px;
   border-radius: 6px;
   transition: background 0.15s ease;
+}
+
+/*
+  Collapsed zone (zone-collapse-toggle): renders no children, but the
+  droppable ref stays on this same element (see ZoneSection.tsx) so
+  cross-zone drag-and-drop into it keeps working. A taller min-height than
+  the base 28px, plus a dashed outline, keeps it an easy, visibly-still-a-
+  dropzone target instead of shrinking to a sliver.
+*/
+.c500-zone__dropzone--collapsed {
+  min-height: 36px;
+  border: 1px dashed var(--c500-line);
 }
 
 .c500-zone__dropzone--active {
@@ -601,6 +693,20 @@
 
 .c500-zone--hero .c500-zone__dropzone:empty {
   border-color: var(--c500-line);
+}
+
+/*
+  A collapsed hero zone (Comandante/Comandante Parceiro) needs its own
+  override — .c500-zone--hero's own dropzone rule above reserves 200px for
+  hero art, which would otherwise outrank the base .c500-zone__dropzone
+  --collapsed rule's smaller min-height (equal specificity, source order
+  decides). Placed before the hero-empty rule below so that an empty hero
+  zone's existing slim-hint treatment still wins over this when both apply,
+  per deck-organizer's "collapsing doesn't change the empty-hero treatment"
+  requirement.
+*/
+.c500-zone--hero .c500-zone__dropzone--collapsed {
+  min-height: 36px;
 }
 
 .c500-zone--hero .c500-tile-grid {

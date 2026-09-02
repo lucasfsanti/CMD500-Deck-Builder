@@ -1,5 +1,7 @@
-import type { DeckCard, Zone } from "../deck/types";
+import type { DeckCard, GroupingAxis, Zone } from "../deck/types";
 import { displayName, type NameLanguage } from "../deck/display-name";
+
+export type { GroupingAxis };
 
 export const TYPE_ORDER = [
   "Creature",
@@ -88,9 +90,6 @@ export interface CardGroup {
   cards: DeckCard[];
 }
 
-/** The axis the deck organizer groups a zone's cards by; "type" is the default. */
-export type GroupingAxis = "type" | "color" | "cmc";
-
 /**
  * The axis a zone's cards are sorted by *within* a group — user-selectable,
  * independent of the grouping axis. Replaces the previous fixed "sort by
@@ -101,6 +100,19 @@ export type SortAxis = "cmc" | "name" | "color" | "price";
 
 function typeOf(card: DeckCard): (typeof TYPE_ORDER)[number] {
   return primaryType(card.enrichment?.typeLine);
+}
+
+/**
+ * The group key a card falls under for a given grouping axis — the same
+ * key `groupAndSortZone` would put it under as `CardGroup.type`. Exported
+ * so a caller that isn't rendering a full zone (e.g. TabRoot's drag-end
+ * handler, deciding whether a dragged card and its drop target share a
+ * group) can classify a single card without re-deriving this logic.
+ */
+export function groupKeyFor(card: DeckCard, axis: GroupingAxis): string {
+  if (axis === "color") return colorGroupLabel(card.enrichment?.colorIdentity);
+  if (axis === "cmc") return card.enrichment?.cmc !== undefined ? String(card.enrichment.cmc) : "?";
+  return typeOf(card);
 }
 
 function cmcTiebreak(card: DeckCard): number {
@@ -150,14 +162,38 @@ function compareBySortAxis(
 }
 
 /**
- * Sorts a single group's cards by the active sort axis, with name as the
- * tiebreak. `sortNameLanguage` only affects the primary Name-axis
- * comparison — the trailing tiebreak always compares canonical English
- * names, regardless of the active display language (deck-organizer spec).
+ * Sorts a single group's cards, per custom-group-order: cards whose
+ * `customOrder` matches this group's axis+key (i.e. were ranked the last
+ * time the user reordered *this exact* group) sort by that rank; every
+ * other card — never ranked, or ranked under a different grouping axis or a
+ * different group — sorts by the active sort axis (with name as the
+ * tiebreak, per the pre-existing rule) and is appended after the ranked
+ * ones. A group with no ranked cards at all is therefore sorted exactly as
+ * it was before custom ordering existed. `sortNameLanguage` only affects
+ * the primary Name-axis comparison — the trailing tiebreak always compares
+ * canonical English names, regardless of the active display language
+ * (deck-organizer spec).
  */
-function sortWithinGroup(cards: DeckCard[], sortAxis: SortAxis, sortNameLanguage: NameLanguage): DeckCard[] {
+function sortWithinGroup(
+  cards: DeckCard[],
+  groupingAxis: GroupingAxis,
+  groupKey: string,
+  sortAxis: SortAxis,
+  sortNameLanguage: NameLanguage,
+): DeckCard[] {
+  const isRankedHere = (card: DeckCard) =>
+    card.customOrder?.axis === groupingAxis && card.customOrder?.groupKey === groupKey;
+
+  const ranked = cards
+    .filter(isRankedHere)
+    .sort((a, b) => a.customOrder!.rank - b.customOrder!.rank);
+
   const primaryCompare = compareBySortAxis(sortAxis, sortNameLanguage);
-  return [...cards].sort((a, b) => primaryCompare(a, b) || compareByName(a, b, "en"));
+  const unranked = cards
+    .filter((card) => !isRankedHere(card))
+    .sort((a, b) => primaryCompare(a, b) || compareByName(a, b, "en"));
+
+  return [...ranked, ...unranked];
 }
 
 function groupByType(cards: DeckCard[], sortAxis: SortAxis, sortNameLanguage: NameLanguage): CardGroup[] {
@@ -173,7 +209,7 @@ function groupByType(cards: DeckCard[], sortAxis: SortAxis, sortNameLanguage: Na
   for (const type of TYPE_ORDER) {
     const bucket = byType.get(type);
     if (!bucket || bucket.length === 0) continue;
-    groups.push({ type, cards: sortWithinGroup(bucket, sortAxis, sortNameLanguage) });
+    groups.push({ type, cards: sortWithinGroup(bucket, "type", type, sortAxis, sortNameLanguage) });
   }
   return groups;
 }
@@ -193,7 +229,7 @@ function groupByColor(cards: DeckCard[], sortAxis: SortAxis, sortNameLanguage: N
   for (const label of COLOR_GROUP_ORDER) {
     const bucket = byColor.get(label);
     if (!bucket || bucket.length === 0) continue;
-    groups.push({ type: label, cards: sortWithinGroup(bucket, sortAxis, sortNameLanguage) });
+    groups.push({ type: label, cards: sortWithinGroup(bucket, "color", label, sortAxis, sortNameLanguage) });
   }
   return groups;
 }
@@ -223,9 +259,10 @@ function groupByCmc(cards: DeckCard[], sortAxis: SortAxis, sortNameLanguage: Nam
   for (const key of orderedKeys) {
     const bucket = byCmc.get(key);
     if (!bucket || bucket.length === 0) continue;
+    const groupKey = key === UNKNOWN_CMC ? "?" : String(key);
     groups.push({
-      type: key === UNKNOWN_CMC ? "?" : String(key),
-      cards: sortWithinGroup(bucket, sortAxis, sortNameLanguage),
+      type: groupKey,
+      cards: sortWithinGroup(bucket, "cmc", groupKey, sortAxis, sortNameLanguage),
     });
   }
   return groups;

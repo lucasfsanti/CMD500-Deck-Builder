@@ -1,8 +1,26 @@
 import { describe, expect, it, vi } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, act } from "@testing-library/react";
+import type { DragEndEvent } from "@dnd-kit/core";
 import type { DeckCard } from "../lib/deck/types";
 import type { Theme } from "./use-theme-preference";
 import type { NameLanguage } from "../lib/deck/display-name";
+
+// Captures the real DndContext's onDragEnd handler so tests can simulate a
+// drop directly (dnd-kit has no sensor-driven drag simulation helper, and
+// this codebase's convention is to test the pure decision logic instead —
+// but the collapsed-zone auto-expand behavior lives in TabRoot's own
+// handleDragEnd, which isn't exported, so this is the most direct route).
+let capturedOnDragEnd: ((event: DragEndEvent) => void) | undefined;
+vi.mock("@dnd-kit/core", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@dnd-kit/core")>();
+  return {
+    ...actual,
+    DndContext: (props: Parameters<typeof actual.DndContext>[0]) => {
+      capturedOnDragEnd = props.onDragEnd;
+      return <actual.DndContext {...props} />;
+    },
+  };
+});
 
 const mockUseTabDeck = vi.fn();
 vi.mock("./use-tab-deck", () => ({
@@ -182,6 +200,60 @@ describe("TabRoot (task 3.1)", () => {
     expect(mainRow?.textContent).toContain("Main Deck");
   });
 
+  it("wires price edits on the Comandante's own card through to setPrice (editable-card-price)", async () => {
+    const setPrice = vi.fn();
+    mockUseTabDeck.mockReturnValue({
+      cards: [
+        card("a", "Xyris, the Writhing Storm", "comandante"),
+        { ...card("b", "Sol Ring", "mainDeck"), pageLowestPrice: 7 },
+      ],
+      pageStatus: "ok",
+      format: "commander500",
+      setFormat: vi.fn(),
+      zoneError: undefined,
+      moveCard: vi.fn(),
+      setQuantity: vi.fn(),
+      setPrice,
+      removeCard: vi.fn(),
+    });
+    mockUseSourceTabStatus.mockReturnValue("open");
+
+    const { TabRoot } = await import("./TabRoot");
+    render(<TabRoot />);
+
+    fireEvent.click(screen.getByText("R$4,00"));
+    const input = screen.getByLabelText("editar preço de Xyris, the Writhing Storm");
+    fireEvent.change(input, { target: { value: "20" } });
+    fireEvent.keyDown(input, { key: "Enter" });
+
+    expect(setPrice).toHaveBeenCalledWith("a", 20);
+  });
+
+  it("routes a basic land's decrement-to-zero through the existing removeCard path (revamp-quantity-price-fields)", async () => {
+    const removeCard = vi.fn();
+    mockUseTabDeck.mockReturnValue({
+      cards: [
+        card("a", "Xyris, the Writhing Storm", "comandante"),
+        { ...card("b", "Island", "mainDeck"), quantity: 1 },
+      ],
+      pageStatus: "ok",
+      format: "commander500",
+      setFormat: vi.fn(),
+      zoneError: undefined,
+      moveCard: vi.fn(),
+      setQuantity: vi.fn(),
+      removeCard,
+    });
+    mockUseSourceTabStatus.mockReturnValue("open");
+
+    const { TabRoot } = await import("./TabRoot");
+    render(<TabRoot />);
+
+    fireEvent.click(screen.getByLabelText("diminuir quantidade de Island"));
+
+    expect(removeCard).toHaveBeenCalledWith("b");
+  });
+
   it("shows no removal control for the Comandante's card, unlike other zones (task 8.8)", async () => {
     mockUseTabDeck.mockReturnValue({
       cards: [
@@ -219,6 +291,7 @@ describe("TabRoot (task 3.1)", () => {
       zoneError: undefined,
       moveCard: vi.fn(),
       setQuantity: vi.fn(),
+      clearCustomOrder: vi.fn(),
     });
     mockUseSourceTabStatus.mockReturnValue("open");
 
@@ -458,6 +531,7 @@ describe("TabRoot Name-axis sort snapshot and resync hint (deck-organizer spec)"
       zoneError: undefined,
       moveCard: vi.fn(),
       setQuantity: vi.fn(),
+      clearCustomOrder: vi.fn(),
     });
     mockUseSourceTabStatus.mockReturnValue("open");
   }
@@ -478,7 +552,7 @@ describe("TabRoot Name-axis sort snapshot and resync hint (deck-organizer spec)"
     // Select the Name sort axis while English is active.
     fireEvent.change(screen.getByLabelText("Ordenar por"), { target: { value: "name" } });
     expect(mainDeckNames(container)).toEqual(["Aardvark", "Zebra"]);
-    expect(screen.queryByRole("button", { name: "Reordenar por nome no idioma atual" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Redefinir ordenação para o eixo ativo" })).toBeNull();
 
     // Toggle to Portuguese: names redisplay in Portuguese, but the ORDER
     // stays the English-selected one (Aardvark's pt name first, even though
@@ -486,12 +560,12 @@ describe("TabRoot Name-axis sort snapshot and resync hint (deck-organizer spec)"
     fireEvent.click(screen.getByRole("button", { name: "Mudar nomes das cartas para português" }));
     rerender(<TabRoot />);
     expect(mainDeckNames(container)).toEqual(["Zoológico", "Anel Solar"]);
-    expect(screen.getByRole("button", { name: "Reordenar por nome no idioma atual" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Redefinir ordenação para o eixo ativo" })).toBeTruthy();
 
     // Clicking the resync hint re-sorts using the now-active Portuguese names.
-    fireEvent.click(screen.getByRole("button", { name: "Reordenar por nome no idioma atual" }));
+    fireEvent.click(screen.getByRole("button", { name: "Redefinir ordenação para o eixo ativo" }));
     expect(mainDeckNames(container)).toEqual(["Anel Solar", "Zoológico"]);
-    expect(screen.queryByRole("button", { name: "Reordenar por nome no idioma atual" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Redefinir ordenação para o eixo ativo" })).toBeNull();
   });
 
   it("re-snapshots to the current language when Name is re-selected, even though it was already selected", async () => {
@@ -507,13 +581,13 @@ describe("TabRoot Name-axis sort snapshot and resync hint (deck-organizer spec)"
     fireEvent.change(sortSelect, { target: { value: "name" } });
     fireEvent.click(screen.getByRole("button", { name: "Mudar nomes das cartas para português" }));
     rerender(<TabRoot />);
-    expect(screen.getByRole("button", { name: "Reordenar por nome no idioma atual" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Redefinir ordenação para o eixo ativo" })).toBeTruthy();
 
     // Re-selecting "name" while it's already the active axis is itself a
     // sort-axis interaction, so it re-snapshots without needing the hint.
     fireEvent.change(sortSelect, { target: { value: "name" } });
     expect(mainDeckNames(container)).toEqual(["Anel Solar", "Zoológico"]);
-    expect(screen.queryByRole("button", { name: "Reordenar por nome no idioma atual" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Redefinir ordenação para o eixo ativo" })).toBeNull();
   });
 
   it("shows no resync hint when sorted by a non-name axis, even after toggling language", async () => {
@@ -525,6 +599,194 @@ describe("TabRoot Name-axis sort snapshot and resync hint (deck-organizer spec)"
     fireEvent.click(screen.getByRole("button", { name: "Mudar nomes das cartas para português" }));
     rerender(<TabRoot />);
 
-    expect(screen.queryByRole("button", { name: "Reordenar por nome no idioma atual" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Redefinir ordenação para o eixo ativo" })).toBeNull();
+  });
+});
+
+describe("TabRoot custom-group-order resync (custom-group-order spec)", () => {
+  it("shows the generalized resync button whenever any card has a custom order, even on a non-Name axis", async () => {
+    mockUseTabDeck.mockReturnValue({
+      cards: [
+        { ...card("a", "Sol Ring", "mainDeck"), customOrder: { axis: "type", groupKey: "Artifact", rank: 0 } },
+      ],
+      pageStatus: "ok",
+      format: "commander500",
+      setFormat: vi.fn(),
+      zoneError: undefined,
+      moveCard: vi.fn(),
+      setQuantity: vi.fn(),
+      clearCustomOrder: vi.fn(),
+    });
+    mockUseSourceTabStatus.mockReturnValue("open");
+
+    const { TabRoot } = await import("./TabRoot");
+    render(<TabRoot />);
+
+    expect(screen.getByRole("button", { name: "Redefinir ordenação para o eixo ativo" })).toBeTruthy();
+  });
+
+  it("calls clearCustomOrder when the resync button is clicked", async () => {
+    const clearCustomOrder = vi.fn();
+    mockUseTabDeck.mockReturnValue({
+      cards: [
+        { ...card("a", "Sol Ring", "mainDeck"), customOrder: { axis: "type", groupKey: "Artifact", rank: 0 } },
+      ],
+      pageStatus: "ok",
+      format: "commander500",
+      setFormat: vi.fn(),
+      zoneError: undefined,
+      moveCard: vi.fn(),
+      setQuantity: vi.fn(),
+      clearCustomOrder,
+    });
+    mockUseSourceTabStatus.mockReturnValue("open");
+
+    const { TabRoot } = await import("./TabRoot");
+    render(<TabRoot />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Redefinir ordenação para o eixo ativo" }));
+    expect(clearCustomOrder).toHaveBeenCalled();
+  });
+
+  it("calls clearCustomOrder when a genuinely different sort axis is selected and a custom order exists", async () => {
+    const clearCustomOrder = vi.fn();
+    mockUseTabDeck.mockReturnValue({
+      cards: [
+        { ...card("a", "Sol Ring", "mainDeck"), customOrder: { axis: "type", groupKey: "Artifact", rank: 0 } },
+      ],
+      pageStatus: "ok",
+      format: "commander500",
+      setFormat: vi.fn(),
+      zoneError: undefined,
+      moveCard: vi.fn(),
+      setQuantity: vi.fn(),
+      clearCustomOrder,
+    });
+    mockUseSourceTabStatus.mockReturnValue("open");
+
+    const { TabRoot } = await import("./TabRoot");
+    render(<TabRoot />);
+
+    fireEvent.change(screen.getByLabelText("Ordenar por"), { target: { value: "price" } });
+    expect(clearCustomOrder).toHaveBeenCalled();
+  });
+
+  it("does NOT call clearCustomOrder when changing the sort axis while no card has a custom order (regression: this used to disconnect the tab from re-sync on every ordinary sort change)", async () => {
+    const clearCustomOrder = vi.fn();
+    mockUseTabDeck.mockReturnValue({
+      cards: [card("a", "Sol Ring", "mainDeck")],
+      pageStatus: "ok",
+      format: "commander500",
+      setFormat: vi.fn(),
+      zoneError: undefined,
+      moveCard: vi.fn(),
+      setQuantity: vi.fn(),
+      clearCustomOrder,
+    });
+    mockUseSourceTabStatus.mockReturnValue("open");
+
+    const { TabRoot } = await import("./TabRoot");
+    render(<TabRoot />);
+
+    fireEvent.change(screen.getByLabelText("Ordenar por"), { target: { value: "price" } });
+    expect(clearCustomOrder).not.toHaveBeenCalled();
+  });
+
+  it("does NOT call clearCustomOrder from a pure Name-axis language resync click when no card has a custom order", async () => {
+    const clearCustomOrder = vi.fn();
+    let language: NameLanguage = "en";
+    const setLanguage = vi.fn((next: NameLanguage) => {
+      language = next;
+    });
+    mockUseNameLanguagePreference.mockImplementation(() => ({ language, setLanguage }));
+    mockUseTabDeck.mockReturnValue({
+      cards: [{ ...card("a", "Zebra", "mainDeck"), pageNamePt: "Anel Solar" }],
+      pageStatus: "ok",
+      format: "commander500",
+      setFormat: vi.fn(),
+      zoneError: undefined,
+      moveCard: vi.fn(),
+      setQuantity: vi.fn(),
+      clearCustomOrder,
+    });
+    mockUseSourceTabStatus.mockReturnValue("open");
+
+    const { TabRoot } = await import("./TabRoot");
+    const { rerender } = render(<TabRoot />);
+
+    fireEvent.change(screen.getByLabelText("Ordenar por"), { target: { value: "name" } });
+    fireEvent.click(screen.getByRole("button", { name: "Mudar nomes das cartas para português" }));
+    rerender(<TabRoot />);
+
+    const resyncButton = screen.getByRole("button", { name: "Redefinir ordenação para o eixo ativo" });
+    fireEvent.click(resyncButton);
+
+    expect(clearCustomOrder).not.toHaveBeenCalled();
+  });
+});
+
+describe("TabRoot zone collapse/expand toggle (zone-collapse-toggle)", () => {
+  function setup() {
+    mockUseTabDeck.mockReturnValue({
+      cards: [
+        card("a", "Xyris, the Writhing Storm", "comandante"),
+        card("b", "Sol Ring", "mainDeck"),
+        card("c", "Chalice of the Void", "maybeboard"),
+      ],
+      pageStatus: "ok",
+      format: "commander500",
+      setFormat: vi.fn(),
+      zoneError: undefined,
+      moveCard: vi.fn(),
+      setQuantity: vi.fn(),
+    });
+    mockUseSourceTabStatus.mockReturnValue("open");
+  }
+
+  it("starts every zone expanded on a fresh load", async () => {
+    setup();
+    const { TabRoot } = await import("./TabRoot");
+    render(<TabRoot />);
+
+    for (const label of ["Comandante", "Companheiro", "Main Deck", "Maybeboard"]) {
+      const toggle = screen.getByRole("button", { name: `recolher ${label}` });
+      expect(toggle.getAttribute("aria-expanded")).toBe("true");
+    }
+    expect(screen.getByText("Sol Ring")).toBeTruthy();
+  });
+
+  it("collapsing one zone leaves the others expanded", async () => {
+    setup();
+    const { TabRoot } = await import("./TabRoot");
+    render(<TabRoot />);
+
+    fireEvent.click(screen.getByRole("button", { name: "recolher Main Deck" }));
+
+    expect(screen.queryByText("Sol Ring")).toBeNull();
+    expect(screen.getByText("Chalice of the Void")).toBeTruthy();
+    expect(screen.getByText("Xyris, the Writhing Storm")).toBeTruthy();
+    expect(
+      screen.getByRole("button", { name: "recolher Maybeboard" }).getAttribute("aria-expanded"),
+    ).toBe("true");
+  });
+
+  it("auto-expands a collapsed zone when a drop resolves to a move into it", async () => {
+    setup();
+    const { TabRoot } = await import("./TabRoot");
+    render(<TabRoot />);
+
+    fireEvent.click(screen.getByRole("button", { name: "recolher Maybeboard" }));
+    expect(screen.queryByText("Chalice of the Void")).toBeNull();
+    expect(screen.getByRole("button", { name: "expandir Maybeboard" })).toBeTruthy();
+
+    act(() => {
+      capturedOnDragEnd?.({
+        active: { id: "b" },
+        over: { id: "maybeboard" },
+      } as unknown as DragEndEvent);
+    });
+
+    expect(screen.getByRole("button", { name: "recolher Maybeboard" })).toBeTruthy();
+    expect(screen.getByText("Chalice of the Void")).toBeTruthy();
   });
 });

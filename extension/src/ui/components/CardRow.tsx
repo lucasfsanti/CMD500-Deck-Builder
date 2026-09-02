@@ -1,15 +1,12 @@
 import { useState } from "react";
-import { useDraggable } from "@dnd-kit/core";
+import { useSortable } from "@dnd-kit/sortable";
 import { isBasicLand, type DeckCard } from "../../lib/deck/types";
 import { displayName, type NameLanguage } from "../../lib/deck/display-name";
 import { resolveCardArt } from "./card-art";
 import { manaRailForColorIdentity } from "../../lib/organizer/mana-colors";
 import { ManaCostIcons } from "./ManaCostIcons";
-
-function formatPrice(price: number | undefined): string {
-  if (price === undefined) return "—";
-  return `R$${price.toFixed(2).replace(".", ",")}`;
-}
+import { PriceCell } from "./PriceCell";
+import { QuantityStepper } from "./QuantityStepper";
 
 interface CardRowContentProps {
   card: DeckCard;
@@ -18,6 +15,7 @@ interface CardRowContentProps {
   nameLanguage?: NameLanguage;
   onQuantityChange?: (cardId: string, quantity: number) => void;
   onRemove?: (cardId: string) => void;
+  onPriceChange?: (cardId: string, price: number | undefined) => void;
 }
 
 function CardRowContent({
@@ -27,22 +25,12 @@ function CardRowContent({
   nameLanguage = "en",
   onQuantityChange,
   onRemove,
+  onPriceChange,
 }: CardRowContentProps) {
   const name = displayName(card, nameLanguage);
+  const basicLand = isBasicLand(card.name);
   return (
     <>
-      {isBasicLand(card.name) && (
-        <input
-          className="c500-card__qty"
-          type="number"
-          min={0}
-          value={card.quantity}
-          onClick={(e) => e.stopPropagation()}
-          onPointerDown={(e) => e.stopPropagation()}
-          onChange={(e) => onQuantityChange?.(card.id, Number.parseInt(e.target.value, 10) || 0)}
-          aria-label={`quantidade de ${name}`}
-        />
-      )}
       {illegal && <span className="c500-card__badge c500-card__badge--illegal" title="Ilegal neste formato" />}
       <span className="c500-card__name" title={name}>
         {name}
@@ -52,12 +40,18 @@ function CardRowContent({
       ) : (
         <ManaCostIcons symbols={card.pageManaCostSymbols} />
       )}
-      <span
-        className={`c500-card__price${card.pageLowestPrice === undefined ? " c500-card__price--unknown" : ""}${overBudget ? " c500-card__price--over-budget" : ""}`}
-        title={overBudget ? "Conta para o deck estar acima do limite de R$500" : undefined}
-      >
-        {formatPrice(card.pageLowestPrice)}
-      </span>
+      {basicLand ? (
+        <QuantityStepper card={card} name={name} onQuantityChange={onQuantityChange} onRemove={onRemove} />
+      ) : (
+        <PriceCell
+          card={card}
+          name={name}
+          overBudget={overBudget}
+          className="c500-card__price"
+          title={overBudget ? "Conta para o deck estar acima do limite de R$500" : undefined}
+          onPriceChange={onPriceChange}
+        />
+      )}
       {onRemove && (
         <button
           type="button"
@@ -109,6 +103,7 @@ export interface CardRowProps {
   nameLanguage?: NameLanguage;
   onQuantityChange?: (cardId: string, quantity: number) => void;
   onRemove?: (cardId: string) => void;
+  onPriceChange?: (cardId: string, price: number | undefined) => void;
   /** Extra class name(s), e.g. for the DragOverlay clone's "lifted" styling. */
   className?: string;
   /**
@@ -126,6 +121,7 @@ export function CardRow({
   nameLanguage = "en",
   onQuantityChange,
   onRemove,
+  onPriceChange,
   className,
   dragOverlay,
 }: CardRowProps) {
@@ -144,7 +140,10 @@ export function CardRow({
     );
   }
 
-  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
+  // useSortable (rather than plain useDraggable) also registers this row as
+  // a droppable, so another card dragged onto it can resolve as a same-group
+  // reorder target (custom-group-order) — not just a zone-level move.
+  const { attributes, listeners, setNodeRef, isDragging } = useSortable({
     id: card.id,
     data: { card },
   });
@@ -167,6 +166,7 @@ export function CardRow({
         nameLanguage={nameLanguage}
         onQuantityChange={onQuantityChange}
         onRemove={onRemove}
+        onPriceChange={onPriceChange}
       />
       {hoverPos && !isDragging && (
         <CardHoverPreview card={card} x={hoverPos.x} y={hoverPos.y} nameLanguage={nameLanguage} />

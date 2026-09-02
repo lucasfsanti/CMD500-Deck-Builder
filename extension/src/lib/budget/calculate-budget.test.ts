@@ -89,6 +89,34 @@ describe("calculateBudget over-cap detection (task 5.4)", () => {
   });
 });
 
+describe("calculateBudget reflects manually edited prices (editable-card-price)", () => {
+  it("recomputes the total using an edited Main Deck card's price", () => {
+    const before = calculateBudget([card("Sol Ring", "mainDeck", 4)]);
+    expect(before.total).toBeCloseTo(4);
+
+    const after = calculateBudget([card("Sol Ring", "mainDeck", 25)]);
+    expect(after.total).toBeCloseTo(25);
+  });
+
+  it("recomputes the total using an edited Comandante Parceiro card's price", () => {
+    const after = calculateBudget([card("Vial Smasher the Fierce", "comandanteParceiro", 300)]);
+    expect(after.total).toBeCloseTo(300);
+  });
+
+  it("leaves the total unchanged when the primary Comandante's price is edited", () => {
+    const before = calculateBudget([
+      card("Xyris, the Writhing Storm", "comandante", 999),
+      card("Sol Ring", "mainDeck", 4),
+    ]);
+    const after = calculateBudget([
+      card("Xyris, the Writhing Storm", "comandante", 1500),
+      card("Sol Ring", "mainDeck", 4),
+    ]);
+    expect(before.total).toBeCloseTo(4);
+    expect(after.total).toBeCloseTo(4);
+  });
+});
+
 describe("calculateBudget unresolved prices (task 5.5)", () => {
   it("marks the total incomplete and lists the affected cards instead of treating them as R$0", () => {
     const cards = [card("Sol Ring", "mainDeck", 4), card("Mystery Card", "mainDeck", undefined)];

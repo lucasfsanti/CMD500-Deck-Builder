@@ -108,6 +108,46 @@ describe("CardVisualTile quantity field scoped to basic lands", () => {
     fireEvent.change(input, { target: { value: "4" } });
     expect(changedTo).toBe(4);
   });
+
+  it("shows the quantity stepper and no price for a basic land", () => {
+    const { container } = renderTile({ card: card({ name: "Island" }) });
+    expect(container.querySelector(".c500-qty-stepper")).not.toBeNull();
+    expect(screen.queryByText("R$4,00")).toBeNull();
+  });
+
+  it("shows the price and no quantity stepper for a non-basic card", () => {
+    const { container } = renderTile();
+    expect(container.querySelector(".c500-qty-stepper")).toBeNull();
+    expect(screen.getByText("R$4,00")).toBeTruthy();
+  });
+});
+
+describe("CardVisualTile price edit (deck-organizer manual-price-edit)", () => {
+  it("commits a new price on click + Enter", () => {
+    let changed: [string, number | undefined] | undefined;
+    renderTile({ onPriceChange: (id, price) => (changed = [id, price]) });
+
+    fireEvent.click(screen.getByText("R$4,00"));
+    const input = screen.getByLabelText("editar preço de Sol Ring");
+    fireEvent.change(input, { target: { value: "15" } });
+    fireEvent.keyDown(input, { key: "Enter" });
+
+    expect(changed).toEqual(["a", 15]);
+  });
+
+  it("does not trigger a drag when clicking into the price editor", () => {
+    const ancestorPointerDown = vi.fn();
+    render(
+      <div onPointerDown={ancestorPointerDown}>
+        <DndContext>
+          <CardVisualTile card={card()} onPriceChange={() => {}} />
+        </DndContext>
+      </div>,
+    );
+
+    fireEvent.pointerDown(screen.getByText("R$4,00"));
+    expect(ancestorPointerDown).not.toHaveBeenCalled();
+  });
 });
 
 describe("CardVisualTile removal control", () => {

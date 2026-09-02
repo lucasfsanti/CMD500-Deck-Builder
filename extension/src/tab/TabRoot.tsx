@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { DndContext, DragOverlay, pointerWithin, type DragEndEvent, type DragStartEvent } from "@dnd-kit/core";
-import type { DeckCard, Format } from "../lib/deck/types";
+import type { DeckCard, Format, Zone } from "../lib/deck/types";
 import type { NameLanguage } from "../lib/deck/display-name";
 import { groupCardsByZone, type GroupingAxis, type SortAxis } from "../lib/organizer/group-sort";
-import { resolveDropZone } from "../lib/organizer/resolve-drop";
+import { resolveDragOutcome } from "../lib/organizer/resolve-drop";
 import { calculateBudget } from "../lib/budget/calculate-budget";
 import { calculateCardCount } from "../lib/organizer/calculate-card-count";
 import { checkLegality } from "../lib/legality/check-legality";
@@ -164,10 +164,19 @@ export function TabRoot() {
   const sourceTabId = getSourceTabIdFromUrl(url);
   const deckId = getDeckIdFromUrl(url);
 
-  const { cards, pageStatus, format, setFormat, zoneError, moveCard, setQuantity, removeCard } = useTabDeck(
-    sourceTabId,
-    deckId,
-  );
+  const {
+    cards,
+    pageStatus,
+    format,
+    setFormat,
+    zoneError,
+    moveCard,
+    setQuantity,
+    setPrice,
+    removeCard,
+    reorderWithinGroup,
+    clearCustomOrder,
+  } = useTabDeck(sourceTabId, deckId);
   const sourceStatus = useSourceTabStatus(sourceTabId);
   const { theme, setTheme } = useThemePreference();
   const { language: nameLanguage, setLanguage: setNameLanguage } = useNameLanguagePreference();
@@ -180,12 +189,28 @@ export function TabRoot() {
   // already-Name-sorted zone (deck-organizer spec).
   const [sortNameLanguage, setSortNameLanguage] = useState<NameLanguage>(nameLanguage);
   const [draggedCard, setDraggedCard] = useState<DeckCard | undefined>();
+  // Per-zone collapse/expand (zone-collapse-toggle): session-only, like
+  // viewMode/groupingAxis/sortAxis above — never persisted, always starts
+  // with every zone expanded. Lifted here (rather than local to
+  // ZoneSection, unlike its per-zone filter text) so handleDragEnd can
+  // force a specific zone open when a card is dropped into it.
+  const [collapsedZones, setCollapsedZones] = useState<ReadonlySet<Zone>>(new Set());
   const version = getExtensionVersion();
+
+  function toggleZoneCollapsed(zone: Zone) {
+    setCollapsedZones((prev) => {
+      const next = new Set(prev);
+      if (next.has(zone)) next.delete(zone);
+      else next.add(zone);
+      return next;
+    });
+  }
 
   const byZone = groupCardsByZone(cards);
   const budget = calculateBudget(cards);
   const cardCount = calculateCardCount(cards);
   const legality = checkLegality(cards, format);
+  const hasCustomOrder = cards.some((c) => c.customOrder !== undefined);
 
   function handleDragStart(event: DragStartEvent) {
     setDraggedCard(event.active.data.current?.card as DeckCard | undefined);
@@ -193,9 +218,20 @@ export function TabRoot() {
 
   function handleDragEnd(event: DragEndEvent) {
     setDraggedCard(undefined);
-    const toZone = resolveDropZone(event);
-    if (!toZone) return;
-    moveCard(event.active.id as string, toZone);
+    const outcome = resolveDragOutcome(event, cards, groupingAxis, sortAxis, sortNameLanguage);
+    if (outcome.kind === "move") {
+      moveCard(outcome.cardId, outcome.toZone);
+      // A drop into a collapsed zone still moves the card there — expand
+      // it so the result is visible (zone-collapse-toggle).
+      setCollapsedZones((prev) => {
+        if (!prev.has(outcome.toZone)) return prev;
+        const next = new Set(prev);
+        next.delete(outcome.toZone);
+        return next;
+      });
+    } else if (outcome.kind === "reorder") {
+      reorderWithinGroup(outcome.groupingAxis, outcome.groupKey, outcome.orderedCardIds);
+    }
   }
 
   return (
@@ -302,7 +338,17 @@ export function TabRoot() {
               <select
                 value={sortAxis}
                 onChange={(e) => {
-                  setSortAxis(e.target.value as SortAxis);
+                  const next = e.target.value as SortAxis;
+                  // A genuine axis change (not the same value re-fired) is
+                  // itself an explicit "sort by this" signal, so it clears
+                  // any manual custom order the same way the generalized
+                  // resync button below does (custom-group-order). Gated on
+                  // hasCustomOrder so an ordinary sort-axis change — the vast
+                  // majority of the time, with nothing to clear — never
+                  // marks hasLocalEdits and so never disconnects the tab
+                  // from future re-syncs with the source page.
+                  if (next !== sortAxis && hasCustomOrder) clearCustomOrder();
+                  setSortAxis(next);
                   setSortNameLanguage(nameLanguage);
                 }}
               >
@@ -313,13 +359,19 @@ export function TabRoot() {
                 ))}
               </select>
             </label>
-            {sortAxis === "name" && sortNameLanguage !== nameLanguage && (
+            {((sortAxis === "name" && sortNameLanguage !== nameLanguage) || hasCustomOrder) && (
               <button
                 type="button"
                 className="c500-tab__resync-sort"
-                title="A ordenação por nome está usando o idioma anterior — clique para reordenar com o idioma atual"
-                aria-label="Reordenar por nome no idioma atual"
-                onClick={() => setSortNameLanguage(nameLanguage)}
+                title="Redefine a ordenação para o eixo ativo — descarta qualquer ordem manual e, se a ordenação for por Nome, resincroniza com o idioma atual"
+                aria-label="Redefinir ordenação para o eixo ativo"
+                onClick={() => {
+                  setSortNameLanguage(nameLanguage);
+                  // Only when there's actually a custom order to clear —
+                  // otherwise a pure Name-axis language resync (nothing to
+                  // do with custom order) would needlessly mark hasLocalEdits.
+                  if (hasCustomOrder) clearCustomOrder();
+                }}
               >
                 ↻
               </button>
@@ -328,6 +380,15 @@ export function TabRoot() {
           </div>
 
           <DndContext
+            // pointerWithin (unchanged by custom-group-order) already prefers
+            // the innermost match when the pointer is over both a card's
+            // droppable and its enclosing zone's: it sorts collisions by
+            // average distance from the pointer to each rect's four corners,
+            // and a small nested rect's corners are always closer to an
+            // interior point than the far-larger enclosing rect's corners
+            // are — so a drop precisely on a card resolves to that card
+            // (enabling reorder), while a drop in a zone's empty space
+            // (no card rect contains the pointer) falls back to the zone.
             collisionDetection={pointerWithin}
             onDragStart={handleDragStart}
             onDragEnd={handleDragEnd}
@@ -350,6 +411,9 @@ export function TabRoot() {
                     sortNameLanguage={sortNameLanguage}
                     nameLanguage={nameLanguage}
                     onQuantityChange={setQuantity}
+                    onPriceChange={setPrice}
+                    collapsed={collapsedZones.has("comandante")}
+                    onToggleCollapse={() => toggleZoneCollapsed("comandante")}
                     // The commander isn't removable via this control — see
                     // deck-organizer's "Explicit card removal" delta. A
                     // replacement is set by dragging the current card out to
@@ -367,6 +431,9 @@ export function TabRoot() {
                     nameLanguage={nameLanguage}
                     onQuantityChange={setQuantity}
                     onRemoveCard={removeCard}
+                    onPriceChange={setPrice}
+                    collapsed={collapsedZones.has("comandanteParceiro")}
+                    onToggleCollapse={() => toggleZoneCollapsed("comandanteParceiro")}
                   />
                 </div>
                 <ZoneSection
@@ -383,6 +450,9 @@ export function TabRoot() {
                   filterable
                   onQuantityChange={setQuantity}
                   onRemoveCard={removeCard}
+                  onPriceChange={setPrice}
+                  collapsed={collapsedZones.has("maybeboard")}
+                  onToggleCollapse={() => toggleZoneCollapsed("maybeboard")}
                 />
               </div>
               <ZoneSection
@@ -400,6 +470,9 @@ export function TabRoot() {
                 filterable
                 onQuantityChange={setQuantity}
                 onRemoveCard={removeCard}
+                onPriceChange={setPrice}
+                collapsed={collapsedZones.has("mainDeck")}
+                onToggleCollapse={() => toggleZoneCollapsed("mainDeck")}
               />
               <div className="c500-tab__analytics">
                 <BarChart title="Curva de Mana" buckets={manaCurveBuckets(cards)} />

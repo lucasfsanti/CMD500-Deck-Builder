@@ -1,10 +1,17 @@
 import { useEffect, useRef, useState } from "react";
 import { useRelayedCapture } from "./use-relayed-capture";
-import { moveCard as moveCardInState, setCardQuantity, removeCard as removeCardInState } from "../lib/organizer/deck-state";
+import {
+  moveCard as moveCardInState,
+  setCardQuantity,
+  setCardPrice,
+  removeCard as removeCardInState,
+  reorderWithinGroup as reorderWithinGroupInState,
+  clearCustomOrder as clearCustomOrderInState,
+} from "../lib/organizer/deck-state";
 import { backgroundClient } from "../lib/messaging/client";
 import { getStoredFormat, setStoredFormat } from "../lib/deck/format-storage";
 import { ChromeLocalStore } from "../lib/scryfall/cache";
-import { isBasicLand, type CapturedCard, type DeckCard, type Format, type Zone } from "../lib/deck/types";
+import { isBasicLand, type CapturedCard, type DeckCard, type Format, type GroupingAxis, type Zone } from "../lib/deck/types";
 
 const formatStore = new ChromeLocalStore();
 
@@ -110,10 +117,37 @@ export function useTabDeck(sourceTabId: number | undefined, deckId: string | und
     setCards((prev) => setCardQuantity(prev, cardId, quantity));
   }
 
+  function setPrice(cardId: string, price: number | undefined) {
+    hasLocalEdits.current = true;
+    setCards((prev) => setCardPrice(prev, cardId, price));
+  }
+
   function removeCard(cardId: string) {
     hasLocalEdits.current = true;
     setCards((prev) => removeCardInState(prev, cardId));
   }
 
-  return { cards, pageStatus, format, setFormat, zoneError, moveCard, setQuantity, removeCard };
+  function reorderWithinGroup(groupingAxis: GroupingAxis, groupKey: string, orderedCardIds: string[]) {
+    hasLocalEdits.current = true;
+    setCards((prev) => reorderWithinGroupInState(prev, groupingAxis, groupKey, orderedCardIds));
+  }
+
+  function clearCustomOrder() {
+    hasLocalEdits.current = true;
+    setCards((prev) => clearCustomOrderInState(prev));
+  }
+
+  return {
+    cards,
+    pageStatus,
+    format,
+    setFormat,
+    zoneError,
+    moveCard,
+    setQuantity,
+    setPrice,
+    removeCard,
+    reorderWithinGroup,
+    clearCustomOrder,
+  };
 }

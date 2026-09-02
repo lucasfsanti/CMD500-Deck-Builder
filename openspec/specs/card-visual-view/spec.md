@@ -22,11 +22,11 @@ The full-tab view SHALL offer a single control that switches the deck view betwe
 - **THEN** the Comandante and Comandante Parceiro zones continue rendering in Visual form (artwork, or the same placeholder Visual view uses when artwork can't be resolved), unchanged by the toggle
 
 ### Requirement: Visual view shows artwork with identifying and pricing information
-Each card in Visual view SHALL show its artwork and its price (or unresolved-price indication), and — for basic lands only — its editable quantity, matching the same underlying data List view shows. The Commander hero tile (Comandante) additionally SHALL show the card's name as a caption, since it is the deck's singular, named identity; grid tiles in Deck Principal and Maybeboard SHALL NOT show a visible name caption, relying on artwork alone for recognition — the name remains available as the artwork's accessible (alt) text.
+Each card in Visual view SHALL show its artwork, and — for basic lands — its editable quantity stepper in place of a price; every other card SHALL show its price (or unresolved-price indication) instead, matching the same underlying data List view shows. The Commander hero tile (Comandante) additionally SHALL show the card's name as a caption, since it is the deck's singular, named identity; grid tiles in Deck Principal and Maybeboard SHALL NOT show a visible name caption, relying on artwork alone for recognition — the name remains available as the artwork's accessible (alt) text.
 
 #### Scenario: Card is shown in Visual view
 - **WHEN** a card renders in a Deck Principal or Maybeboard Visual-mode grid tile
-- **THEN** its artwork and price are visible on or alongside the tile, with no visible name caption, and its editable quantity is additionally visible if it is a basic land
+- **THEN** its artwork is visible on the tile, with no visible name caption, and it shows either its price or — if it is a basic land — its editable quantity stepper, but never both
 
 #### Scenario: Non-basic card is shown in Visual view
 - **WHEN** a non-basic, non-hero card renders in Visual view
@@ -37,11 +37,15 @@ Each card in Visual view SHALL show its artwork and its price (or unresolved-pri
 - **THEN** its artwork, name caption, and price are all visible
 
 ### Requirement: Visual view preserves existing per-card functionality
-Drag-and-drop movement between zones, manual quantity editing on basic lands, the hover-revealed removal control, and the illegal-card and over-budget visual markers SHALL all work the same in Visual view as they do in List view.
+Drag-and-drop movement between zones, within-group custom reordering, manual quantity editing on basic lands, the hover-revealed removal control, and the illegal-card and over-budget visual markers SHALL all work the same in Visual view as they do in List view.
 
 #### Scenario: User drags a card between zones in Visual view
 - **WHEN** the user drags a card's artwork tile from one zone to another in Visual view
 - **THEN** the card moves zones the same way it would in List view
+
+#### Scenario: User reorders a tile within its group in Visual view
+- **WHEN** the user drags a tile to a new position among the other tiles in its own group
+- **THEN** the group takes on a custom order the same way a List-view reorder would, rendering identically whichever view is active afterward
 
 #### Scenario: An illegal or over-budget card is shown in Visual view
 - **WHEN** a card that is illegal for the active format, or that counts toward the deck being over budget, renders in Visual view
