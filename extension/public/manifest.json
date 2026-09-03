@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Montador de Decks Commander 500",
+  "name": "CMD500 Deck Builder - LigaMagic Deck Enhancer",
   "version": "0.1.0",
-  "description": "Ferramentas de orçamento e legalidade para decks Commander 500 / Commander 500 Duel no LigaMagic.",
+  "description": "Orçamento, legalidade e organização para decks Commander 500 e Commander 500 Duel no LigaMagic.",
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
@@ -18,7 +18,7 @@
       "48": "icons/icon48.png",
       "128": "icons/icon128.png"
     },
-    "default_title": "Abrir o montador de decks Commander 500"
+    "default_title": "Abrir o CMD500 Deck Builder"
   },
   "content_scripts": [
     {

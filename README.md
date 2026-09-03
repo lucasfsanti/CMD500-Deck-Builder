@@ -1,25 +1,133 @@
-# Montador de Decks Commander 500
+<div align="center">
 
-Uma extensão de navegador que transforma qualquer página de deck do [LigaMagic](https://www.ligamagic.com.br/) em um montador de decks completo para os formatos brasileiros **Commander 500** e **Commander 500 Duel** — controle de orçamento (teto de R$500), verificação de legalidade, organização por zonas com arrastar e soltar, e gráficos de composição do deck, tudo client-side, sem servidor próprio.
+<img src="extension/public/icons/icon128.png" width="120" height="120" alt="Logo do CMD500 Deck Builder" />
 
-## O que é isto
+# CMD500 Deck Builder — LigaMagic Deck Enhancer
 
-O LigaMagic é o principal site brasileiro de compra/venda de cartas e montagem de decks de Magic, mas seu editor de decks não conhece as regras do Commander 500 nem do Commander 500 Duel — formatos de orçamento populares na comunidade brasileira, com teto de R$500 no deck e suas próprias listas de banidos. Esta extensão lê a página de deck já aberta no LigaMagic e adiciona, por cima dela, o que falta:
+[![Licença: GPL-3.0](https://img.shields.io/badge/license-GPL--3.0-blueviolet.svg)](LICENSE)
+![Manifest V3](https://img.shields.io/badge/manifest-v3-orange.svg)
+![Idioma: PT-BR](https://img.shields.io/badge/idioma-PT--BR-brightgreen.svg)
+![Formatos: Commander 500](https://img.shields.io/badge/formatos-Commander%20500-blue.svg)
 
-- Orçamento do Commander 500 (menor preço somando Deck Principal e Comandante Parceiro, excluindo o comandante principal e o Maybeboard) contra o teto de R$500, com feedback visual ao vivo.
-- Verificação de legalidade: Commander 500 usa a lista de banidos oficial do Commander (via Scryfall, ao vivo); Commander 500 Duel usa a lista do Duel Commander, sem API própria, então é mantida como um dataset com curadoria.
-- Organização em quatro zonas (Comandante, Comandante Parceiro, Deck Principal, Maybeboard) com arrastar e soltar, visões em Lista e Visual (com arte), e agrupamento por Tipo/Cor/Custo de Mana.
-- Aviso ao vivo quando o deck ultrapassa o limite de 99 cartas do Commander.
-- Gráficos de curva de mana, cor e tipo do Deck Principal.
-- Exportação em texto simples, tanto no formato exato que o próprio LigaMagic importa quanto em uma versão legível com rótulos de zona.
+</div>
 
-É uma ferramenta pessoal de montagem de deck — não um sistema de torneio, não um serviço hospedado, e não afiliada ao LigaMagic.
+Uma extensão de navegador que transforma a página de um deck já montado no
+[LigaMagic](https://www.ligamagic.com.br/) em um montador completo para os
+formatos brasileiros **Commander 500** e **Commander 500 Duel** — orçamento
+em tempo real, verificação de legalidade, organização por zonas com
+arrastar e soltar, gráficos de composição e exportação, tudo rodando no seu
+navegador, sem servidor próprio.
 
-## Instalação
+> [!IMPORTANT]
+> Requer um deck já criado no editor do LigaMagic — esta extensão não cria
+> decks do zero, ela melhora a página de um deck que você já montou lá.
+
+## 🃏 O que é isto
+
+O LigaMagic é o principal site brasileiro de compra/venda de cartas e
+montagem de decks de Magic, mas seu editor não conhece as regras do
+Commander 500 nem do Commander 500 Duel — formatos de orçamento populares
+na comunidade brasileira, com teto de R$500 no deck e suas próprias listas
+de banidos. O CMD500 Deck Builder lê a página do seu deck, já aberta no
+LigaMagic, e adiciona por cima dela exatamente o que falta para jogar
+nesses formatos.
+
+Não é afiliado ao LigaMagic, à Wizards of the Coast ou ao Commander Rules
+Committee. É uma ferramenta pessoal de montagem — não um serviço hospedado,
+não um sistema de torneio.
+
+## ⚙️ Como funciona
+
+1. Você monta ou edita seu deck normalmente no LigaMagic.
+2. Com a página do deck aberta, clica no ícone da extensão na barra de
+   ferramentas do navegador.
+3. O CMD500 Deck Builder abre em sua própria aba, já com seu deck
+   carregado — comandante(s), deck principal e maybeboard, preços e arte,
+   tudo lido diretamente da página que você tinha aberta.
+4. Você organiza, verifica orçamento/legalidade e exporta — e pode voltar
+   a exportar para o LigaMagic a qualquer momento, no formato exato que o
+   importador dele espera.
+
+```mermaid
+flowchart LR
+    A["🌐 Página de deck<br/>no LigaMagic"] -->|lê o DOM| B["📄 Content Script"]
+    B -->|chrome.storage.session| C["⚙️ Service Worker"]
+    C -->|consulta cartas| D["🔮 API pública<br/>do Scryfall"]
+    C -->|retransmite dados| E["🗂️ Aba do CMD500<br/>Deck Builder"]
+    E -.->|exporta texto| A
+```
+
+## ✨ O que ele adiciona ao seu deck do LigaMagic
+
+- 💰 **Orçamento do Commander 500** ao vivo: soma o menor preço do Deck
+  Principal e do Comandante Parceiro (excluindo o comandante principal, o
+  Maybeboard e terrenos básicos) contra o teto de R$500.
+- ✅ **Verificação de legalidade**: Commander 500 usa a lista de banidos
+  oficial do Commander (via Scryfall, sempre atualizada); Commander 500
+  Duel usa a lista do Duel Commander, mantida com curadoria própria.
+- 🗂️ **Quatro zonas organizáveis** — Comandante, Comandante Parceiro, Deck
+  Principal, Maybeboard — com arrastar e soltar, ordem customizável e
+  zonas recolhíveis.
+- 👁️ **Duas visões**: Lista (compacta, com pré-visualização de arte ao
+  passar o mouse) e Visual (miniaturas com arte), agrupáveis por Tipo, Cor
+  ou Custo de Mana.
+- 🔀 **Ordenação independente do agrupamento**: além de agrupar por Tipo,
+  Cor ou Custo de Mana, cada zona pode ser ordenada por Valor de Mana,
+  Nome, Cor ou Preço.
+- 🔤 **Ícones de custo de mana na Lista**: cada carta mostra seu custo com
+  os símbolos oficiais do LigaMagic, inclusive por face em cartas de dois
+  lados ou custo dividido.
+- 🔎 **Filtro por nome em cada zona**: Deck Principal e Maybeboard têm um
+  campo de busca independente, sem afetar orçamento, contagem de cartas ou
+  legalidade.
+- 🗑️ **Remoção rápida de qualquer carta** com um clique, exceto o
+  Comandante principal (que só sai sendo arrastado para outra zona).
+- ⚠️ **Aviso ao vivo** quando o deck ultrapassa o limite de 99 cartas do
+  Commander.
+- 📊 **Gráficos** de curva de mana, cor e tipo do Deck Principal,
+  recalculados a cada edição.
+- ✏️ **Edição inline** de quantidade e preço, direto na lista.
+- 🌐 **Toggle de idioma da carta** (EN ⇄ PT-BR): alterna o nome exibido
+  entre o nome canônico em inglês e o nome em português do próprio
+  LigaMagic — a exportação sempre usa o nome em inglês.
+- 🌗 **Toggle de tema claro/escuro**: segue a preferência do seu sistema
+  operacional por padrão e lembra sua escolha manual entre sessões.
+- 📤 **Exportação em texto simples**, tanto no formato exato que o
+  importador do LigaMagic espera quanto em uma versão legível com rótulos
+  de zona.
+
+## 📖 Como usar — casos de uso
+
+**💰 Montar um Commander 500 dentro do orçamento**
+Monte seu deck normalmente no LigaMagic. Abra-o no CMD500 Deck Builder e
+deixe a barra de orçamento aberta enquanto troca cartas — cada
+adição/remoção recalcula o total contra o teto de R$500 na hora, sem
+precisar somar preços manualmente numa planilha à parte.
+
+**🛡️ Conferir legalidade antes de um evento**
+Antes de levar o deck para uma mesa de Commander 500 ou Duel, abra-o na
+extensão e veja o resumo de legalidade: qualquer carta banida no formato
+ativo aparece sinalizada, com a fonte (Scryfall para Commander 500, a
+lista curada do Duel Commander para Commander 500 Duel).
+
+**📈 Encontrar buracos na curva de mana**
+Troque para a visão Visual, agrupe por Custo de Mana e olhe o gráfico de
+curva ao lado — picos e vazios ficam óbvios sem precisar contar cartas na
+mão.
+
+**🔀 Reorganizar sem perder a exportação**
+Arraste cartas entre Deck Principal, Maybeboard e Comandante Parceiro à
+vontade, recolha zonas que não está editando no momento, e quando
+terminar, exporte de volta no formato do LigaMagic para colar direto no
+importador dele.
+
+## 📦 Instalação
 
 Este repositório tem um único pacote, `extension/`. O passo a passo completo de instalação e desenvolvimento — build, carregar como extensão descompactada no Chrome, rodar os testes, e os scripts de verificação manual contra o site real — está em **[`extension/README.md`](extension/README.md)**.
 
-## Arquitetura, em poucas palavras
+## 🛠️ Seção técnica
+
+### 🏗️ Arquitetura, em poucas palavras
 
 Extensão Chrome (Manifest V3), sem backend próprio, em três partes:
 
@@ -29,47 +137,7 @@ Extensão Chrome (Manifest V3), sem backend próprio, em três partes:
 
 Nenhum servidor é mantido por este projeto. Os únicos serviços externos chamados são o próprio LigaMagic (via leitura de DOM, não API) e a API pública do Scryfall (para atributos de carta e legalidade — nunca para preço, que vem sempre do LigaMagic).
 
-## Decisões técnicas
-
-Esta seção é um registro vivo — é atualizada sempre que uma decisão arquitetural relevante é tomada, e não só quando uma funcionalidade é adicionada. O racional completo de cada uma, com alternativas consideradas e riscos aceitos, vive no `design.md` da mudança correspondente em `openspec/changes/` (mudanças em andamento) ou `openspec/changes/archive/` (já concluídas) — esta seção é o resumo executivo, não o substituto.
-
-### Sem backend próprio, por enquanto
-
-A extensão chama a API pública do Scryfall diretamente do navegador do usuário, com cache local, em vez de rotear por um servidor próprio. Isso evita ter infraestrutura para manter, ao custo de não poder cachear resultados entre usuários e de acoplar a atualização da lista de banidos do Duel Commander (abaixo) ao ciclo de releases da extensão. Um backend próprio continua sendo a evolução mais provável se esse custo pesar na prática.
-
-### Captura isolada em um único módulo adaptador por tipo de página
-
-Todo o código que toca o DOM do LigaMagic vive em `deck-page-parser.ts`/`collection-page-parser.ts`, com um contrato de saída bem definido e testado contra fixtures de HTML real. Nada mais na extensão acessa `document` diretamente. Como o LigaMagic não tem API e pode mudar sua marcação a qualquer momento, isolar essa superfície significa que uma quebra vira uma falha de teste localizada em um módulo, não um bug espalhado silenciosamente pelo resto do app.
-
-### Lista de banidos do Commander 500 Duel: dataset estático com curadoria, não uma fonte ao vivo
-
-O Duel Commander não é um formato reconhecido pelo Scryfall e não tem API própria, então sua lista de banidos é empacotada como um JSON versionado dentro da extensão, com curadoria manual a partir de duelcommander.org e uma data "atualizado em" sempre visível ao usuário. O Commander 500 "normal" não precisa disso — sua lista de banidos é a mesma do Commander oficial, que o Scryfall já espelha ao vivo.
-
-### Arte das cartas: prioriza o próprio DOM do LigaMagic, Scryfall como reserva
-
-O LigaMagic já embute a arte de cada carta na própria página (para seu recurso de pré-visualização ao passar o mouse), sem requisição extra. A visão Visual e a pré-visualização ao passar o mouse na Lista usam essa imagem primeiro, caindo para a arte do Scryfall só quando a página não tem uma. Isso desacopla a arte inteiramente do enriquecimento do Scryfall — uma carta mostra arte de verdade mesmo se o Scryfall estiver fora do ar.
-
-### Enriquecimento em lote no Scryfall, não uma requisição por carta
-
-Um deck de ~90 cartas resolve em um punhado de requisições ao endpoint `/cards/collection` do Scryfall, não uma por carta — evitando rate-limiting (confirmado em teste real: 26 de 87 requisições individuais retornavam HTTP 429 antes dessa mudança). Uma busca fuzzy por carta continua existindo, mas só como reserva para o que o lote não resolveu diretamente.
-
-### Visão em aba completa, não uma sobreposição injetada na página
-
-A UI inteira roda em sua própria aba da extensão (`tab.html`), alimentada por dados retransmitidos via `chrome.storage.session`, em vez de uma sobreposição React injetada na própria página do LigaMagic. Isso dá espaço de verdade para trabalhar no deck e sobrevive ao service worker de background sendo suspenso pelo Chrome (comum em Manifest V3) — o mapeamento aba-de-origem ↔ aba-de-visualização também vive em `chrome.storage.session`, não em memória, pelo mesmo motivo.
-
-### Arrastar e soltar: `@dnd-kit` com `DragOverlay` + `pointerWithin`
-
-O arraste mostra uma cópia semitransparente da carta acompanhando o cursor (`DragOverlay`), e a zona de destino é resolvida pela posição literal do ponteiro (`pointerWithin`), não pela caixa delimitadora do elemento arrastado. Isso importa porque, ao segurar uma carta longe do seu centro (por exemplo, pela borda inferior de um card visual alto), a estratégia de colisão padrão do dnd-kit resolveria a zona errada — `pointerWithin` a torna independente de onde exatamente a carta foi agarrada.
-
-### Sideboard removido, absorvido pelo Maybeboard
-
-O Commander 500 não usa o conceito de Sideboard; a zona foi removida da extensão, e cartas que o LigaMagic lista sob um cabeçalho "Sideboard" são capturadas diretamente como Maybeboard. O fold acontece em um único ponto (`zoneForHeaderLabel`), então o resto do app não precisou de lógica especial.
-
-### Português brasileiro fixo na interface, sem camada de i18n
-
-Toda a base de usuários captura decks do LigaMagic, um site em português — não existe público que precise trocar de idioma. As strings da UI são traduzidas diretamente no código, sem biblioteca de internacionalização nem catálogo de mensagens. Nomes de carta nunca são traduzidos. Rótulos de zona que o próprio LigaMagic exibe em inglês na sua página ("Maybeboard") permanecem exatamente como estão lá; "Deck Principal" (rótulo inventado por este app, sem equivalente no LigaMagic) foi traduzido.
-
-## Estrutura do repositório
+### 📁 Estrutura do repositório
 
 ```text
 extension/           a extensão em si — código-fonte, testes, scripts de build e verificação
@@ -86,10 +154,14 @@ openspec/            especificações e histórico de decisões
   changes/archive/     mudanças já concluídas e mescladas às specs principais
 ```
 
-## Testes e verificação
+### 🧪 Testes e verificação
 
 `npm test`/`npm run typecheck` (unitário/componente, sem rede) e os scripts de verificação manual via Playwright contra o site real estão documentados em [`extension/README.md`](extension/README.md#rodando-os-testes).
 
-## Mantendo este documento atualizado
+### 🤝 Contribuindo
 
-Este README acompanha o projeto: sempre que uma mudança introduzir ou revisar uma decisão arquitetural (não apenas uma funcionalidade nova), a seção "Decisões técnicas" acima deve ganhar uma entrada — resumida aqui, detalhada no `design.md` da mudança correspondente.
+Issues e pull requests são bem-vindos. Este projeto usa [OpenSpec](openspec/) para mudanças não-triviais — decisões de arquitetura relevantes ficam registradas em `openspec/changes/` (mudanças em andamento) ou `openspec/changes/archive/` (já concluídas), cada uma com seu próprio `design.md` explicando o racional e as alternativas consideradas. Para uma contribuição pequena (correção de bug, ajuste de UI), um PR direto com testes já basta; para algo que muda comportamento ou arquitetura, um bom começo é abrir uma issue descrevendo o problema antes do código.
+
+### 📄 Licença
+
+Este projeto é licenciado sob a [GPL-3.0](LICENSE) — qualquer fork ou redistribuição precisa permanecer com código aberto sob a mesma licença.
