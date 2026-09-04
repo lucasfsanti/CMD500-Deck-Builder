@@ -1,0 +1,2770 @@
+[
+  {
+    "id": "demo-card-1",
+    "name": "Thranduil, the Elvenking",
+    "quantity": 1,
+    "zone": "comandante",
+    "pageLowestPrice": 0,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/481001/6a5e6ce576a18-nahbe-14lpz-a7a80b8c68ca115ea7949ab4d3538c7a.jpg",
+    "pageManaCostSymbols": [
+      "2",
+      "B",
+      "G",
+      "U"
+    ],
+    "pageNamePt": "Thranduil, the Elvenking",
+    "enrichment": {
+      "name": "Thranduil, the Elvenking",
+      "typeLine": "Legendary Creature — Elf Noble",
+      "colorIdentity": [
+        "B",
+        "G",
+        "U"
+      ],
+      "cmc": 5,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "fe2fe8fa-3b99-44c1-bab9-922e5c864952",
+      "imageUrl": "https://cards.scryfall.io/normal/front/f/e/fe2fe8fa-3b99-44c1-bab9-922e5c864952.jpg?1784377043"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-2",
+    "name": "Dawnhand Dissident",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 2.35,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480880/695c3178a824f-n5dg4-34lc6-9aab99d294da9fe38973a31997f5d726.jpg",
+    "pageManaCostSymbols": [
+      "B"
+    ],
+    "pageNamePt": "Dawnhand Dissident",
+    "enrichment": {
+      "name": "Dawnhand Dissident",
+      "typeLine": "Creature — Elf Warlock",
+      "colorIdentity": [
+        "B"
+      ],
+      "cmc": 1,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "6ac1f765-f348-4813-88dc-26376e0f3f33",
+      "imageUrl": "https://cards.scryfall.io/normal/front/6/a/6ac1f765-f348-4813-88dc-26376e0f3f33.jpg?1783904467"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-3",
+    "name": "Fyndhorn Elves",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 12.72,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480548/670db19d576c5-pa1v2-m1asz-d354ddc7eec8720fd172c1ff7867d826.jpg",
+    "pageManaCostSymbols": [
+      "G"
+    ],
+    "pageNamePt": "Elfos de Fyndhorn",
+    "enrichment": {
+      "name": "Fyndhorn Elves",
+      "typeLine": "Creature — Elf Druid",
+      "colorIdentity": [
+        "G"
+      ],
+      "cmc": 1,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "450744cf-7eba-491b-97b0-ca80c6368bbb",
+      "imageUrl": "https://cards.scryfall.io/normal/front/4/5/450744cf-7eba-491b-97b0-ca80c6368bbb.jpg?1783928794"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-4",
+    "name": "Llanowar Elves",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 0.96,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480610/672176b3c7234-84n3j-mgl3x-e37e6557e459e605f8d4672dda00b16d.jpg",
+    "pageManaCostSymbols": [
+      "G"
+    ],
+    "pageNamePt": "Elfos de Llanowar",
+    "enrichment": {
+      "name": "Llanowar Elves",
+      "typeLine": "Creature — Elf Druid",
+      "colorIdentity": [
+        "G"
+      ],
+      "cmc": 1,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "6a0b230b-d391-4998-a3f7-7b158a0ec2cd",
+      "imageUrl": "https://cards.scryfall.io/normal/front/6/a/6a0b230b-d391-4998-a3f7-7b158a0ec2cd.jpg?1783909057"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-5",
+    "name": "Elvish Mystic",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 1.83,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480943/69cd91dc56523-83j79-rz270-a0668d7705b0821fc377c97c7ece48e7.jpg",
+    "pageManaCostSymbols": [
+      "G"
+    ],
+    "pageNamePt": "Místico Élfico",
+    "enrichment": {
+      "name": "Elvish Mystic",
+      "typeLine": "Creature — Elf Druid",
+      "colorIdentity": [
+        "G"
+      ],
+      "cmc": 1,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "08b9a296-3b76-4f8f-9d71-7c9af92bb3b4",
+      "imageUrl": "https://cards.scryfall.io/normal/front/0/8/08b9a296-3b76-4f8f-9d71-7c9af92bb3b4.jpg?1785647413"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-6",
+    "name": "Quirion Ranger",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 6.9,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480548/670db2488f455-d0zf6-umfa2-d354ddc7eec8720fd172c1ff7867d826.jpg",
+    "pageManaCostSymbols": [
+      "G"
+    ],
+    "pageNamePt": "Patrulheiro Quirion",
+    "enrichment": {
+      "name": "Quirion Ranger",
+      "typeLine": "Creature — Elf Ranger",
+      "colorIdentity": [
+        "G"
+      ],
+      "cmc": 1,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "320fdf89-e158-41c5-b0bf-fee9dec36a75",
+      "imageUrl": "https://cards.scryfall.io/normal/front/3/2/320fdf89-e158-41c5-b0bf-fee9dec36a75.jpg?1783926781"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-7",
+    "name": "Devoted Druid",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 5.9,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480887/695d68bbac398-9cnpj-a0etr-325f23ee93bb1a428747f64e96c26bd0.jpg",
+    "pageManaCostSymbols": [
+      "1",
+      "G"
+    ],
+    "pageNamePt": "Druida Devotado",
+    "enrichment": {
+      "name": "Devoted Druid",
+      "typeLine": "Creature — Elf Druid",
+      "colorIdentity": [
+        "G"
+      ],
+      "cmc": 2,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "22589a81-3ea8-4e78-98c9-c015e7539cf9",
+      "imageUrl": "https://cards.scryfall.io/normal/front/2/2/22589a81-3ea8-4e78-98c9-c015e7539cf9.jpg?1783904550"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-8",
+    "name": "Incubation Druid",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 3.38,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480715/6823d23566f82-63k1j-tmajh-c330b688aa6ead9ce06d5c2d17830024.jpg",
+    "pageManaCostSymbols": [
+      "1",
+      "G"
+    ],
+    "pageNamePt": "Druida da Incubação",
+    "enrichment": {
+      "name": "Incubation Druid",
+      "typeLine": "Creature — Elf Druid",
+      "colorIdentity": [
+        "G"
+      ],
+      "cmc": 2,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "b3d8c95e-09b9-46d6-80e9-95adb2c2ea9d",
+      "imageUrl": "https://cards.scryfall.io/normal/front/b/3/b3d8c95e-09b9-46d6-80e9-95adb2c2ea9d.jpg?1783917139"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-9",
+    "name": "Iron-Shield Elf",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 0.14,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480880/695c317e2fabd-d5821-xyzr0-9aab99d294da9fe38973a31997f5d726.jpg",
+    "pageManaCostSymbols": [
+      "1",
+      "B"
+    ],
+    "pageNamePt": "Iron-Shield Elf",
+    "enrichment": {
+      "name": "Iron-Shield Elf",
+      "typeLine": "Creature — Elf Warrior",
+      "colorIdentity": [
+        "B"
+      ],
+      "cmc": 2,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "9e0140b2-0185-4adb-b365-2611ce89a0e2",
+      "imageUrl": "https://cards.scryfall.io/normal/front/9/e/9e0140b2-0185-4adb-b365-2611ce89a0e2.jpg?1783904461"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-10",
+    "name": "Muse Seeker",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 0.14,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480933/69d3f32a50749-v0ear-b7k3v-a15acc587a78ceec248d261d66bfbcfc.jpg",
+    "pageManaCostSymbols": [
+      "1",
+      "U"
+    ],
+    "pageNamePt": "Muse Seeker",
+    "enrichment": {
+      "name": "Muse Seeker",
+      "typeLine": "Creature — Elf Wizard",
+      "colorIdentity": [
+        "U"
+      ],
+      "cmc": 2,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "71cb4a6b-b500-4b28-bcdb-ec4188242f39",
+      "imageUrl": "https://cards.scryfall.io/normal/front/7/1/71cb4a6b-b500-4b28-bcdb-ec4188242f39.jpg?1783903688"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-11",
+    "name": "Priest of Titania",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 4.9,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480445/66312e3d6622b-kmot7-16n0h-e4c33be81cc6c4dec5a513d10daafc38.jpg",
+    "pageManaCostSymbols": [
+      "1",
+      "G"
+    ],
+    "pageNamePt": "Sacerdote de Titânia",
+    "enrichment": {
+      "name": "Priest of Titania",
+      "typeLine": "Creature — Elf Druid",
+      "colorIdentity": [
+        "G"
+      ],
+      "cmc": 2,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "eb11921b-1b28-483f-a707-4de21a6daa31",
+      "imageUrl": "https://cards.scryfall.io/normal/front/e/b/eb11921b-1b28-483f-a707-4de21a6daa31.jpg?1783911212"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-12",
+    "name": "Woodland Weavemaster",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 0.28,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/481001/6a6910417af8f-283uy-i6q58-a7a80b8c68ca115ea7949ab4d3538c7a.jpg",
+    "pageManaCostSymbols": [
+      "1",
+      "G"
+    ],
+    "pageNamePt": "Woodland Weavemaster",
+    "enrichment": {
+      "name": "Woodland Weavemaster",
+      "typeLine": "Creature — Elf Druid",
+      "colorIdentity": [
+        "G"
+      ],
+      "cmc": 2,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "fe2b4bcf-56de-44d3-83af-aeb27f82c25e",
+      "imageUrl": "https://cards.scryfall.io/normal/front/f/e/fe2b4bcf-56de-44d3-83af-aeb27f82c25e.jpg?1785237990"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-13",
+    "name": "Elvish Harbinger",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 8.45,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480548/670db167564a9-tkw4f-5px6g-d354ddc7eec8720fd172c1ff7867d826.jpg",
+    "pageManaCostSymbols": [
+      "2",
+      "G"
+    ],
+    "pageNamePt": "Anunciadora Élfica",
+    "enrichment": {
+      "name": "Elvish Harbinger",
+      "typeLine": "Creature — Elf Druid",
+      "colorIdentity": [
+        "G"
+      ],
+      "cmc": 3,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "78db70ff-f68c-474a-9785-12a71be4f699",
+      "imageUrl": "https://cards.scryfall.io/normal/front/7/8/78db70ff-f68c-474a-9785-12a71be4f699.jpg?1783938774"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-14",
+    "name": "Elvish Archdruid",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 3.2,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480610/6721757b8e260-zeb93-wyxj2-e37e6557e459e605f8d4672dda00b16d.jpg",
+    "pageManaCostSymbols": [
+      "1",
+      "G",
+      "G"
+    ],
+    "pageNamePt": "Arqueodruida Elfo",
+    "enrichment": {
+      "name": "Elvish Archdruid",
+      "typeLine": "Creature — Elf Druid",
+      "colorIdentity": [
+        "G"
+      ],
+      "cmc": 3,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "006ff5a3-355b-4a7d-b402-bb3c8d32a585",
+      "imageUrl": "https://cards.scryfall.io/normal/front/0/0/006ff5a3-355b-4a7d-b402-bb3c8d32a585.jpg?1785497593"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-15",
+    "name": "Timberwatch Elf",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 11.5,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/479837/600ff139e7086-r75oz-qlb4o-2041509598600ff139e70e5.jpg",
+    "pageManaCostSymbols": [
+      "2",
+      "G"
+    ],
+    "pageNamePt": "Elfo Vigia dos Pinheiros",
+    "enrichment": {
+      "name": "Timberwatch Elf",
+      "typeLine": "Creature — Elf",
+      "colorIdentity": [
+        "G"
+      ],
+      "cmc": 3,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "38807f17-1cf2-4736-ad10-df6c8b1a9f55",
+      "imageUrl": "https://cards.scryfall.io/normal/front/3/8/38807f17-1cf2-4736-ad10-df6c8b1a9f55.jpg?1783928309"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-16",
+    "name": "Ezuri, Renegade Leader",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 29.99,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/179141/5f42440dc788f-xocme8-50v8tr-a3c65c2974270fd093ee8a9bf8ae7d0b.jpg",
+    "pageManaCostSymbols": [
+      "1",
+      "G",
+      "G"
+    ],
+    "pageNamePt": "Ezuri, Líder Renegado",
+    "enrichment": {
+      "name": "Ezuri, Renegade Leader",
+      "typeLine": "Legendary Creature — Elf Warrior",
+      "colorIdentity": [
+        "G"
+      ],
+      "cmc": 3,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "8a448dbf-08a1-4145-a4b2-0265cc9f2e53",
+      "imageUrl": "https://cards.scryfall.io/normal/front/8/a/8a448dbf-08a1-4145-a4b2-0265cc9f2e53.jpg?1783935094"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-17",
+    "name": "Glissa Sunslayer",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 5.74,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480887/695d68dbcdef8-pwxiz-xae2c-325f23ee93bb1a428747f64e96c26bd0.jpg",
+    "pageManaCostSymbols": [
+      "1",
+      "B",
+      "G"
+    ],
+    "pageNamePt": "Glissa, Matadora do Sol",
+    "enrichment": {
+      "name": "Glissa Sunslayer",
+      "typeLine": "Legendary Creature — Phyrexian Zombie Elf",
+      "colorIdentity": [
+        "B",
+        "G"
+      ],
+      "cmc": 3,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "682b1b62-338a-49d1-9d4e-2d8ee2e6fc76",
+      "imageUrl": "https://cards.scryfall.io/normal/front/6/8/682b1b62-338a-49d1-9d4e-2d8ee2e6fc76.jpg?1783904544"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-18",
+    "name": "Marwyn, the Nurturer",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 22.19,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480610/672176d57b0e4-w7jr0-6ylq1-e37e6557e459e605f8d4672dda00b16d.jpg",
+    "pageManaCostSymbols": [
+      "2",
+      "G"
+    ],
+    "pageNamePt": "Marwyn, a Nutriz",
+    "enrichment": {
+      "name": "Marwyn, the Nurturer",
+      "typeLine": "Legendary Creature — Elf Druid",
+      "colorIdentity": [
+        "G"
+      ],
+      "cmc": 3,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "aad61d99-5c8e-47b7-ab1a-e70905f59205",
+      "imageUrl": "https://cards.scryfall.io/normal/front/a/a/aad61d99-5c8e-47b7-ab1a-e70905f59205.jpg?1783928311"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-19",
+    "name": "Imperious Perfect",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 1.02,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480138/637d14286ecf8-dj1ca-g2mfk-876114171637d14286ed45.jpg",
+    "pageManaCostSymbols": [
+      "2",
+      "G"
+    ],
+    "pageNamePt": "Perfeita Imperiosa",
+    "enrichment": {
+      "name": "Imperious Perfect",
+      "typeLine": "Creature — Elf Warrior",
+      "colorIdentity": [
+        "G"
+      ],
+      "cmc": 3,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "83b4a09f-ea53-42b4-a41a-4299192a6fd3",
+      "imageUrl": "https://cards.scryfall.io/normal/front/8/3/83b4a09f-ea53-42b4-a41a-4299192a6fd3.jpg?1783908890"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-20",
+    "name": "Reclamation Sage",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 0.2,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480601/672545fc08375-5l0gb-sfnym-f470ea843f79786b646179a35f39cf66.jpg",
+    "pageManaCostSymbols": [
+      "2",
+      "G"
+    ],
+    "pageNamePt": "Sábio da Reivindicação",
+    "enrichment": {
+      "name": "Reclamation Sage",
+      "typeLine": "Creature — Elf Shaman",
+      "colorIdentity": [
+        "G"
+      ],
+      "cmc": 3,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "1918ea65-ab7f-4d40-97fd-a656c892a2a1",
+      "imageUrl": "https://cards.scryfall.io/normal/front/1/9/1918ea65-ab7f-4d40-97fd-a656c892a2a1.jpg?1783909055"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-21",
+    "name": "Greenhilt Trainee",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 0.08,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/176/626c500404cb0-wxy8r-xjk69-62069934626c500404cfa.jpg",
+    "pageManaCostSymbols": [
+      "3",
+      "G"
+    ],
+    "pageNamePt": "Aprendiz de Punho Verde",
+    "enrichment": {
+      "name": "Greenhilt Trainee",
+      "typeLine": "Creature — Elf Warrior",
+      "colorIdentity": [
+        "G"
+      ],
+      "cmc": 4,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "370f8ef5-c809-43cc-903a-077fad33cd30",
+      "imageUrl": "https://cards.scryfall.io/normal/front/3/7/370f8ef5-c809-43cc-903a-077fad33cd30.jpg?1783941301"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-22",
+    "name": "Jarad, Golgari Lich Lord",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 2.51,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480679/67ddcc3d4d988-vq1kh-dof0e-e0248501cd708d1a01014ef6b176798c.jpg",
+    "pageManaCostSymbols": [
+      "B",
+      "B",
+      "G",
+      "G"
+    ],
+    "pageNamePt": "Jarad, Senhor Lich dos Golgari",
+    "enrichment": {
+      "name": "Jarad, Golgari Lich Lord",
+      "typeLine": "Legendary Creature — Zombie Elf",
+      "colorIdentity": [
+        "B",
+        "G"
+      ],
+      "cmc": 4,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "6870b355-e53d-4fa2-887b-0f0445bcd9c5",
+      "imageUrl": "https://cards.scryfall.io/normal/front/6/8/6870b355-e53d-4fa2-887b-0f0445bcd9c5.jpg?1783907026"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-23",
+    "name": "Lathril, Blade of the Elves",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 6,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480601/672545c2ef3bb-a8jns-iu4rq-f470ea843f79786b646179a35f39cf66.jpg",
+    "pageManaCostSymbols": [
+      "2",
+      "B",
+      "G"
+    ],
+    "pageNamePt": "Lathril, Espada dos Elfos",
+    "enrichment": {
+      "name": "Lathril, Blade of the Elves",
+      "typeLine": "Legendary Creature — Elf Noble",
+      "colorIdentity": [
+        "B",
+        "G"
+      ],
+      "cmc": 4,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "8d4e5480-a287-4a25-b855-a26dae555b1c",
+      "imageUrl": "https://cards.scryfall.io/normal/front/8/d/8d4e5480-a287-4a25-b855-a26dae555b1c.jpg?1783909053"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-24",
+    "name": "Immaculate Magistrate",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 2.9,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/479823/5f9aded88f53c-awem6-uf89w-5669286755f9aded88f583.jpg",
+    "pageManaCostSymbols": [
+      "3",
+      "G"
+    ],
+    "pageNamePt": "Magistrado Imaculado",
+    "enrichment": {
+      "name": "Immaculate Magistrate",
+      "typeLine": "Creature — Elf Shaman",
+      "colorIdentity": [
+        "G"
+      ],
+      "cmc": 4,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "d9208db8-1ba5-4f9c-90a4-03e377ae6f86",
+      "imageUrl": "https://cards.scryfall.io/normal/front/d/9/d9208db8-1ba5-4f9c-90a4-03e377ae6f86.jpg?1783928793"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-25",
+    "name": "Shadowheart, Dark Justiciar",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 1.4,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/479911/6287b7f6f048f-qz01e-jz6pw-18795836056287b7f6f04e1.jpg",
+    "pageManaCostSymbols": [
+      "3",
+      "B"
+    ],
+    "pageNamePt": "Sombralma, Justiciar Sombria",
+    "enrichment": {
+      "name": "Shadowheart, Dark Justiciar",
+      "typeLine": "Legendary Creature — Human Elf Cleric",
+      "colorIdentity": [
+        "B"
+      ],
+      "cmc": 4,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "13a0913d-776b-4ef8-adef-8861349df2b5",
+      "imageUrl": "https://cards.scryfall.io/normal/front/1/3/13a0913d-776b-4ef8-adef-8861349df2b5.jpg?1783922752"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-26",
+    "name": "Yeva, Nature's Herald",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 3.8,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480402/6578ede2d4034-5lgtr-5wd30-9acbf35a50f4c1ad14351c9f25b1e71c.jpg",
+    "pageManaCostSymbols": [
+      "2",
+      "G",
+      "G"
+    ],
+    "pageNamePt": "Yeva, Arauto da Natureza",
+    "enrichment": {
+      "name": "Yeva, Nature's Herald",
+      "typeLine": "Legendary Creature — Elf Shaman",
+      "colorIdentity": [
+        "G"
+      ],
+      "cmc": 4,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "67ff9ba3-cd2b-4970-b4da-22104b10a4a4",
+      "imageUrl": "https://cards.scryfall.io/normal/front/6/7/67ff9ba3-cd2b-4970-b4da-22104b10a4a4.jpg?1783913297"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-27",
+    "name": "Underrealm Lich",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 12.5,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480400/65b043858c8e4-vj8a3-go1q7-bfea4236c6d6078eec442ec802605fc9.jpg",
+    "pageManaCostSymbols": [
+      "3",
+      "B",
+      "G"
+    ],
+    "pageNamePt": "Lich do Reino Subterrâneo",
+    "enrichment": {
+      "name": "Underrealm Lich",
+      "typeLine": "Creature — Zombie Elf Shaman",
+      "colorIdentity": [
+        "B",
+        "G"
+      ],
+      "cmc": 5,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "30c94b1b-35be-4c98-b279-80d95b28201e",
+      "imageUrl": "https://cards.scryfall.io/normal/front/3/0/30c94b1b-35be-4c98-b279-80d95b28201e.jpg?1783912513"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-28",
+    "name": "Maralen, Fae Ascendant",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 1.49,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480880/696007ac0366e-69j2v-s063z-9aab99d294da9fe38973a31997f5d726.jpg",
+    "pageManaCostSymbols": [
+      "2",
+      "B",
+      "G",
+      "U"
+    ],
+    "pageNamePt": "Maralen, Fae Ascendant",
+    "enrichment": {
+      "name": "Maralen, Fae Ascendant",
+      "typeLine": "Legendary Creature — Elf Faerie Noble",
+      "colorIdentity": [
+        "B",
+        "G",
+        "U"
+      ],
+      "cmc": 5,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "c50f5408-5b5c-41dc-807e-136233403a09",
+      "imageUrl": "https://cards.scryfall.io/normal/front/c/5/c50f5408-5b5c-41dc-807e-136233403a09.jpg?1783904406"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-29",
+    "name": "Selfless Safewright",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 0.75,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480890/695d7295dcea9-rvxkh-yi75r-a11868f4201cd17b201353021e7db78f.jpg",
+    "pageManaCostSymbols": [
+      "3",
+      "G",
+      "G"
+    ],
+    "pageNamePt": "Selfless Safewright",
+    "enrichment": {
+      "name": "Selfless Safewright",
+      "typeLine": "Creature — Elf Warrior",
+      "colorIdentity": [
+        "G"
+      ],
+      "cmc": 5,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "ac95b1c3-9eb2-4f80-bb32-72b36817d622",
+      "imageUrl": "https://cards.scryfall.io/normal/front/a/c/ac95b1c3-9eb2-4f80-bb32-72b36817d622.jpg?1783904421"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-30",
+    "name": "Disciple of Freyalise",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 10.5,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480445/664e55891239a-s6ueb-fpbyx-e4c33be81cc6c4dec5a513d10daafc38.jpg",
+    "pageManaCostSymbols": [
+      "3",
+      "G",
+      "G",
+      "G"
+    ],
+    "pageNamePt": "Discípula de Freyalise",
+    "enrichment": {
+      "name": "Disciple of Freyalise // Garden of Freyalise",
+      "typeLine": "Creature — Elf Druid // Land",
+      "colorIdentity": [
+        "G"
+      ],
+      "cmc": 6,
+      "layout": "modal_dfc",
+      "legalInCommander": true,
+      "scryfallId": "a8e9ea5a-5e10-4b77-baef-0352ff035483",
+      "imageUrl": "https://cards.scryfall.io/normal/front/a/8/a8e9ea5a-5e10-4b77-baef-0352ff035483.jpg?1783911228"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-31",
+    "name": "Thranduil, Sindarin Liege // Silvan Rally",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 0.66,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/481001/6a6bc1b255414-57fxh-jhilr-a7a80b8c68ca115ea7949ab4d3538c7a.jpg",
+    "pageManaCostSymbols": [
+      "2",
+      "GU",
+      "GU",
+      "1",
+      "GU",
+      "GU"
+    ],
+    "pageNamePt": "Thranduil, Sindarin Liege // Silvan Rally",
+    "enrichment": {
+      "name": "Thranduil, Sindarin Liege // Silvan Rally",
+      "typeLine": "Legendary Creature — Elf Noble // Sorcery — Adventure",
+      "colorIdentity": [
+        "G",
+        "U"
+      ],
+      "cmc": 4,
+      "layout": "adventure",
+      "legalInCommander": true,
+      "scryfallId": "481870ee-d1f7-421b-86e1-570ea933bbbc",
+      "imageUrl": "https://cards.scryfall.io/normal/front/4/8/481870ee-d1f7-421b-86e1-570ea933bbbc.jpg?1785412747"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-32",
+    "name": "Tyvar, Jubilant Brawler",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 12.2,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480158/63d3ad9f1ff41-vsiet-datmu-95760902263d3ad9f1ff8c.jpg",
+    "pageManaCostSymbols": [
+      "1",
+      "B",
+      "G"
+    ],
+    "pageNamePt": "Tyvar, Lutador Jubiloso",
+    "enrichment": {
+      "name": "Tyvar, Jubilant Brawler",
+      "typeLine": "Legendary Planeswalker — Tyvar",
+      "colorIdentity": [
+        "B",
+        "G"
+      ],
+      "cmc": 3,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "66605fe1-9a20-4c95-b53e-1249cedb978b",
+      "imageUrl": "https://cards.scryfall.io/normal/front/6/6/66605fe1-9a20-4c95-b53e-1249cedb978b.jpg?1783917995"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-33",
+    "name": "Louisoix's Sacrifice",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 1.99,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480676/683601d96fff3-7lkvi-3mvya-4367d22280db62c2ddd45a0a84121d3e.jpg",
+    "pageManaCostSymbols": [
+      "U"
+    ],
+    "pageNamePt": "Louisoix's Sacrifice",
+    "enrichment": {
+      "name": "Louisoix's Sacrifice",
+      "typeLine": "Instant",
+      "colorIdentity": [
+        "U"
+      ],
+      "cmc": 1,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "4a6976f2-0bd5-449a-8fcf-f5a732ce22c1",
+      "imageUrl": "https://cards.scryfall.io/normal/front/4/a/4a6976f2-0bd5-449a-8fcf-f5a732ce22c1.jpg?1783906634"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-34",
+    "name": "Revitalizing Repast",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 1.99,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480445/664f9468cadea-r9h3z-t42cp-e4c33be81cc6c4dec5a513d10daafc38.jpg",
+    "pageManaCostSymbols": [
+      "BG"
+    ],
+    "pageNamePt": "Refeição Revitalizante",
+    "enrichment": {
+      "name": "Revitalizing Repast // Old-Growth Grove",
+      "typeLine": "Instant // Land",
+      "colorIdentity": [
+        "B",
+        "G"
+      ],
+      "cmc": 1,
+      "layout": "modal_dfc",
+      "legalInCommander": true,
+      "scryfallId": "03522b6b-31ec-4126-8885-5dbb2248688b",
+      "imageUrl": "https://cards.scryfall.io/normal/front/0/3/03522b6b-31ec-4126-8885-5dbb2248688b.jpg?1783911227"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-35",
+    "name": "Reclaim",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 0.09,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/44411/6307ce500bd0b-o8c2g-i0x5w-9060405716307ce500bd52.jpg",
+    "pageManaCostSymbols": [
+      "G"
+    ],
+    "pageNamePt": "Restituir",
+    "enrichment": {
+      "name": "Reclaim",
+      "typeLine": "Instant",
+      "colorIdentity": [
+        "G"
+      ],
+      "cmc": 1,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "88f3c600-66f1-4a5e-ba4f-61e9f7f7a1d9",
+      "imageUrl": "https://cards.scryfall.io/normal/front/8/8/88f3c600-66f1-4a5e-ba4f-61e9f7f7a1d9.jpg?1783938318"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-36",
+    "name": "Golgari Charm",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 0.5,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480548/670db323c213d-kmw70-hpi54-d354ddc7eec8720fd172c1ff7867d826.jpg",
+    "pageManaCostSymbols": [
+      "B",
+      "G"
+    ],
+    "pageNamePt": "Amuleto Golgari",
+    "enrichment": {
+      "name": "Golgari Charm",
+      "typeLine": "Instant",
+      "colorIdentity": [
+        "B",
+        "G"
+      ],
+      "cmc": 2,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "9d467e61-bbec-4cea-bd5d-f10555910c9d",
+      "imageUrl": "https://cards.scryfall.io/normal/front/9/d/9d467e61-bbec-4cea-bd5d-f10555910c9d.jpg?1783933777"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-37",
+    "name": "Arcane Denial",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 9.99,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480968/6a2b115af25b3-rl2h5-cqist-3246d690edcb0d9a18099e37d07ede11.jpg",
+    "pageManaCostSymbols": [
+      "1",
+      "U"
+    ],
+    "pageNamePt": "Contradição Arcana",
+    "enrichment": {
+      "name": "Arcane Denial",
+      "typeLine": "Instant",
+      "colorIdentity": [
+        "U"
+      ],
+      "cmc": 2,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "5eb843ef-b223-40d0-a461-54b16d188d0e",
+      "imageUrl": "https://cards.scryfall.io/normal/front/5/e/5eb843ef-b223-40d0-a461-54b16d188d0e.jpg?1783903242"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-38",
+    "name": "Counterspell",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 8.81,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480575/66df474525acc-6ejt7-ag1t9-ca65a4a3e1f73cfbe1a6ad85493969f1.jpg",
+    "pageManaCostSymbols": [
+      "U",
+      "U"
+    ],
+    "pageNamePt": "Contramágica",
+    "enrichment": {
+      "name": "Counterspell",
+      "typeLine": "Instant",
+      "colorIdentity": [
+        "U"
+      ],
+      "cmc": 2,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "4f616706-ec97-4923-bb1e-11a69fbaa1f8",
+      "imageUrl": "https://cards.scryfall.io/normal/front/4/f/4f616706-ec97-4923-bb1e-11a69fbaa1f8.jpg?1783909630"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-39",
+    "name": "Abrupt Decay",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 6.49,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480450/660c491e03d24-q04s9-h7xc8-eb39f987dd81dad7a11eb7db0dd02d75.jpg",
+    "pageManaCostSymbols": [
+      "B",
+      "G"
+    ],
+    "pageNamePt": "Degeneração Abrupta",
+    "enrichment": {
+      "name": "Abrupt Decay",
+      "typeLine": "Instant",
+      "colorIdentity": [
+        "B",
+        "G"
+      ],
+      "cmc": 2,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "a8e328c6-3a84-49cf-a1a3-1d1e5373d274",
+      "imageUrl": "https://cards.scryfall.io/normal/front/a/8/a8e328c6-3a84-49cf-a1a3-1d1e5373d274.jpg?1783936626"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-40",
+    "name": "Exsanguinate",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 3.44,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480715/6823d1f67b855-974zb-2oxwc-c330b688aa6ead9ce06d5c2d17830024.jpg",
+    "pageManaCostSymbols": [
+      "X",
+      "B",
+      "B"
+    ],
+    "pageNamePt": "Dessangrar",
+    "enrichment": {
+      "name": "Exsanguinate",
+      "typeLine": "Sorcery",
+      "colorIdentity": [
+        "B"
+      ],
+      "cmc": 2,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "f11d7311-4066-4a5d-ba28-9857fa707a0b",
+      "imageUrl": "https://cards.scryfall.io/normal/front/f/1/f11d7311-4066-4a5d-ba28-9857fa707a0b.jpg?1783909073"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-41",
+    "name": "Mana Leak",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 0.49,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/479945/62b5d71e7bc14-stxrd-r2w9s-198835229162b5d71e7bc5b.jpg",
+    "pageManaCostSymbols": [
+      "1",
+      "U"
+    ],
+    "pageNamePt": "Fuga de Mana",
+    "enrichment": {
+      "name": "Mana Leak",
+      "typeLine": "Instant",
+      "colorIdentity": [
+        "U"
+      ],
+      "cmc": 2,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "179236d9-6fe2-4db6-bdfb-f851e8d531a2",
+      "imageUrl": "https://cards.scryfall.io/normal/front/1/7/179236d9-6fe2-4db6-bdfb-f851e8d531a2.jpg?1783921915"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-42",
+    "name": "Midnight Tilling",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 0.1,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480880/695eabd973a33-6rsg3-te8vf-9aab99d294da9fe38973a31997f5d726.jpg",
+    "pageManaCostSymbols": [
+      "1",
+      "G"
+    ],
+    "pageNamePt": "Midnight Tilling",
+    "enrichment": {
+      "name": "Midnight Tilling",
+      "typeLine": "Instant",
+      "colorIdentity": [
+        "G"
+      ],
+      "cmc": 2,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "c5112bbf-752c-41e7-9c61-4c81e6a77463",
+      "imageUrl": "https://cards.scryfall.io/normal/front/c/5/c5112bbf-752c-41e7-9c61-4c81e6a77463.jpg?1783904434"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-43",
+    "name": "Negate",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 0.05,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480900/69962818158ac-trmja-qbvey-80df8cb6bc679d01878360ae57f00e66.jpg",
+    "pageManaCostSymbols": [
+      "1",
+      "U"
+    ],
+    "pageNamePt": "Negar",
+    "enrichment": {
+      "name": "Negate",
+      "typeLine": "Instant",
+      "colorIdentity": [
+        "U"
+      ],
+      "cmc": 2,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "52d58fe4-6070-4022-9cd7-c35a11b44525",
+      "imageUrl": "https://cards.scryfall.io/normal/front/5/2/52d58fe4-6070-4022-9cd7-c35a11b44525.jpg?1783904112"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-44",
+    "name": "Lose Focus",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 1.74,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/479849/60b68ab209ecd-lcr49-j0mzw-210258255160b68ab209f24.jpg",
+    "pageManaCostSymbols": [
+      "1",
+      "U"
+    ],
+    "pageNamePt": "Perder o Foco",
+    "enrichment": {
+      "name": "Lose Focus",
+      "typeLine": "Instant",
+      "colorIdentity": [
+        "U"
+      ],
+      "cmc": 2,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "985bdb0c-ce6c-4506-8163-76f3b2fdf5fb",
+      "imageUrl": "https://cards.scryfall.io/normal/front/9/8/985bdb0c-ce6c-4506-8163-76f3b2fdf5fb.jpg?1783926877"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-45",
+    "name": "Tear Asunder",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 2.03,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480784/686ec36d82091-dhybx-va6le-785a38bd45ce1afce3437167387b001b.jpg",
+    "pageManaCostSymbols": [
+      "1",
+      "G"
+    ],
+    "pageNamePt": "Rasgar em Dois",
+    "enrichment": {
+      "name": "Tear Asunder",
+      "typeLine": "Instant",
+      "colorIdentity": [
+        "B",
+        "G"
+      ],
+      "cmc": 2,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "e408c673-4a1f-45db-827a-75c501e1b3d6",
+      "imageUrl": "https://cards.scryfall.io/normal/front/e/4/e408c673-4a1f-45db-827a-75c501e1b3d6.jpg?1783906030"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-46",
+    "name": "Grisly Salvage",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 0.17,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480679/67ddcc26a8e66-fknqr-gwvd4-e0248501cd708d1a01014ef6b176798c.jpg",
+    "pageManaCostSymbols": [
+      "B",
+      "G"
+    ],
+    "pageNamePt": "Salvamento Macabro",
+    "enrichment": {
+      "name": "Grisly Salvage",
+      "typeLine": "Instant",
+      "colorIdentity": [
+        "B",
+        "G"
+      ],
+      "cmc": 2,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "12a90f7a-28df-4017-b221-0e9234ff74a7",
+      "imageUrl": "https://cards.scryfall.io/normal/front/1/2/12a90f7a-28df-4017-b221-0e9234ff74a7.jpg?1783907026"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-47",
+    "name": "Spider-Sense",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 5.85,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480791/68b895ff98723-g7pvb-y8crs-3d26f9e7d29eaf5309e20e3f9fb4ce8d.jpg",
+    "pageManaCostSymbols": [
+      "1",
+      "U"
+    ],
+    "pageNamePt": "Spider-Sense",
+    "enrichment": {
+      "name": "Spider-Sense",
+      "typeLine": "Instant",
+      "colorIdentity": [
+        "U"
+      ],
+      "cmc": 2,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "4499a25b-f4a5-4f2c-9ebd-bc68c7840b39",
+      "imageUrl": "https://cards.scryfall.io/normal/front/4/4/4499a25b-f4a5-4f2c-9ebd-bc68c7840b39.jpg?1783905348"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-48",
+    "name": "Assassin's Trophy",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 3.75,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480943/69cd9209b4d71-awurs-urlp8-a0668d7705b0821fc377c97c7ece48e7.jpg",
+    "pageManaCostSymbols": [
+      "B",
+      "G"
+    ],
+    "pageNamePt": "Troféu do Assassino",
+    "enrichment": {
+      "name": "Assassin's Trophy",
+      "typeLine": "Instant",
+      "colorIdentity": [
+        "B",
+        "G"
+      ],
+      "cmc": 2,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "aaf258fc-3ba4-4b83-bdbf-10a07e0b6c03",
+      "imageUrl": "https://cards.scryfall.io/normal/front/a/a/aaf258fc-3ba4-4b83-bdbf-10a07e0b6c03.jpg?1783903757"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-49",
+    "name": "Dihada's Ploy",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 0.17,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/479849/60b79e105afdd-tj2x0-98eo0-35850437960b79e105b036.jpg",
+    "pageManaCostSymbols": [
+      "1",
+      "U",
+      "B"
+    ],
+    "pageNamePt": "Ardil de Dihada",
+    "enrichment": {
+      "name": "Dihada's Ploy",
+      "typeLine": "Instant",
+      "colorIdentity": [
+        "B",
+        "U"
+      ],
+      "cmc": 3,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "9091e8dc-b546-4b74-9dc9-aef55f60d13a",
+      "imageUrl": "https://cards.scryfall.io/normal/front/9/0/9091e8dc-b546-4b74-9dc9-aef55f60d13a.jpg?1783926818"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-50",
+    "name": "Frantic Search",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 8,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480850/690bc549c5d2b-a6gsn-ajns2-fe263100baf80c78de94db91c0de5646.jpg",
+    "pageManaCostSymbols": [
+      "2",
+      "U"
+    ],
+    "pageNamePt": "Busca Frenética",
+    "enrichment": {
+      "name": "Frantic Search",
+      "typeLine": "Instant",
+      "colorIdentity": [
+        "U"
+      ],
+      "cmc": 3,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "d8c5e52d-57ae-464b-8860-7dd39ebfef64",
+      "imageUrl": "https://cards.scryfall.io/normal/front/d/8/d8c5e52d-57ae-464b-8860-7dd39ebfef64.jpg?1783904806"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-51",
+    "name": "Confusticate and Bebother",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 0.25,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/481001/6a6ce655afc1b-ckrh0-y3841-a7a80b8c68ca115ea7949ab4d3538c7a.jpg",
+    "pageManaCostSymbols": [
+      "2",
+      "U"
+    ],
+    "pageNamePt": "Confusticate and Bebother",
+    "enrichment": {
+      "name": "Confusticate and Bebother",
+      "typeLine": "Instant",
+      "colorIdentity": [
+        "U"
+      ],
+      "cmc": 3,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "9de48690-e5ae-495a-addf-305f1db7ec21",
+      "imageUrl": "https://cards.scryfall.io/normal/front/9/d/9de48690-e5ae-495a-addf-305f1db7ec21.jpg?1785496428"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-52",
+    "name": "Unwind",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 3,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/425127/5f42441739526-o9vz0f-qd1vfm-32bb90e8976aab5298d5da10fe66f21d.jpg",
+    "pageManaCostSymbols": [
+      "2",
+      "U"
+    ],
+    "pageNamePt": "Desenrolar",
+    "enrichment": {
+      "name": "Unwind",
+      "typeLine": "Instant",
+      "colorIdentity": [
+        "U"
+      ],
+      "cmc": 3,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "97da6607-9131-4f8b-8af3-63439a59b78b",
+      "imageUrl": "https://cards.scryfall.io/normal/front/9/7/97da6607-9131-4f8b-8af3-63439a59b78b.jpg?1783935018"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-53",
+    "name": "Dina's Guidance",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 5.59,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480933/69d9428ee68d6-zdky5-thf8z-a15acc587a78ceec248d261d66bfbcfc.jpg",
+    "pageManaCostSymbols": [
+      "1",
+      "B",
+      "G"
+    ],
+    "pageNamePt": "Dina's Guidance",
+    "enrichment": {
+      "name": "Dina's Guidance",
+      "typeLine": "Instant",
+      "colorIdentity": [
+        "B",
+        "G"
+      ],
+      "cmc": 3,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "775c1e50-08a4-413f-ab0f-f1c2a79cfe94",
+      "imageUrl": "https://cards.scryfall.io/normal/front/7/7/775c1e50-08a4-413f-ab0f-f1c2a79cfe94.jpg?1783903646"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-54",
+    "name": "Buried Alive",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 5,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480548/670dacc66011e-e3y9j-mwlj2-d354ddc7eec8720fd172c1ff7867d826.jpg",
+    "pageManaCostSymbols": [
+      "2",
+      "B"
+    ],
+    "pageNamePt": "Enterrado Vivo",
+    "enrichment": {
+      "name": "Buried Alive",
+      "typeLine": "Sorcery",
+      "colorIdentity": [
+        "B"
+      ],
+      "cmc": 3,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "76878b19-2916-4f3f-bee5-20846bc9e2db",
+      "imageUrl": "https://cards.scryfall.io/normal/front/7/6/76878b19-2916-4f3f-bee5-20846bc9e2db.jpg?1783911216"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-55",
+    "name": "Eldritch Evolution",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 13.99,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480623/67802efc09f3a-jg2x9-2w3xr-09935ff09e9040d2364f5de8eec7de52.jpg",
+    "pageManaCostSymbols": [
+      "1",
+      "G",
+      "G"
+    ],
+    "pageNamePt": "Evolução Arcana",
+    "enrichment": {
+      "name": "Eldritch Evolution",
+      "typeLine": "Sorcery",
+      "colorIdentity": [
+        "G"
+      ],
+      "cmc": 3,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "606caf13-c0d3-4a61-9a1a-32f13b6448ab",
+      "imageUrl": "https://cards.scryfall.io/normal/front/6/0/606caf13-c0d3-4a61-9a1a-32f13b6448ab.jpg?1783908101"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-56",
+    "name": "Beast Within",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 5.24,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480968/6a2b5128bc0b4-0c49l-8x2y7-3246d690edcb0d9a18099e37d07ede11.jpg",
+    "pageManaCostSymbols": [
+      "2",
+      "G"
+    ],
+    "pageNamePt": "Fera Interior",
+    "enrichment": {
+      "name": "Beast Within",
+      "typeLine": "Instant",
+      "colorIdentity": [
+        "G"
+      ],
+      "cmc": 3,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "400b43aa-c1d2-4435-b863-061f43889422",
+      "imageUrl": "https://cards.scryfall.io/normal/front/4/0/400b43aa-c1d2-4435-b863-061f43889422.jpg?1783903232"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-57",
+    "name": "Putrefy",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 0.14,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480887/695d68eb51314-l06ko-rcapj-325f23ee93bb1a428747f64e96c26bd0.jpg",
+    "pageManaCostSymbols": [
+      "1",
+      "B",
+      "G"
+    ],
+    "pageNamePt": "Putrificar",
+    "enrichment": {
+      "name": "Putrefy",
+      "typeLine": "Instant",
+      "colorIdentity": [
+        "B",
+        "G"
+      ],
+      "cmc": 3,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "ad6ed9f1-2014-49e2-91c6-2b55c8d60cdc",
+      "imageUrl": "https://cards.scryfall.io/normal/front/a/d/ad6ed9f1-2014-49e2-91c6-2b55c8d60cdc.jpg?1783904538"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-58",
+    "name": "Thirst for Discovery",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 0.39,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/479876/6182cfc54c821-estij-s1h82-20362979276182cfc54c865.jpg",
+    "pageManaCostSymbols": [
+      "2",
+      "U"
+    ],
+    "pageNamePt": "Sede de Descoberta",
+    "enrichment": {
+      "name": "Thirst for Discovery",
+      "typeLine": "Instant",
+      "colorIdentity": [
+        "U"
+      ],
+      "cmc": 3,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "1ea179e9-9c0d-46c1-9ee8-60be68e1f79c",
+      "imageUrl": "https://cards.scryfall.io/normal/front/1/e/1ea179e9-9c0d-46c1-9ee8-60be68e1f79c.jpg?1783924880"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-59",
+    "name": "Windfall",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 19,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480548/670dac7cc5a3a-rbmz6-zxb2r-d354ddc7eec8720fd172c1ff7867d826.jpg",
+    "pageManaCostSymbols": [
+      "2",
+      "U"
+    ],
+    "pageNamePt": "Sorte Inesperada",
+    "enrichment": {
+      "name": "Windfall",
+      "typeLine": "Sorcery",
+      "colorIdentity": [
+        "U"
+      ],
+      "cmc": 3,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "9ce7113b-08f7-4584-b65f-a7b5caa90c2f",
+      "imageUrl": "https://cards.scryfall.io/normal/front/9/c/9ce7113b-08f7-4584-b65f-a7b5caa90c2f.jpg?1783911933"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-60",
+    "name": "Thirst for Identity",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 0.13,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480880/696142e0663fe-4xvnb-crev4-9aab99d294da9fe38973a31997f5d726.jpg",
+    "pageManaCostSymbols": [
+      "2",
+      "U"
+    ],
+    "pageNamePt": "Thirst for Identity",
+    "enrichment": {
+      "name": "Thirst for Identity",
+      "typeLine": "Instant",
+      "colorIdentity": [
+        "U"
+      ],
+      "cmc": 3,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "c3949f8c-d1c5-45c2-80ed-a57f4f9af86e",
+      "imageUrl": "https://cards.scryfall.io/normal/front/c/3/c3949f8c-d1c5-45c2-80ed-a57f4f9af86e.jpg?1783904479"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-61",
+    "name": "Fact or Fiction",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 0.35,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480300/64e7a240d6b2b-jzy5w-e6z3g-185354827564e7a240d6b6a.jpg",
+    "pageManaCostSymbols": [
+      "3",
+      "U"
+    ],
+    "pageNamePt": "Fato ou Ficção",
+    "enrichment": {
+      "name": "Fact or Fiction",
+      "typeLine": "Instant",
+      "colorIdentity": [
+        "U"
+      ],
+      "cmc": 4,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "04588d2f-9e90-4f83-b85e-67e4bc222a62",
+      "imageUrl": "https://cards.scryfall.io/normal/front/0/4/04588d2f-9e90-4f83-b85e-67e4bc222a62.jpg?1783915701"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-62",
+    "name": "Jarad's Orders",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 1.28,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/326/62714f6edb704-50djm-yns81-145543165562714f6edb74b.jpg",
+    "pageManaCostSymbols": [
+      "2",
+      "B",
+      "G"
+    ],
+    "pageNamePt": "Ordens de Jarad",
+    "enrichment": {
+      "name": "Jarad's Orders",
+      "typeLine": "Sorcery",
+      "colorIdentity": [
+        "B",
+        "G"
+      ],
+      "cmc": 4,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "c59171ce-7dc6-4dd9-a124-3c2c3028d93d",
+      "imageUrl": "https://cards.scryfall.io/normal/front/c/5/c59171ce-7dc6-4dd9-a124-3c2c3028d93d.jpg?1783940337"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-63",
+    "name": "Diabolic Tutor",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 2.99,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480548/670dad026d2e6-nxh97-dplxg-d354ddc7eec8720fd172c1ff7867d826.jpg",
+    "pageManaCostSymbols": [
+      "2",
+      "B",
+      "B"
+    ],
+    "pageNamePt": "Tutor Diabólico",
+    "enrichment": {
+      "name": "Diabolic Tutor",
+      "typeLine": "Sorcery",
+      "colorIdentity": [
+        "B"
+      ],
+      "cmc": 4,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "d650dd8c-edd8-44e4-ae95-aaaf84557a72",
+      "imageUrl": "https://cards.scryfall.io/normal/front/d/6/d650dd8c-edd8-44e4-ae95-aaaf84557a72.jpg?1783936288"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-64",
+    "name": "Harmonized Crescendo",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 1,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480890/695d729101702-1mxdo-4rlqb-a11868f4201cd17b201353021e7db78f.jpg",
+    "pageManaCostSymbols": [
+      "4",
+      "U",
+      "U"
+    ],
+    "pageNamePt": "Harmonized Crescendo",
+    "enrichment": {
+      "name": "Harmonized Crescendo",
+      "typeLine": "Instant",
+      "colorIdentity": [
+        "U"
+      ],
+      "cmc": 6,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "2715e0c0-9913-4bea-9a42-ad1164f6130a",
+      "imageUrl": "https://cards.scryfall.io/normal/front/2/7/2715e0c0-9913-4bea-9a42-ad1164f6130a.jpg?1783904488"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-65",
+    "name": "Kindred Dominance",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 19.35,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480968/6a2b1168ee48e-295zn-wvrj7-3246d690edcb0d9a18099e37d07ede11.jpg",
+    "pageManaCostSymbols": [
+      "5",
+      "B",
+      "B"
+    ],
+    "pageNamePt": "Dominância da Estirpe",
+    "enrichment": {
+      "name": "Kindred Dominance",
+      "typeLine": "Sorcery",
+      "colorIdentity": [
+        "B"
+      ],
+      "cmc": 7,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "f6cd7c08-f5d4-4bdc-a254-809d900b0fc3",
+      "imageUrl": "https://cards.scryfall.io/normal/front/f/6/f6cd7c08-f5d4-4bdc-a254-809d900b0fc3.jpg?1783903243"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-66",
+    "name": "Dig Through Time",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 0.25,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480943/69cd914f13066-l309u-s5bk7-a0668d7705b0821fc377c97c7ece48e7.jpg",
+    "pageManaCostSymbols": [
+      "6",
+      "U",
+      "U"
+    ],
+    "pageNamePt": "Revirar o Tempo",
+    "enrichment": {
+      "name": "Dig Through Time",
+      "typeLine": "Instant",
+      "colorIdentity": [
+        "U"
+      ],
+      "cmc": 8,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "020939d6-72f0-4aa0-9ac2-d16cc896cd7f",
+      "imageUrl": "https://cards.scryfall.io/normal/front/0/2/020939d6-72f0-4aa0-9ac2-d16cc896cd7f.jpg?1783903792"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-67",
+    "name": "Sol Ring",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 7.9,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480943/69cd90e060f84-sencv-to1e9-a0668d7705b0821fc377c97c7ece48e7.jpg",
+    "pageManaCostSymbols": [
+      "1"
+    ],
+    "pageNamePt": "Anel Solar",
+    "enrichment": {
+      "name": "Sol Ring",
+      "typeLine": "Artifact",
+      "colorIdentity": [],
+      "cmc": 1,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "91fdb56b-54d5-4272-8319-505ff987fe9b",
+      "imageUrl": "https://cards.scryfall.io/normal/front/9/1/91fdb56b-54d5-4272-8319-505ff987fe9b.jpg?1783903215"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-68",
+    "name": "Swiftfoot Boots",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 11.19,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480968/6a2b128467b04-qug4s-1u5do-3246d690edcb0d9a18099e37d07ede11.jpg",
+    "pageManaCostSymbols": [
+      "2"
+    ],
+    "pageNamePt": "Botas Pé-ligeiro",
+    "enrichment": {
+      "name": "Swiftfoot Boots",
+      "typeLine": "Artifact — Equipment",
+      "colorIdentity": [],
+      "cmc": 2,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "03f7e9fc-8e59-45c1-90fc-1d04d929b292",
+      "imageUrl": "https://cards.scryfall.io/normal/front/0/3/03f7e9fc-8e59-45c1-90fc-1d04d929b292.jpg?1785759388"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-69",
+    "name": "Lightning Greaves",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 24.9,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480968/6a2b1273828fb-g2zxj-6ln8s-3246d690edcb0d9a18099e37d07ede11.jpg",
+    "pageManaCostSymbols": [
+      "2"
+    ],
+    "pageNamePt": "Grevas Faiscantes",
+    "enrichment": {
+      "name": "Lightning Greaves",
+      "typeLine": "Artifact — Equipment",
+      "colorIdentity": [],
+      "cmc": 2,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "b61634ae-05be-4b56-8ebb-9d4ade902e42",
+      "imageUrl": "https://cards.scryfall.io/normal/front/b/6/b61634ae-05be-4b56-8ebb-9d4ade902e42.jpg?1783903217"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-70",
+    "name": "Arcane Signet",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 4.15,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480943/69cd90dea71cc-zfsq6-2lsrw-a0668d7705b0821fc377c97c7ece48e7.jpg",
+    "pageManaCostSymbols": [
+      "2"
+    ],
+    "pageNamePt": "Sinete Arcano",
+    "enrichment": {
+      "name": "Arcane Signet",
+      "typeLine": "Artifact",
+      "colorIdentity": [],
+      "cmc": 2,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "1cad1bd2-7c56-4ce0-99a6-b2a49c1288dd",
+      "imageUrl": "https://cards.scryfall.io/normal/front/1/c/1cad1bd2-7c56-4ce0-99a6-b2a49c1288dd.jpg?1783903222"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-71",
+    "name": "Umbral Mantle",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 36.79,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/186/5f424339d123d-3o9md4-r6cyk9-eda80a3d5b344bc40f3bc04f65b7a357.jpg",
+    "pageManaCostSymbols": [
+      "3"
+    ],
+    "pageNamePt": "Manto Umbral",
+    "enrichment": {
+      "name": "Umbral Mantle",
+      "typeLine": "Artifact — Equipment",
+      "colorIdentity": [],
+      "cmc": 3,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "10e35711-aec9-4024-a2a6-9efff8c71df2",
+      "imageUrl": "https://cards.scryfall.io/normal/front/1/0/10e35711-aec9-4024-a2a6-9efff8c71df2.jpg?1783942708"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-72",
+    "name": "Wirewood Lodge",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 15,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/205/5f424345c959f-c06b39-6bl8fz-6faa8040da20ef399b63a72d0e4ab575.jpg",
+    "pageNamePt": "Cabana de Wirewood",
+    "enrichment": {
+      "name": "Wirewood Lodge",
+      "typeLine": "Land",
+      "colorIdentity": [
+        "G"
+      ],
+      "cmc": 0,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "15a92571-1409-40c3-84c3-da01d6f1b104",
+      "imageUrl": "https://cards.scryfall.io/normal/front/1/5/15a92571-1409-40c3-84c3-da01d6f1b104.jpg?1783938770"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-73",
+    "name": "Path of Ancestry",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 0.48,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480968/6a2b1362955f3-kbwmc-hl2wv-3246d690edcb0d9a18099e37d07ede11.jpg",
+    "pageNamePt": "Caminho da Ascendência",
+    "enrichment": {
+      "name": "Path of Ancestry",
+      "typeLine": "Land",
+      "colorIdentity": [],
+      "cmc": 0,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "b1aaa7b0-1cac-4a92-b880-7ef1ac00618f",
+      "imageUrl": "https://cards.scryfall.io/normal/front/b/1/b1aaa7b0-1cac-4a92-b880-7ef1ac00618f.jpg?1785759407"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-74",
+    "name": "Woodland Cemetery",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 4.9,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480943/69cd92dece4c0-3wv0a-lfc7u-a0668d7705b0821fc377c97c7ece48e7.jpg",
+    "pageNamePt": "Cemitério da Floresta",
+    "enrichment": {
+      "name": "Woodland Cemetery",
+      "typeLine": "Land",
+      "colorIdentity": [
+        "B",
+        "G"
+      ],
+      "cmc": 0,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "4d6f6c96-f813-4864-b4e1-b2a0aa8be1e8",
+      "imageUrl": "https://cards.scryfall.io/normal/front/4/d/4d6f6c96-f813-4864-b4e1-b2a0aa8be1e8.jpg?1783903713"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-75",
+    "name": "Yavimaya Coast",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 3.75,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480943/69cd92e070809-6jy71-rz7kp-a0668d7705b0821fc377c97c7ece48e7.jpg",
+    "pageNamePt": "Costa de Yavimaya",
+    "enrichment": {
+      "name": "Yavimaya Coast",
+      "typeLine": "Land",
+      "colorIdentity": [
+        "G",
+        "U"
+      ],
+      "cmc": 0,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "f4c1500b-1f4c-4d33-810c-25e3bb0a4666",
+      "imageUrl": "https://cards.scryfall.io/normal/front/f/4/f4c1500b-1f4c-4d33-810c-25e3bb0a4666.jpg?1783903712"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-76",
+    "name": "Elven Passage",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 8.45,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/481001/6a6a4db14f602-olw7t-sv758-a7a80b8c68ca115ea7949ab4d3538c7a.jpg",
+    "pageNamePt": "Elven Passage",
+    "enrichment": {
+      "name": "Elven Passage",
+      "typeLine": "Land",
+      "colorIdentity": [],
+      "cmc": 0,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "dd1fd2ab-2565-4798-a832-fc849df82f74",
+      "imageUrl": "https://cards.scryfall.io/normal/front/d/d/dd1fd2ab-2565-4798-a832-fc849df82f74.jpg?1785323319"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-77",
+    "name": "Elvenking's Halls",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 0.14,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/481001/6a6a4db2ceca0-es14d-peqbd-a7a80b8c68ca115ea7949ab4d3538c7a.jpg",
+    "pageNamePt": "Elvenking's Halls",
+    "enrichment": {
+      "name": "Elvenking's Halls",
+      "typeLine": "Land",
+      "colorIdentity": [
+        "G",
+        "U"
+      ],
+      "cmc": 0,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "cd477096-41b1-4907-9cb3-852cb22c9ba2",
+      "imageUrl": "https://cards.scryfall.io/normal/front/c/d/cd477096-41b1-4907-9cb3-852cb22c9ba2.jpg?1785323590"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-78",
+    "name": "Forest",
+    "quantity": 6,
+    "zone": "mainDeck",
+    "pageLowestPrice": 0,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/479772/5f4244313d7fe-tbduo7-zfwcpv-cee631121c2ec9232f3a2f028ad5c89b.jpg",
+    "pageNamePt": "Floresta",
+    "enrichment": {
+      "name": "Forest",
+      "typeLine": "Basic Land — Forest",
+      "colorIdentity": [
+        "G"
+      ],
+      "cmc": 0,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "dce15387-4114-4b3e-91aa-5b42b45c44ac",
+      "imageUrl": "https://cards.scryfall.io/normal/front/d/c/dce15387-4114-4b3e-91aa-5b42b45c44ac.jpg?1785981675"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-79",
+    "name": "Island",
+    "quantity": 5,
+    "zone": "mainDeck",
+    "pageLowestPrice": 0,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/479772/5f424431e5c5b-5xrhej-hu0a89-5b69b9cb83065d403869739ae7f0995e.jpg",
+    "pageNamePt": "Ilha",
+    "enrichment": {
+      "name": "Island",
+      "typeLine": "Basic Land — Island",
+      "colorIdentity": [
+        "U"
+      ],
+      "cmc": 0,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "f3cc07cd-cc79-4745-b0b7-eade60175cc3",
+      "imageUrl": "https://cards.scryfall.io/normal/front/f/3/f3cc07cd-cc79-4745-b0b7-eade60175cc3.jpg?1785981645"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-80",
+    "name": "Tangled Islet",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 0.75,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480943/69cd92c999a0a-ur17g-01gcz-a0668d7705b0821fc377c97c7ece48e7.jpg",
+    "pageNamePt": "Ilhota Emaranhada",
+    "enrichment": {
+      "name": "Tangled Islet",
+      "typeLine": "Land — Forest Island",
+      "colorIdentity": [
+        "G",
+        "U"
+      ],
+      "cmc": 0,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "bb1920f1-aab3-4066-8be9-029102886d03",
+      "imageUrl": "https://cards.scryfall.io/normal/front/b/b/bb1920f1-aab3-4066-8be9-029102886d03.jpg?1783903717"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-81",
+    "name": "Vineglimmer Snarl",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 1.54,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480943/69cd92d82bc0a-g40zm-0ugkh-a0668d7705b0821fc377c97c7ece48e7.jpg",
+    "pageNamePt": "Liame da Luminovinha",
+    "enrichment": {
+      "name": "Vineglimmer Snarl",
+      "typeLine": "Land",
+      "colorIdentity": [
+        "G",
+        "U"
+      ],
+      "cmc": 0,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "445bd162-b523-45f4-83d0-ffc702fc1fac",
+      "imageUrl": "https://cards.scryfall.io/normal/front/4/4/445bd162-b523-45f4-83d0-ffc702fc1fac.jpg?1783903715"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-82",
+    "name": "Swamp",
+    "quantity": 4,
+    "zone": "mainDeck",
+    "pageLowestPrice": 0,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/479772/5f424436a658a-0okjn9-47a69p-b337e84de8752b27eda3a12363109e80.jpg",
+    "pageNamePt": "Pântano",
+    "enrichment": {
+      "name": "Swamp",
+      "typeLine": "Basic Land — Swamp",
+      "colorIdentity": [
+        "B"
+      ],
+      "cmc": 0,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "b7387103-1df1-4fd0-9e91-1544509792c7",
+      "imageUrl": "https://cards.scryfall.io/normal/front/b/7/b7387103-1df1-4fd0-9e91-1544509792c7.jpg?1785981659"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-83",
+    "name": "Rogue's Passage",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 1.5,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480943/69cd92b762dc2-jq4au-7jl3p-a0668d7705b0821fc377c97c7ece48e7.jpg",
+    "pageNamePt": "Passagem do Ladino",
+    "enrichment": {
+      "name": "Rogue's Passage",
+      "typeLine": "Land",
+      "colorIdentity": [],
+      "cmc": 0,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "4493b62b-f354-47ff-9dcf-cc6e29de77c6",
+      "imageUrl": "https://cards.scryfall.io/normal/front/4/4/4493b62b-f354-47ff-9dcf-cc6e29de77c6.jpg?1785497634"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-84",
+    "name": "Hinterland Harbor",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 3.25,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480968/6a2b135c63659-7h1ny-xhcqa-3246d690edcb0d9a18099e37d07ede11.jpg",
+    "pageNamePt": "Porto do Interior",
+    "enrichment": {
+      "name": "Hinterland Harbor",
+      "typeLine": "Land",
+      "colorIdentity": [
+        "G",
+        "U"
+      ],
+      "cmc": 0,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "892451a1-5527-4857-84f8-62028d147489",
+      "imageUrl": "https://cards.scryfall.io/normal/front/8/9/892451a1-5527-4857-84f8-62028d147489.jpg?1783903199"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-85",
+    "name": "Llanowar Wastes",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 6.9,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480943/69cd929bbb94b-a4dil-ofsw3-a0668d7705b0821fc377c97c7ece48e7.jpg",
+    "pageNamePt": "Regiões Agrestes de Llanowar",
+    "enrichment": {
+      "name": "Llanowar Wastes",
+      "typeLine": "Land",
+      "colorIdentity": [
+        "B",
+        "G"
+      ],
+      "cmc": 0,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "266316d3-3bbc-4283-aab8-69629855909f",
+      "imageUrl": "https://cards.scryfall.io/normal/front/2/6/266316d3-3bbc-4283-aab8-69629855909f.jpg?1783903726"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-86",
+    "name": "Temple of Mystery",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 0.47,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480943/69cd92ce8451f-x25ms-6qwf5-a0668d7705b0821fc377c97c7ece48e7.jpg",
+    "pageNamePt": "Templo do Mistério",
+    "enrichment": {
+      "name": "Temple of Mystery",
+      "typeLine": "Land",
+      "colorIdentity": [
+        "G",
+        "U"
+      ],
+      "cmc": 0,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "258077cf-edef-40fe-ab46-03c965ebe990",
+      "imageUrl": "https://cards.scryfall.io/normal/front/2/5/258077cf-edef-40fe-ab46-03c965ebe990.jpg?1783903715"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-87",
+    "name": "Evolving Wilds",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 0.06,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480968/6a2b134dd0286-9az3v-w5ybi-3246d690edcb0d9a18099e37d07ede11.jpg",
+    "pageNamePt": "Terras em Desenvolvimento",
+    "enrichment": {
+      "name": "Evolving Wilds",
+      "typeLine": "Land",
+      "colorIdentity": [],
+      "cmc": 0,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "c0318a48-30e4-4ef7-be3d-5e561c5ce428",
+      "imageUrl": "https://cards.scryfall.io/normal/front/c/0/c0318a48-30e4-4ef7-be3d-5e561c5ce428.jpg?1783903203"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-88",
+    "name": "Command Tower",
+    "quantity": 1,
+    "zone": "mainDeck",
+    "pageLowestPrice": 1.57,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480943/69cd90e1ecee6-mqrtn-i3tse-a0668d7705b0821fc377c97c7ece48e7.jpg",
+    "pageNamePt": "Torre de Comando",
+    "enrichment": {
+      "name": "Command Tower",
+      "typeLine": "Land",
+      "colorIdentity": [],
+      "cmc": 0,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "0548fb60-c843-4f8f-a029-6f10efc63a41",
+      "imageUrl": "https://cards.scryfall.io/normal/front/0/5/0548fb60-c843-4f8f-a029-6f10efc63a41.jpg?1783903206"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-89",
+    "name": "Analyze the Pollen",
+    "quantity": 1,
+    "zone": "maybeboard",
+    "pageLowestPrice": 2.52,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480392/65a6ec043713c-l2pxs-gwyih-c30f2eb234aa0038a1a2f2d3f9ea5c9c.jpg",
+    "pageManaCostSymbols": [
+      "G"
+    ],
+    "pageNamePt": "Analisar o Pólen",
+    "enrichment": {
+      "name": "Analyze the Pollen",
+      "typeLine": "Sorcery",
+      "colorIdentity": [
+        "G"
+      ],
+      "cmc": 1,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "5563967f-09fd-4ccf-8892-4dd0c2544c98",
+      "imageUrl": "https://cards.scryfall.io/normal/front/5/5/5563967f-09fd-4ccf-8892-4dd0c2544c98.jpg?1783912872"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-90",
+    "name": "Elves of Deep Shadow",
+    "quantity": 1,
+    "zone": "maybeboard",
+    "pageLowestPrice": 19,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/225/5f424367c7f30-lytngh-aeksl5-87f5dbd386107733b6e9c28afac2fd25.jpg",
+    "pageManaCostSymbols": [
+      "G"
+    ],
+    "pageNamePt": "Elfos das Sombras Profundas",
+    "enrichment": {
+      "name": "Elves of Deep Shadow",
+      "typeLine": "Creature — Elf Druid",
+      "colorIdentity": [
+        "B",
+        "G"
+      ],
+      "cmc": 1,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "6040ba5e-7042-4095-9000-89bcb8ce1ea6",
+      "imageUrl": "https://cards.scryfall.io/normal/front/6/0/6040ba5e-7042-4095-9000-89bcb8ce1ea6.jpg?1783940403"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-91",
+    "name": "Turn the Earth",
+    "quantity": 1,
+    "zone": "maybeboard",
+    "pageLowestPrice": 0.3,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/479864/61378f0a0d10b-v8o5g-7rsa5-14673340061378f0a0d14a.jpg",
+    "pageManaCostSymbols": [
+      "G"
+    ],
+    "pageNamePt": "Revirar a Terra",
+    "enrichment": {
+      "name": "Turn the Earth",
+      "typeLine": "Instant",
+      "colorIdentity": [
+        "G"
+      ],
+      "cmc": 1,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "34076a93-9e8f-45d4-a1d7-31f40210a5b6",
+      "imageUrl": "https://cards.scryfall.io/normal/front/3/4/34076a93-9e8f-45d4-a1d7-31f40210a5b6.jpg?1783925569"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-92",
+    "name": "Autumn's Veil",
+    "quantity": 1,
+    "zone": "maybeboard",
+    "pageLowestPrice": 2.7,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/230/5f42436b49df5-o2ftwz-8vg0li-82aa4b0af34c2313a562076992e50aa3.jpg",
+    "pageManaCostSymbols": [
+      "G"
+    ],
+    "pageNamePt": "Véu do Outono",
+    "enrichment": {
+      "name": "Autumn's Veil",
+      "typeLine": "Instant",
+      "colorIdentity": [
+        "G"
+      ],
+      "cmc": 1,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "b911fee0-c30b-4d68-a9e2-61c40ece68b0",
+      "imageUrl": "https://cards.scryfall.io/normal/front/b/9/b911fee0-c30b-4d68-a9e2-61c40ece68b0.jpg?1783941063"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-93",
+    "name": "Auroral Procession",
+    "quantity": 1,
+    "zone": "maybeboard",
+    "pageLowestPrice": 0.4,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480677/67dc631e7718c-e3mgl-vid1f-a9023aa77338fee36e1df9aa24ccc360.jpg",
+    "pageManaCostSymbols": [
+      "G",
+      "U"
+    ],
+    "pageNamePt": "Auroral Procession",
+    "enrichment": {
+      "name": "Auroral Procession",
+      "typeLine": "Instant",
+      "colorIdentity": [
+        "G",
+        "U"
+      ],
+      "cmc": 2,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "672f94ad-65d6-4c7d-925d-165ef264626f",
+      "imageUrl": "https://cards.scryfall.io/normal/front/6/7/672f94ad-65d6-4c7d-925d-165ef264626f.jpg?1783907327"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-94",
+    "name": "Urborg Elf",
+    "quantity": 1,
+    "zone": "maybeboard",
+    "pageLowestPrice": 0.2,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/209/5f42435d76b8d-g7sy0w-gwry02-8613985ec49eb8f757ae6439e879bb2a.jpg",
+    "pageManaCostSymbols": [
+      "1",
+      "G"
+    ],
+    "pageNamePt": "Elfo de Urborg",
+    "enrichment": {
+      "name": "Urborg Elf",
+      "typeLine": "Creature — Elf Druid",
+      "colorIdentity": [
+        "B",
+        "G",
+        "U"
+      ],
+      "cmc": 2,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "1d8521bf-d026-4d26-831e-a2f253307c93",
+      "imageUrl": "https://cards.scryfall.io/normal/front/1/d/1d8521bf-d026-4d26-831e-a2f253307c93.jpg?1783945338"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-95",
+    "name": "Marvin, Murderous Mimic",
+    "quantity": 1,
+    "zone": "maybeboard",
+    "pageLowestPrice": 18.95,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480556/66e0798cc0f0c-by5mx-wh481-09903de95ca8edf872f080cad8185917.jpg",
+    "pageManaCostSymbols": [
+      "2"
+    ],
+    "pageNamePt": "Marvin, Murderous Mimic",
+    "enrichment": {
+      "name": "Marvin, Murderous Mimic",
+      "typeLine": "Legendary Artifact Creature — Toy",
+      "colorIdentity": [],
+      "cmc": 2,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "66898970-b99b-48f2-9240-68c301c95500",
+      "imageUrl": "https://cards.scryfall.io/normal/front/6/6/66898970-b99b-48f2-9240-68c301c95500.jpg?1783909431"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-96",
+    "name": "Lively Dirge",
+    "quantity": 1,
+    "zone": "maybeboard",
+    "pageLowestPrice": 16.71,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480447/6605ba84c92b4-x2dsq-ikoyx-8b7348065e7b65eeacb807363ff9592c.jpg",
+    "pageManaCostSymbols": [
+      "1",
+      "B"
+    ],
+    "pageNamePt": "Nênia Animada",
+    "enrichment": {
+      "name": "Lively Dirge",
+      "typeLine": "Sorcery",
+      "colorIdentity": [
+        "B"
+      ],
+      "cmc": 2,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "0c35a0d3-12f7-46f3-a6b3-02a490d45ca0",
+      "imageUrl": "https://cards.scryfall.io/normal/front/0/c/0c35a0d3-12f7-46f3-a6b3-02a490d45ca0.jpg?1783911831"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-97",
+    "name": "Ripples of Undeath",
+    "quantity": 1,
+    "zone": "maybeboard",
+    "pageLowestPrice": 34.9,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480445/66563cc94ae74-pj6na-swgxa-e4c33be81cc6c4dec5a513d10daafc38.jpg",
+    "pageManaCostSymbols": [
+      "1",
+      "B"
+    ],
+    "pageNamePt": "Ondulações de Morte-Vida",
+    "enrichment": {
+      "name": "Ripples of Undeath",
+      "typeLine": "Enchantment",
+      "colorIdentity": [
+        "B"
+      ],
+      "cmc": 2,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "a201d1bc-e3fe-4f59-bd48-3683996ac308",
+      "imageUrl": "https://cards.scryfall.io/normal/front/a/2/a201d1bc-e3fe-4f59-bd48-3683996ac308.jpg?1783911276"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-98",
+    "name": "Likeness Looter",
+    "quantity": 1,
+    "zone": "maybeboard",
+    "pageLowestPrice": 9,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480293/64dfb3635755b-oi3ef-2x0i9-60163185064dfb363575a6.jpg",
+    "pageManaCostSymbols": [
+      "U",
+      "B"
+    ],
+    "pageNamePt": "Saqueador de Semblantes",
+    "enrichment": {
+      "name": "Likeness Looter",
+      "typeLine": "Creature — Faerie Shapeshifter",
+      "colorIdentity": [
+        "B",
+        "U"
+      ],
+      "cmc": 2,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "2957472a-825e-4904-b7e8-62bef1cb432d",
+      "imageUrl": "https://cards.scryfall.io/normal/front/2/9/2957472a-825e-4904-b7e8-62bef1cb432d.jpg?1783915070"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-99",
+    "name": "Fauna Shaman",
+    "quantity": 1,
+    "zone": "maybeboard",
+    "pageLowestPrice": 13.99,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480040/63656666720b6-6nsm9-bv5at-105385685163656666720fa.jpg",
+    "pageManaCostSymbols": [
+      "1",
+      "G"
+    ],
+    "pageNamePt": "Xamã da Fauna",
+    "enrichment": {
+      "name": "Fauna Shaman",
+      "typeLine": "Creature — Elf Shaman",
+      "colorIdentity": [
+        "G"
+      ],
+      "cmc": 2,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "b8b906eb-3223-474c-9b74-eda2c280f9c5",
+      "imageUrl": "https://cards.scryfall.io/normal/front/b/8/b8b906eb-3223-474c-9b74-eda2c280f9c5.jpg?1783920047"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-100",
+    "name": "Bridgeworks Battle",
+    "quantity": 1,
+    "zone": "maybeboard",
+    "pageLowestPrice": 3.95,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480445/6650e0e290066-b7v4m-l21n5-e4c33be81cc6c4dec5a513d10daafc38.jpg",
+    "pageManaCostSymbols": [
+      "2",
+      "G"
+    ],
+    "pageNamePt": "Batalha na Ponte Suspensa",
+    "enrichment": {
+      "name": "Bridgeworks Battle // Tanglespan Bridgeworks",
+      "typeLine": "Sorcery // Land",
+      "colorIdentity": [
+        "G"
+      ],
+      "cmc": 3,
+      "layout": "modal_dfc",
+      "legalInCommander": true,
+      "scryfallId": "ebef3db0-2b58-4581-a79c-fbca9a059e63",
+      "imageUrl": "https://cards.scryfall.io/normal/front/e/b/ebef3db0-2b58-4581-a79c-fbca9a059e63.jpg?1783911228"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-101",
+    "name": "Confounding Riddle",
+    "quantity": 1,
+    "zone": "maybeboard",
+    "pageLowestPrice": 0.15,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480326/653c004cb47c8-6mxya-91zwm-e3bebab5af4cf841773e957a08c286d6.jpg",
+    "pageManaCostSymbols": [
+      "2",
+      "U"
+    ],
+    "pageNamePt": "Charada Confusa",
+    "enrichment": {
+      "name": "Confounding Riddle",
+      "typeLine": "Instant",
+      "colorIdentity": [
+        "U"
+      ],
+      "cmc": 3,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "f2ae23db-c391-402c-9568-65447cada66e",
+      "imageUrl": "https://cards.scryfall.io/normal/front/f/2/f2ae23db-c391-402c-9568-65447cada66e.jpg?1783913798"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-102",
+    "name": "Thirst for Meaning",
+    "quantity": 1,
+    "zone": "maybeboard",
+    "pageLowestPrice": 0.03,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480575/66e09c28c2f1b-6mvea-dojfr-ca65a4a3e1f73cfbe1a6ad85493969f1.jpg",
+    "pageManaCostSymbols": [
+      "2",
+      "U"
+    ],
+    "pageNamePt": "Sede de Significado",
+    "enrichment": {
+      "name": "Thirst for Meaning",
+      "typeLine": "Instant",
+      "colorIdentity": [
+        "U"
+      ],
+      "cmc": 3,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "b91bd773-b36b-4a7a-a9e4-3a07cff90646",
+      "imageUrl": "https://cards.scryfall.io/normal/front/b/9/b91bd773-b36b-4a7a-a9e4-3a07cff90646.jpg?1783909622"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-103",
+    "name": "Dark Tutelage",
+    "quantity": 1,
+    "zone": "maybeboard",
+    "pageLowestPrice": 0.25,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/230/5f42436b35eee-ym4etd-5u6plq-8613985ec49eb8f757ae6439e879bb2a.jpg",
+    "pageManaCostSymbols": [
+      "2",
+      "B"
+    ],
+    "pageNamePt": "Tutela Sombria",
+    "enrichment": {
+      "name": "Dark Tutelage",
+      "typeLine": "Enchantment",
+      "colorIdentity": [
+        "B"
+      ],
+      "cmc": 3,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "9ec3dd9f-3969-4fd7-97f7-e9868eb19a64",
+      "imageUrl": "https://cards.scryfall.io/normal/front/9/e/9ec3dd9f-3969-4fd7-97f7-e9868eb19a64.jpg?1783941817"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-104",
+    "name": "Silundi Vision",
+    "quantity": 1,
+    "zone": "maybeboard",
+    "pageLowestPrice": 4,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/479816/5f5657febce7f-l9whf-janc5-17443137605f5657febcec8.jpg",
+    "pageManaCostSymbols": [
+      "2",
+      "U"
+    ],
+    "pageNamePt": "Visão de Silundi",
+    "enrichment": {
+      "name": "Silundi Vision // Silundi Isle",
+      "typeLine": "Instant // Land",
+      "colorIdentity": [
+        "U"
+      ],
+      "cmc": 3,
+      "layout": "modal_dfc",
+      "legalInCommander": true,
+      "scryfallId": "11568cdf-6148-494c-8b98-f5ca5797d775",
+      "imageUrl": "https://cards.scryfall.io/normal/front/1/1/11568cdf-6148-494c-8b98-f5ca5797d775.jpg?1783929393"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-105",
+    "name": "Oakhame Adversary",
+    "quantity": 1,
+    "zone": "maybeboard",
+    "pageLowestPrice": 0.19,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480548/670db21d9eefa-fq71c-r8ct3-d354ddc7eec8720fd172c1ff7867d826.jpg",
+    "pageManaCostSymbols": [
+      "3",
+      "G"
+    ],
+    "pageNamePt": "Adversário de Carvalhândia",
+    "enrichment": {
+      "name": "Oakhame Adversary",
+      "typeLine": "Creature — Elf Warrior",
+      "colorIdentity": [
+        "G"
+      ],
+      "cmc": 4,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "9fb4e77f-e189-4ad3-9fca-8da04289e396",
+      "imageUrl": "https://cards.scryfall.io/normal/front/9/f/9fb4e77f-e189-4ad3-9fca-8da04289e396.jpg?1783932606"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-106",
+    "name": "Gifts Ungiven",
+    "quantity": 1,
+    "zone": "maybeboard",
+    "pageLowestPrice": 20,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/479945/62b1dfdcd6b95-4y1vu-q24yo-213157069562b1dfdcd6bde.jpg",
+    "pageManaCostSymbols": [
+      "3",
+      "U"
+    ],
+    "pageNamePt": "Dádiva Retirada",
+    "enrichment": {
+      "name": "Gifts Ungiven",
+      "typeLine": "Instant",
+      "colorIdentity": [
+        "U"
+      ],
+      "cmc": 4,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "cc950b6c-0346-4939-b36b-9f10a75f7a32",
+      "imageUrl": "https://cards.scryfall.io/normal/front/c/c/cc950b6c-0346-4939-b36b-9f10a75f7a32.jpg?1783921916"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-107",
+    "name": "Final Parting",
+    "quantity": 1,
+    "zone": "maybeboard",
+    "pageLowestPrice": 5.19,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480263/64bac362d6605-5ugzv-gurhi-134797155264bac362d664f.jpg",
+    "pageManaCostSymbols": [
+      "3",
+      "B",
+      "B"
+    ],
+    "pageNamePt": "Despedida Final",
+    "enrichment": {
+      "name": "Final Parting",
+      "typeLine": "Sorcery",
+      "colorIdentity": [
+        "B"
+      ],
+      "cmc": 5,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "94f24b7c-4952-4abc-aaba-22a529012468",
+      "imageUrl": "https://cards.scryfall.io/normal/front/9/4/94f24b7c-4952-4abc-aaba-22a529012468.jpg?1783915675"
+    },
+    "enrichmentStatus": "ok"
+  },
+  {
+    "id": "demo-card-108",
+    "name": "Izoni, Thousand-Eyed",
+    "quantity": 1,
+    "zone": "maybeboard",
+    "pageLowestPrice": 0.48,
+    "pageImageUrl": "https://repositorio.sbrauble.com/arquivos/in/magic/480483/665a046b70729-iyz5a-ldofe-2d207dccf740160b346964cd929616a2.jpg",
+    "pageManaCostSymbols": [
+      "2",
+      "B",
+      "B",
+      "G",
+      "G"
+    ],
+    "pageNamePt": "Izoni dos Mil Olhos",
+    "enrichment": {
+      "name": "Izoni, Thousand-Eyed",
+      "typeLine": "Legendary Creature — Elf Shaman",
+      "colorIdentity": [
+        "B",
+        "G"
+      ],
+      "cmc": 6,
+      "layout": "normal",
+      "legalInCommander": true,
+      "scryfallId": "75955b0e-12d6-40ba-aab5-b7b7e2bde121",
+      "imageUrl": "https://cards.scryfall.io/normal/front/7/5/75955b0e-12d6-40ba-aab5-b7b7e2bde121.jpg?1783934132"
+    },
+    "enrichmentStatus": "ok"
+  }
+]

@@ -230,7 +230,7 @@ export function DemoRoot() {
         >
           {nameLanguage === "en" ? "PT" : "EN"}
         </button>
-        <span className="c500-tab__unsynced">Demonstração — deck fictício, sem conexão com o LigaMagic</span>
+        <span className="c500-tab__unsynced">Live Demo</span>
       </header>
 
       <div className="c500-tab__body">
@@ -404,7 +404,7 @@ export function DemoRoot() {
         <a href="https://github.com/lucasfsanti/CMD500-Deck-Builder" target="_blank" rel="noreferrer">
           CMD500 Deck Builder no GitHub
         </a>
-        <span className="c500-tab__footer-version">demonstração — dados fictícios</span>
+        <span className="c500-tab__footer-version">demonstração — deck real, capturado uma vez</span>
       </footer>
     </div>
   );
