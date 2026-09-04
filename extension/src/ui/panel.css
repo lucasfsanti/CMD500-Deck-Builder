@@ -561,6 +561,7 @@ input[type="number"] {
 
 .c500-zone__title {
   grid-column: 1;
+  grid-row: 1;
   display: flex;
   align-items: baseline;
   gap: 6px;
@@ -576,6 +577,7 @@ input[type="number"] {
 
 .c500-zone__toggle {
   grid-column: 3;
+  grid-row: 1;
   justify-self: end;
   display: inline-flex;
   align-items: center;
@@ -597,6 +599,7 @@ input[type="number"] {
 
 .c500-zone__filter {
   grid-column: 2;
+  grid-row: 1;
   justify-self: center;
   font-family: var(--c500-font-body);
   font-size: 12px;
