@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="extension/public/icons/icon128.png" width="120" height="120" alt="Logo do CMD500 Deck Builder" />
+<img src=".github/images/banner.png" width="100%" alt="Banner do CMD500 Deck Builder" />
 
 # CMD500 Deck Builder — LigaMagic Deck Enhancer
 
@@ -124,6 +124,16 @@ importador dele.
 ## 📦 Instalação
 
 Este repositório tem um único pacote, `extension/`. O passo a passo completo de instalação e desenvolvimento — build, carregar como extensão descompactada no Chrome, rodar os testes, e os scripts de verificação manual contra o site real — está em **[`extension/README.md`](extension/README.md)**.
+
+## 📣 Material promocional
+
+Artes usadas em divulgação (ex.: uma futura listagem na Chrome Web Store), geradas a partir da identidade visual real da extensão.
+
+<div align="center">
+<img src=".github/images/promo-tile-marquee.png" width="70%" alt="Banner promocional largo do CMD500 Deck Builder" />
+<br /><br />
+<img src=".github/images/promo-tile-pequeno.png" width="35%" alt="Banner promocional pequeno do CMD500 Deck Builder" />
+</div>
 
 ## 🛠️ Seção técnica
 
