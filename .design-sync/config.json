@@ -1,0 +1,16 @@
+{
+  "projectId": "856a52ad-969e-4b36-9d3c-9181add3fbd8",
+  "pkg": "cmd500-design-system",
+  "globalName": "CMD500DS",
+  "shape": "package",
+  "buildCmd": "npm run build --prefix design-system",
+  "srcDir": "src",
+  "tsconfig": "tsconfig.json",
+  "cssEntry": "vendor/panel.css",
+  "readmeHeader": ".design-sync/conventions.md",
+  "overrides": {
+    "ZoneSection": { "cardMode": "column" },
+    "ExportMenu": { "cardMode": "column" },
+    "CardRow": { "cardMode": "column" }
+  }
+}
