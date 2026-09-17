@@ -348,7 +348,7 @@ describe("TabRoot (task 3.1)", () => {
     expect(screen.getByText("Lendo este deck…")).toBeTruthy();
   });
 
-  it("renders the vector logo mark in the header, with the title kept as an accessible-only heading (branding)", async () => {
+  it("renders the vector logo mark and wordmark lockup in the header, with the title kept as an accessible-only heading (branding, logo v2)", async () => {
     mockUseTabDeck.mockReturnValue({
       cards: [card("a", "Sol Ring", "mainDeck")],
       pageStatus: "ok",
@@ -366,8 +366,14 @@ describe("TabRoot (task 3.1)", () => {
     const logo = container.querySelector("header svg.c500-tab__mark");
     expect(logo).toBeTruthy();
     expect(logo?.getAttribute("aria-hidden")).toBe("true");
-    // Nothing visible reads the title anymore, but it's still the page's
-    // accessible name via a visually-hidden heading.
+    // The wordmark lockup is decorative branding, not the page's heading —
+    // it sits alongside the mark, aria-hidden, so it isn't announced twice.
+    const lockup = container.querySelector("header .c500-tab__logo-lockup");
+    expect(lockup?.getAttribute("aria-hidden")).toBe("true");
+    expect(screen.getByText("CMD500")).toBeTruthy();
+    expect(screen.getByText("Deck Builder")).toBeTruthy();
+    // Nothing visible reads the functional title anymore, but it's still
+    // the page's accessible name via a visually-hidden heading.
     expect(screen.getByRole("heading", { name: "Montador de Decks Commander 500" })).toBeTruthy();
   });
 

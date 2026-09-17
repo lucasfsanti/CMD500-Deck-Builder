@@ -856,6 +856,45 @@ input[type="number"] {
   flex-shrink: 0;
 }
 
+/* Logo v2 (Selo Octogonal): mark + wordmark lockup, replacing the old
+   mark-only header treatment. Proportions follow the design file's
+   "lock-sm" ratios (mark : line1 : line2), scaled to this header's size. */
+.c500-tab__logo-lockup {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+/* font-display is set on the Google Fonts <link> itself (display=swap
+   query param in tab.html/demo/index.html), not here — it only has effect
+   inside an @font-face rule, which the <link>-loaded stylesheet owns. */
+.c500-wordmark {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+  font-family: "Cinzel", Georgia, "Times New Roman", serif;
+}
+
+.c500-wordmark__line1 {
+  font-size: 21px;
+  font-weight: 600;
+  color: var(--c500-text);
+  letter-spacing: 0.04em;
+  font-style: normal;
+}
+
+.c500-wordmark__line2 {
+  font-size: 9.5px;
+  font-weight: 600;
+  font-style: normal;
+  color: var(--c500-text);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-top: 7px;
+  margin-left: 1px;
+}
+
 .c500-tab__title {
   font-family: var(--c500-font-body);
   font-size: 21px;
