@@ -8,6 +8,7 @@ import { calculateBudget } from "../lib/budget/calculate-budget";
 import { calculateCardCount } from "../lib/organizer/calculate-card-count";
 import { checkLegality } from "../lib/legality/check-legality";
 import { ZoneSection, type ViewMode } from "../ui/components/ZoneSection";
+import { LogoLockup } from "../ui/components/LogoMark";
 import { BudgetGauge } from "../ui/components/BudgetGauge";
 import { CardCountGauge } from "../ui/components/CardCountGauge";
 import { LegalitySummary } from "../ui/components/LegalitySummary";
@@ -94,53 +95,6 @@ function MoonIcon() {
   return (
     <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">
       <path d="M9.5 1.5a6 6 0 1 0 3 8.9A5 5 0 0 1 9.5 1.5Z" fill="currentColor" />
-    </svg>
-  );
-}
-
-/**
- * Header logo mark (task 1.1, revised): a simplified vector redraw of the
- * extension's real logo (extension/public/icons/icon128.png) — the gold
- * badge, dark-brown outline, blue monogram, and WUBRG dot row are all
- * carried over, but the two-line "CMD500 Deckbuilder" script wordmark is
- * reduced to a single bold "5" and the dots lose their glossy highlight.
- * Downscaling the full raster logo to ~38px left the wordmark illegible;
- * being vector, this stays crisp at any size instead of just being smaller.
- */
-function LogoMark() {
-  return (
-    <svg
-      width="38"
-      height="38"
-      viewBox="0 0 100 100"
-      className="c500-tab__mark"
-      aria-hidden="true"
-    >
-      <rect x="5" y="5" width="90" height="90" rx="16" fill="#b1802a" stroke="#2e1f0f" strokeWidth="6" />
-      <text
-        x="50"
-        y="63"
-        textAnchor="middle"
-        fontFamily="Georgia, 'Times New Roman', serif"
-        fontWeight="900"
-        fontSize="56"
-        fill="#4a86c4"
-        stroke="#2e1f0f"
-        strokeWidth="5"
-        strokeLinejoin="round"
-        paintOrder="stroke"
-      >
-        5
-      </text>
-      {[
-        { cx: 20, fill: "#f2efe6" },
-        { cx: 35, fill: "#2f6fc0" },
-        { cx: 50, fill: "#1c1c1c" },
-        { cx: 65, fill: "#c23a2e" },
-        { cx: 80, fill: "#3f8f4a" },
-      ].map(({ cx, fill }) => (
-        <circle key={cx} cx={cx} cy="83" r="7" fill={fill} stroke="#2e1f0f" strokeWidth="2.5" />
-      ))}
     </svg>
   );
 }
@@ -237,7 +191,7 @@ export function TabRoot() {
   return (
     <div className="c500-tab">
       <header className="c500-tab__header">
-        <LogoMark />
+        <LogoLockup />
         <h1 className="c500-tab__title c500-visually-hidden">Montador de Decks Commander 500</h1>
         <select
           className="c500-tab__format-select"
